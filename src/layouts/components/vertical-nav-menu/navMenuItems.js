@@ -30,27 +30,29 @@ export default [
   {
     url: null,
     name: 'Dashboard',
-    tag: '2',
+    tag: '3',
     tagColor: 'warning',
     icon: 'HomeIcon',
     i18n: 'Dashboard',
-    submenu: [
-      {
+    submenu: [{
         url: '/dashboard/client',
         name: 'Client',
         slug: 'dashboard-client',
         i18n: 'Client'
       },
       {
-        url: '/dashboard/campaign',
+        url: '/dashboard/allcampaign',
         name: 'Campaign',
-        slug: 'dashboard-campaign',
+        slug: 'dashboard-allcampaign',
         i18n: 'Campaign'
+      },
+      {
+        url: '/dashboard/viewsstatus',
+        name: 'ViewStatus',
+        slug: 'dashboard-viewstatus',
+        i18n: 'ViewStatus'
       }
     ]
-  },
-  
+  }
+
 ]
-
-
-

@@ -901,6 +901,21 @@ const data = {
       'order_status': 'delivered',
       'popularity': 72,
       'price': 99.99
+    },
+    {
+      'id' : 101,
+      'start_date' : '20-8-2020',
+      'end_date': '21-8-2020',
+      'brand_name' : 'Puma',
+      'campaign_name' : 'Highland Oak Centrl',
+      'type' : 'Active',
+      'search_method' : 'keyboard',
+      'url' : 'https://google.com',
+      'price': '$100',
+      'timestamp': '14-20',
+      'country' : 'United States',
+      'state' : 'California',
+      'city' : 'long beach'
     }
   ]
 }

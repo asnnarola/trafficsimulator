@@ -67,13 +67,29 @@ const router = new Router({
           }
         },
         {
-          path: '/dashboard/campaign',
-          name: 'dashboard-campaign',
+          path: '/dashboard/allcampaign',
+          name: 'dashboard-allcampaign',
           component: () => import('./views/DashboardCampaign.vue'),
           meta: {
             rule: 'admin'
           }
         },
+        {
+          path: '/dashboard/addcampaigns',
+          name: 'dashboard-addcampaigns',
+          component: () => import('./views/DashboardAddCampaigns.vue'),
+          meta: {
+            rule: 'admin'
+          }
+        },
+        {
+          path: '/dashboard/viewstatus',
+          name: 'dashboard-viewstatus',
+          component: () => import('./views/DashboardViewStatus.vue'),
+          meta: {
+            rule: 'admin'
+          }
+        }
       ]
     },
     // =============================================================================

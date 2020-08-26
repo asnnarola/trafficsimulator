@@ -4,6 +4,8 @@ export default {
     Campaign: 'Campaign',
     Client: 'Client',
     ClientDescription: 'ClientDescription',
+    AddCampaigns: 'AddCampaigns',
+    ViewStatus: 'ViewStatus',
     Apps: 'Apps',
     Todo: 'Todo',
     Chat: 'Chat',
