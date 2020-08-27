@@ -53,6 +53,28 @@ export default [
         i18n: 'ViewStatus'
       }
     ]
+  },
+  {
+    url: null,
+    name: "System Settings",
+    tag: '2',
+    tagColor: 'warning',
+    icon: 'SettingsIcon',
+    i18n: 'System Settings',
+    submenu: [
+      {
+        url: '/settings/global-settings',
+        name: 'Global Settings',
+        slug: 'global-settings',
+        i18n: 'Global Settings'
+      },
+      {
+        url: '/settings/system-status',
+        name: 'System Status',
+        slug: 'system-status',
+        i18n: 'System Status'
+      }
+    ]
   }
 
 ]

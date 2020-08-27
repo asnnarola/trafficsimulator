@@ -16,78 +16,95 @@
   Author URL: http://www.themeforest.net/user/pixinvent
 ==========================================================================================*/
 
+import Vue from "vue";
+import Router from "vue-router";
+import auth from "@/auth/authService";
 
-import Vue from 'vue'
-import Router from 'vue-router'
-import auth from '@/auth/authService'
+import firebase from "firebase/app";
+import "firebase/auth";
 
-import firebase from 'firebase/app'
-import 'firebase/auth'
-
-Vue.use(Router)
+Vue.use(Router);
 
 const router = new Router({
-  mode: 'history',
+  mode: "history",
   base: process.env.BASE_URL,
-  scrollBehavior () {
-    return { x: 0, y: 0 }
+  scrollBehavior() {
+    return { x: 0, y: 0 };
   },
   routes: [
-
     {
-    // =============================================================================
-    // MAIN LAYOUT ROUTES
-    // =============================================================================
-      path: '',
-      component: () => import('./layouts/main/Main.vue'),
+      // =============================================================================
+      // MAIN LAYOUT ROUTES
+      // =============================================================================
+      path: "",
+      component: () => import("./layouts/main/Main.vue"),
       children: [
         // =============================================================================
         // Theme Routes
         // =============================================================================
         {
-          path: '/',
-          redirect: '/dashboard/client'
+          path: "/",
+          redirect: "/dashboard/client"
         },
-        
-        
+
         {
-          path: '/dashboard/client',
-          name: 'dashboard-client',
-          component: () => import('./views/DashboardClient.vue'),
+          path: "/dashboard/client",
+          name: "dashboard-client",
+          component: () => import("./views/DashboardClient.vue"),
           meta: {
-            rule: 'admin'
+            rule: "admin"
           }
         },
         {
-          path: '/dashboard/clientdescription',
-          name: 'dashboard-clientdescription',
-          component: () => import('./views/DashboardClientDescription.vue'),
+          path: "/dashboard/clientdescription",
+          name: "dashboard-clientdescription",
+          component: () => import("./views/DashboardClientDescription.vue"),
           meta: {
-            rule: 'admin'
+            rule: "admin"
           }
         },
         {
-          path: '/dashboard/allcampaign',
-          name: 'dashboard-allcampaign',
-          component: () => import('./views/DashboardCampaign.vue'),
+          path: "/dashboard/allcampaign",
+          name: "dashboard-allcampaign",
+          component: () => import("./views/DashboardCampaign.vue"),
           meta: {
-            rule: 'admin'
+            rule: "admin"
           }
         },
         {
-          path: '/dashboard/addcampaigns',
-          name: 'dashboard-addcampaigns',
-          component: () => import('./views/DashboardAddCampaigns.vue'),
+          path: "/dashboard/addcampaigns",
+          name: "dashboard-addcampaigns",
+          component: () => import("./views/DashboardAddCampaigns.vue"),
           meta: {
-            rule: 'admin'
+            rule: "admin"
           }
         },
         {
-          path: '/dashboard/viewstatus',
-          name: 'dashboard-viewstatus',
-          component: () => import('./views/DashboardViewStatus.vue'),
+          path: "/dashboard/viewstatus",
+          name: "dashboard-viewstatus",
+          component: () => import("./views/DashboardViewStatus.vue"),
           meta: {
-            rule: 'admin'
+            rule: "admin"
+          }
+        },
+
+        // =============================================================================
+        // Settings
+        // =============================================================================
+        {
+          path: "/settings/global-settings",
+          name: "Global Settings",
+          component: () => import("@/views/settings/GlobalSettings.vue"),
+          meta: {
+            rule: "admin"
+          }
+        },
+        {
+          path: "/settings/system-status",
+          name: "System Status",
+          component: () => import("@/views/settings/SystemStatus.vue"),
+          meta: {
+            rule: "admin"
           }
         }
       ]
@@ -96,123 +113,122 @@ const router = new Router({
     // FULL PAGE LAYOUTS
     // =============================================================================
     {
-      path: '',
-      component: () => import('@/layouts/full-page/FullPage.vue'),
+      path: "",
+      component: () => import("@/layouts/full-page/FullPage.vue"),
       children: [
         // =============================================================================
         // PAGES
         // =============================================================================
         {
-          path: '/callback',
-          name: 'auth-callback',
-          component: () => import('@/views/Callback.vue'),
+          path: "/callback",
+          name: "auth-callback",
+          component: () => import("@/views/Callback.vue"),
           meta: {
-            rule: 'editor'
+            rule: "editor"
           }
         },
         {
-          path: '/pages/login',
-          name: 'page-login',
-          component: () => import('@/views/pages/login/Login.vue'),
+          path: "/pages/login",
+          name: "page-login",
+          component: () => import("@/views/pages/login/Login.vue"),
           meta: {
-            rule: 'editor'
+            rule: "editor"
           }
         },
         {
-          path: '/pages/register',
-          name: 'page-register',
-          component: () => import('@/views/pages/register/Register.vue'),
+          path: "/pages/register",
+          name: "page-register",
+          component: () => import("@/views/pages/register/Register.vue"),
           meta: {
-            rule: 'editor'
+            rule: "editor"
           }
         },
         {
-          path: '/pages/forgot-password',
-          name: 'page-forgot-password',
-          component: () => import('@/views/pages/ForgotPassword.vue'),
+          path: "/pages/forgot-password",
+          name: "page-forgot-password",
+          component: () => import("@/views/pages/ForgotPassword.vue"),
           meta: {
-            rule: 'editor'
+            rule: "editor"
           }
         },
         {
-          path: '/pages/reset-password',
-          name: 'page-reset-password',
-          component: () => import('@/views/pages/ResetPassword.vue'),
+          path: "/pages/reset-password",
+          name: "page-reset-password",
+          component: () => import("@/views/pages/ResetPassword.vue"),
           meta: {
-            rule: 'editor'
+            rule: "editor"
           }
         },
         {
-          path: '/pages/lock-screen',
-          name: 'page-lock-screen',
-          component: () => import('@/views/pages/LockScreen.vue'),
+          path: "/pages/lock-screen",
+          name: "page-lock-screen",
+          component: () => import("@/views/pages/LockScreen.vue"),
           meta: {
-            rule: 'editor'
+            rule: "editor"
           }
         },
         {
-          path: '/pages/comingsoon',
-          name: 'page-coming-soon',
-          component: () => import('@/views/pages/ComingSoon.vue'),
+          path: "/pages/comingsoon",
+          name: "page-coming-soon",
+          component: () => import("@/views/pages/ComingSoon.vue"),
           meta: {
-            rule: 'editor'
+            rule: "editor"
           }
         },
         {
-          path: '/pages/error-404',
-          name: 'page-error-404',
-          component: () => import('@/views/pages/Error404.vue'),
+          path: "/pages/error-404",
+          name: "page-error-404",
+          component: () => import("@/views/pages/Error404.vue"),
           meta: {
-            rule: 'editor'
+            rule: "editor"
           }
         },
         {
-          path: '/pages/error-500',
-          name: 'page-error-500',
-          component: () => import('@/views/pages/Error500.vue'),
+          path: "/pages/error-500",
+          name: "page-error-500",
+          component: () => import("@/views/pages/Error500.vue"),
           meta: {
-            rule: 'editor'
+            rule: "editor"
           }
         },
         {
-          path: '/pages/not-authorized',
-          name: 'page-not-authorized',
-          component: () => import('@/views/pages/NotAuthorized.vue'),
+          path: "/pages/not-authorized",
+          name: "page-not-authorized",
+          component: () => import("@/views/pages/NotAuthorized.vue"),
           meta: {
-            rule: 'editor'
+            rule: "editor"
           }
         },
         {
-          path: '/pages/maintenance',
-          name: 'page-maintenance',
-          component: () => import('@/views/pages/Maintenance.vue'),
+          path: "/pages/maintenance",
+          name: "page-maintenance",
+          component: () => import("@/views/pages/Maintenance.vue"),
           meta: {
-            rule: 'editor'
+            rule: "editor"
           }
         }
       ]
     },
     // Redirect to 404 page, if no match found
     {
-      path: '*',
-      redirect: '/pages/error-404'
+      path: "*",
+      redirect: "/pages/error-404"
     }
   ]
-})
+});
 
 router.afterEach(() => {
   // Remove initial loading
-  const appLoading = document.getElementById('loading-bg')
+  const appLoading = document.getElementById("loading-bg");
   if (appLoading) {
-    appLoading.style.display = 'none'
+    appLoading.style.display = "none";
   }
-})
+});
 
 router.beforeEach((to, from, next) => {
   firebase.auth().onAuthStateChanged(() => {
-
     // get firebase current user
-    const firebaseCurrentUser = firebase.auth().currentUser
+    const firebaseCurrentUser = firebase.auth().currentUser;
 
     // if (
     //     to.path === "/pages/login" ||
@@ -230,17 +246,15 @@ router.beforeEach((to, from, next) => {
     // If auth required, check login. If login fails redirect to login page
     if (to.meta.authRequired) {
       if (!(auth.isAuthenticated() || firebaseCurrentUser)) {
-        router.push({ path: '/pages/login', query: { to: to.path } })
+        router.push({ path: "/pages/login", query: { to: to.path } });
       }
     }
 
-    return next()
+    return next();
     // Specify the current path as the customState parameter, meaning it
     // will be returned to the application after auth
     // auth.login({ target: to.path });
+  });
+});
 
-  })
-
-})
-
-export default router
+export default router;
