@@ -27,32 +27,62 @@ export default [
   //   icon: "MailIcon",
   //   i18n: "Email",
   // },
+  // {
+  //   url: null,
+  //   name: 'Dashboard',
+  //   tag: '3',
+  //   tagColor: 'warning',
+  //   icon: 'HomeIcon',
+  //   i18n: 'Dashboard',
+  //   submenu: [{
+  //       url: '/dashboard/client',
+  //       name: 'Client',
+  //       slug: 'dashboard-client',
+  //       i18n: 'Client'
+  //     },
+  //     {
+  //       url: '/dashboard/allcampaign',
+  //       name: 'Campaign',
+  //       slug: 'dashboard-allcampaign',
+  //       i18n: 'Campaign'
+  //     },
+  //     {
+  //       url: '/dashboard/viewsstatus',
+  //       name: 'ViewStatus',
+  //       slug: 'dashboard-viewstatus',
+  //       i18n: 'ViewStatus'
+  //     }
+  //   ]
+  // },
   {
-    url: null,
-    name: 'Dashboard',
-    tag: '3',
-    tagColor: 'warning',
-    icon: 'HomeIcon',
-    i18n: 'Dashboard',
-    submenu: [{
+    header: 'Clients',
+    icon: 'FileIcon',
+    i18n: 'Clients',
+    items: [
+      {
         url: '/dashboard/client',
-        name: 'Client',
         slug: 'dashboard-client',
+        name: 'Client',
+        icon: 'UserIcon',
         i18n: 'Client'
       },
+
+    ]
+  },
+  {
+    header: 'Campaigns',
+    icon: 'FileIcon',
+    i18n: 'Campaigns',
+    items: [
       {
         url: '/dashboard/allcampaign',
-        name: 'Campaign',
         slug: 'dashboard-allcampaign',
-        i18n: 'Campaign'
+        name: 'Campaigns',
+        icon: 'PackageIcon',
+        i18n: 'Campaigns'
       },
-      {
-        url: '/dashboard/viewsstatus',
-        name: 'ViewStatus',
-        slug: 'dashboard-viewstatus',
-        i18n: 'ViewStatus'
-      }
+
     ]
-  }
+  },
 
 ]

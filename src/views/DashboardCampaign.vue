@@ -2,7 +2,19 @@
   <div class="vx-row">
     <div class="vx-col md:w-4/3 w-full mb-base">
       <vx-card>
-        <h4>View Campaigns</h4>&nbsp
+        <div class="flex flex-wrap items-center justify-between">
+          <vx-input-group class="mb-base mr-3">
+            <span>
+              <b><h3>View Campaigns</h3></b>
+            </span>
+          </vx-input-group>
+          <div class="flex items-center">
+            <vs-button class="mb-base mr-3" @click="addNewCampaign"
+              >Add a new Campaign</vs-button
+            >
+          </div>
+        </div>
+
         <div class="vx-row">
           <div class="vx-col sm:w-1/2 w-full mb-2">
             <label>Client Name</label>
@@ -25,21 +37,24 @@
           </div>
         </div>
         <div class="vx-row">
-          <!-- <div class="vx-col sm:w-1/2 w-full mb-2">
-                            <label>End Date</label>
-                            <flat-pickr class="w-full" :config="configTodateTimePicker" v-model="endDate" placeholder="End Date" @on-change="onToChange" />
-          </div>-->
-          <div class="vx-col sm:w-1/2 w-full mb-2">
-            <label>Start Date</label>
-            <flat-pickr class="w-full" placeholder="Start Date" v-model="startDate" />
-          </div>
           <div class="vx-col sm:w-1/2 w-full mb-2">
             <label>End Date</label>
-            <flat-pickr class="w-full" placeholder="End Date" v-model="endDate" />
+            <flat-pickr
+              class="w-full"
+              placeholder="End Date"
+              v-model="endDate"
+            />
           </div>
-        </div>
-        <div class="mt-2 flex flex-wrap items-center justify-end">
-          <vs-button class="ml-auto mt-2" @click="addNewCampaign">Add a new Campaign</vs-button>
+          <div class="vx-col sm:w-1/2 w-full mb-2">
+            <label>Start Date</label>
+            <flat-pickr
+              class="w-full"
+              placeholder="Start Date"
+              v-model="startDate"
+              @click="getCampaignList"
+            />
+            <!-- @click="getCampaignList"/> -->
+          </div>
         </div>
       </vx-card>
     </div>
@@ -54,38 +69,54 @@
           search
           :data="products"
         >
-          <div slot="header" class="flex flex-wrap-reverse items-center flex-grow justify-between">
-            <div class="flex flex-wrap-reverse items-center data-list-btn-container">
+          <div
+            slot="header"
+            class="flex flex-wrap-reverse items-center flex-grow justify-between"
+          >
+            <div
+              class="flex flex-wrap-reverse items-center data-list-btn-container"
+            >
               <span class="ml-2 text-base text-primary">
                 <strong>
                   Active Campaigns-
-                  <span class="ml-2 text-base text-warning">Highland Oak Central</span>
+                  <span class="ml-2 text-base text-warning"
+                    >Highland Oak Central</span
+                  >
                 </strong>
               </span>
             </div>
 
             <!-- ITEMS PER PAGE -->
-            <vs-dropdown vs-trigger-click class="cursor-pointer mb-4 mr-4 items-per-page-handler">
+            <vs-dropdown
+              vs-trigger-click
+              class="cursor-pointer mb-4 mr-4 items-per-page-handler"
+            >
               <div
                 class="p-4 border border-solid d-theme-border-grey-light rounded-full d-theme-dark-bg cursor-pointer flex items-center justify-between font-medium"
               >
-                <span
-                  class="mr-2"
-                >{{ currentPage * itemsPerPage - (itemsPerPage - 1) }} - {{ products.length - currentPage * itemsPerPage > 0 ? currentPage * itemsPerPage : products.length }} of {{ queriedItems }}</span>
+                <span class="mr-2"
+                  >{{ currentPage * itemsPerPage - (itemsPerPage - 1) }} -
+                  {{
+                    products.length - currentPage * itemsPerPage > 0
+                      ? currentPage * itemsPerPage
+                      : products.length
+                  }}
+                  of {{ queriedItems }}</span
+                >
                 <feather-icon icon="ChevronDownIcon" svgClasses="h-4 w-4" />
               </div>
               <!-- <vs-button class="btn-drop" type="line" color="primary" icon-pack="feather" icon="icon-chevron-down"></vs-button> -->
               <vs-dropdown-menu>
-                <vs-dropdown-item @click="itemsPerPage=4">
+                <vs-dropdown-item @click="itemsPerPage = 4">
                   <span>4</span>
                 </vs-dropdown-item>
-                <vs-dropdown-item @click="itemsPerPage=10">
+                <vs-dropdown-item @click="itemsPerPage = 10">
                   <span>10</span>
                 </vs-dropdown-item>
-                <vs-dropdown-item @click="itemsPerPage=15">
+                <vs-dropdown-item @click="itemsPerPage = 15">
                   <span>15</span>
                 </vs-dropdown-item>
-                <vs-dropdown-item @click="itemsPerPage=20">
+                <vs-dropdown-item @click="itemsPerPage = 20">
                   <span>20</span>
                 </vs-dropdown-item>
               </vs-dropdown-menu>
@@ -101,42 +132,48 @@
             <vs-th sort-key="search_method">Search Method</vs-th>
             <vs-th sort-key="url">URL</vs-th>
             <vs-th sort-key="price"></vs-th>
-            <vs-th sort-key="timestamp">Timestamp</vs-th>
+            <vs-th sort-key="stay_duration">Timestamp</vs-th>
             <vs-th sort-key="country">Country</vs-th>
             <vs-th sort-key="state">State</vs-th>
             <vs-th sort-key="city">City</vs-th>
             <vs-th>Action</vs-th>
           </template>
 
-          <template slot-scope="{data}">
+          <template slot-scope>
             <tbody>
-              <vs-tr :data="tr" :key="indextr" v-for="(tr, indextr) in data">
+              <vs-tr
+                :data="tr"
+                :key="indextr"
+                v-for="(tr, indextr) in campaigns_list"
+              >
                 <vs-td>
-                  <p class="start-date font-medium truncate">{{tr.start_date}}</p>
+                  <p class="start-date font-medium truncate">
+                    {{ tr.start_date }}
+                  </p>
                 </vs-td>
 
                 <vs-td>
-                  <p class="end-date">{{tr.end_date}}</p>
+                  <p class="end-date">{{ tr.end_date }}</p>
                 </vs-td>
 
                 <vs-td>
-                  <p class="brand_name">{{tr.brand_name}}</p>
+                  <p class="brand_name">{{ tr.brand_name }}</p>
                 </vs-td>
 
                 <vs-td>
-                  <p class="campaign_name">{{tr.campaign_name}}</p>
+                  <p class="campaign_name">{{ tr.campaign_name }}</p>
                 </vs-td>
 
                 <vs-td>
-                  <p class="type">{{tr.type}}</p>
+                  <p class="type">{{ tr.type }}</p>
                 </vs-td>
 
                 <vs-td>
-                  <p class="search_method">{{tr.search_method}}</p>
+                  <p class="search_method">{{ tr.search_method }}</p>
                 </vs-td>
 
                 <vs-td>
-                  <p class="url">{{tr.url}}</p>
+                  <p class="url">{{ tr.url }}</p>
                 </vs-td>
 
                 <vs-td>
@@ -144,19 +181,19 @@
                 </vs-td>
 
                 <vs-td>
-                  <p class="timestamp">{{tr.timestamp}}</p>
+                  <p class="stay_duration">{{ tr.stay_duration }}</p>
                 </vs-td>
 
                 <vs-td>
-                  <p class="country">{{tr.country}}</p>
+                  <p class="country">{{ tr.country }}</p>
                 </vs-td>
 
                 <vs-td>
-                  <p class="state">{{tr.state}}</p>
+                  <p class="state">{{ tr.state }}</p>
                 </vs-td>
 
                 <vs-td>
-                  <p class="city">{{tr.city}}</p>
+                  <p class="city">{{ tr.city }}</p>
                 </vs-td>
 
                 <vs-td class="whitespace-no-wrap">
@@ -180,7 +217,7 @@
     </vx-card>
 
     <!------------------------------------------------TABLE LAYOUT-INACTIVE------------------------------------------------!-->
-    <vx-card  >
+    <vx-card>
       <div id="data-list-list-view" class="data-list-container">
         <vs-table
           ref="table"
@@ -190,38 +227,54 @@
           search
           :data="products"
         >
-          <div slot="header" class="flex flex-wrap-reverse items-center flex-grow justify-between">
-            <div class="flex flex-wrap-reverse items-center data-list-btn-container">
+          <div
+            slot="header"
+            class="flex flex-wrap-reverse items-center flex-grow justify-between"
+          >
+            <div
+              class="flex flex-wrap-reverse items-center data-list-btn-container"
+            >
               <span class="ml-2 text-base text-danger">
                 <strong>
                   In-active Campaigns-
-                  <span class="ml-2 text-base text-warning">Highland Oak Central</span>
+                  <span class="ml-2 text-base text-warning"
+                    >Highland Oak Central</span
+                  >
                 </strong>
               </span>
             </div>
 
             <!-- ITEMS PER PAGE -->
-            <vs-dropdown vs-trigger-click class="cursor-pointer mb-4 mr-4 items-per-page-handler">
+            <vs-dropdown
+              vs-trigger-click
+              class="cursor-pointer mb-4 mr-4 items-per-page-handler"
+            >
               <div
                 class="p-4 border border-solid d-theme-border-grey-light rounded-full d-theme-dark-bg cursor-pointer flex items-center justify-between font-medium"
               >
-                <span
-                  class="mr-2"
-                >{{ currentPage * itemsPerPage - (itemsPerPage - 1) }} - {{ products.length - currentPage * itemsPerPage > 0 ? currentPage * itemsPerPage : products.length }} of {{ queriedItems }}</span>
+                <span class="mr-2"
+                  >{{ currentPage * itemsPerPage - (itemsPerPage - 1) }} -
+                  {{
+                    products.length - currentPage * itemsPerPage > 0
+                      ? currentPage * itemsPerPage
+                      : products.length
+                  }}
+                  of {{ queriedItems }}</span
+                >
                 <feather-icon icon="ChevronDownIcon" svgClasses="h-4 w-4" />
               </div>
               <!-- <vs-button class="btn-drop" type="line" color="primary" icon-pack="feather" icon="icon-chevron-down"></vs-button> -->
               <vs-dropdown-menu>
-                <vs-dropdown-item @click="itemsPerPage=4">
+                <vs-dropdown-item @click="itemsPerPage = 4">
                   <span>4</span>
                 </vs-dropdown-item>
-                <vs-dropdown-item @click="itemsPerPage=10">
+                <vs-dropdown-item @click="itemsPerPage = 10">
                   <span>10</span>
                 </vs-dropdown-item>
-                <vs-dropdown-item @click="itemsPerPage=15">
+                <vs-dropdown-item @click="itemsPerPage = 15">
                   <span>15</span>
                 </vs-dropdown-item>
-                <vs-dropdown-item @click="itemsPerPage=20">
+                <vs-dropdown-item @click="itemsPerPage = 20">
                   <span>20</span>
                 </vs-dropdown-item>
               </vs-dropdown-menu>
@@ -237,42 +290,44 @@
             <vs-th sort-key="search_method">Search Method</vs-th>
             <vs-th sort-key="url">URL</vs-th>
             <vs-th sort-key="price"></vs-th>
-            <vs-th sort-key="timestamp">Timestamp</vs-th>
+            <vs-th sort-key="stay_duration">Timestamp</vs-th>
             <vs-th sort-key="country">Country</vs-th>
             <vs-th sort-key="state">State</vs-th>
             <vs-th sort-key="city">City</vs-th>
             <vs-th>Action</vs-th>
           </template>
 
-          <template slot-scope="{data}">
+          <template slot-scope="{ data }">
             <tbody>
               <vs-tr :data="tr" :key="indextr" v-for="(tr, indextr) in data">
                 <vs-td>
-                  <p class="start-date font-medium truncate">{{tr.start_date}}</p>
+                  <p class="start-date font-medium truncate">
+                    {{ tr.start_date }}
+                  </p>
                 </vs-td>
 
                 <vs-td>
-                  <p class="end-date">{{tr.end_date}}</p>
+                  <p class="end-date">{{ tr.end_date }}</p>
                 </vs-td>
 
                 <vs-td>
-                  <p class="brand_name">{{tr.brand_name}}</p>
+                  <p class="brand_name">{{ tr.brand_name }}</p>
                 </vs-td>
 
                 <vs-td>
-                  <p class="campaign_name">{{tr.campaign_name}}</p>
+                  <p class="campaign_name">{{ tr.campaign_name }}</p>
                 </vs-td>
 
                 <vs-td>
-                  <p class="type">{{tr.type}}</p>
+                  <p class="type">{{ tr.type }}</p>
                 </vs-td>
 
                 <vs-td>
-                  <p class="search_method">{{tr.search_method}}</p>
+                  <p class="search_method">{{ tr.search_method }}</p>
                 </vs-td>
 
                 <vs-td>
-                  <p class="url">{{tr.url}}</p>
+                  <p class="url">{{ tr.url }}</p>
                 </vs-td>
 
                 <vs-td>
@@ -280,19 +335,19 @@
                 </vs-td>
 
                 <vs-td>
-                  <p class="timestamp">{{tr.timestamp}}</p>
+                  <p class="stay_duration">{{ tr.stay_duration }}</p>
                 </vs-td>
 
                 <vs-td>
-                  <p class="country">{{tr.country}}</p>
+                  <p class="country">{{ tr.country }}</p>
                 </vs-td>
 
                 <vs-td>
-                  <p class="state">{{tr.state}}</p>
+                  <p class="state">{{ tr.state }}</p>
                 </vs-td>
 
                 <vs-td>
-                  <p class="city">{{tr.city}}</p>
+                  <p class="city">{{ tr.city }}</p>
                 </vs-td>
 
                 <vs-td class="whitespace-no-wrap">
@@ -318,11 +373,12 @@
 </template>
 
 <script>
-import axios from 'axios';
+import axios from "axios";
 import vselect from "vue-select";
 import flatPickr from "vue-flatpickr-component";
 import "flatpickr/dist/flatpickr.css";
 import moduleDataList from "@/store/data-list/moduleDataList.js";
+import * as moment from "moment";
 export default {
   data() {
     return {
@@ -332,8 +388,10 @@ export default {
       clients: [],
       client: null,
       type: ["Search", "Direct"],
-      startDate: null,
-      endDate: null
+      startDate: moment().format("YYYY-MM-DD"),
+      endDate: null,
+      stay_duration: " ",
+      campaigns_list: []
     };
   },
   components: {
@@ -376,8 +434,8 @@ export default {
     toggleDataSidebar(val = false) {
       this.addNewDataSidebar = val;
     },
-    getClientList(){
-       var this_pointer = this;
+    getClientList() {
+      var this_pointer = this;
       axios({
         method: "get",
         url: "http://adminapi.varuntandon.com/v1/clients?limit=100",
@@ -393,6 +451,26 @@ export default {
         .catch(function(error) {
           console.log(error);
         });
+    },
+    getCampaignList() {
+      var this_pointer = this;
+      axios({
+        method: "get",
+        url:
+          "http://adminapi.varuntandon.com/v1/campaigns?" +
+          "start_date=" +
+          this.startDate,
+
+        headers: { "content-type": "application/json" }
+      })
+        .then(function(response) {
+          console.log("secondResponse", response);
+          this_pointer.campaigns_list = response.data.campaigns;
+          console.log(this_pointer.campaigns);
+        })
+        .catch(function(error) {
+          console.log(error);
+        });
     }
   },
   created() {
@@ -404,6 +482,7 @@ export default {
   },
   mounted() {
     this.getClientList();
+    this.getCampaignList();
     this.isMounted = true;
   }
 };
