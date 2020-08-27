@@ -1,9 +1,19 @@
 <template>
-  <vx-card title="All Clients">
-    <div class="mt-2 flex flex-wrap items-center justify-end">
-      <!-- <vs-input class="mb-4 md:mb-0 mr-4" v-model="searchQuery" @input="updateSearchQuery" placeholder="Search..." /> -->
-      <vs-button class @click="addClient">Add Client</vs-button>
+  <vx-card>
+    <div class="flex flex-wrap items-center justify-between">
+      <vx-input-group class="mb-base mr-3">
+        <span>
+          <b><h3>All Clients</h3></b>
+        </span>
+      </vx-input-group>
+      <div class="flex items-center">
+        <vs-button class="mb-base mr-3" @click="addClient"
+          >Add Client</vs-button
+        >
+      </div>
     </div>
+
+
     <vs-divider></vs-divider>
 
     <vs-table v-model="selected" pagination max-items="10" search :data="users">
@@ -16,11 +26,15 @@
         <!-- <vs-th sort-key="id">ID</vs-th> -->
         <vs-th sort-key="actions">Actions</vs-th>
       </template>
-      <template slot-scope="{data}">
+      <template slot-scope="{ data }">
         <vs-tr :data="tr" :key="indextr" v-for="(tr, indextr) in data">
-          <vs-td :data="data[indextr].client_name">{{data[indextr].client_name}}</vs-td>
+          <vs-td :data="data[indextr].client_name">{{
+            data[indextr].client_name
+          }}</vs-td>
 
-          <vs-td :data="data[indextr].description">{{data[indextr].description}}</vs-td>
+          <vs-td :data="data[indextr].description">{{
+            data[indextr].description
+          }}</vs-td>
           <vs-td>
             <div class="d-flex">
               <vs-button
@@ -30,7 +44,8 @@
                 icon="icon-edit"
                 icon-after
                 @click="editClient(data[indextr])"
-              >Edit</vs-button>
+                >Edit</vs-button
+              >
               <vs-button
                 color="danger"
                 type="gradient"
@@ -38,7 +53,8 @@
                 icon="icon-trash"
                 icon-after
                 @click="editClient(data[indextr])"
-              >Delete</vs-button>
+                >Delete</vs-button
+              >
             </div>
           </vs-td>
           <!-- <vs-td :data="data[indextr].id">

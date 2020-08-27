@@ -2,7 +2,29 @@
   <div class="vx-row">
     <!-- VERTICAL LAYOUT -->
     <div class="vx-col md:w-4/3 w-full mb-base">
-      <vx-card title="Client Details">
+      <vx-card>
+        <div class="flex flex-wrap items-center justify-between">
+          <vx-input-group class="mb-base mr-3">
+            <span>
+              <b><h3>Client Details</h3></b>
+            </span>
+
+
+          </vx-input-group>
+          <div class="flex items-center">
+
+            <vs-button
+              class="justify-end mb-base mr-3"
+
+              type="filled"
+              :to="{ path: '/dashboard/client' }"
+              >Back to Clients</vs-button
+            >
+          </div>
+        </div>
+
+
+
         <div class="vx-row mb-6">
           <div class="vx-col w-full">
             <label>Client Name</label>
@@ -15,19 +37,21 @@
         </div>
         <div class="vx-row">
           <div class="vx-col w-full">
-            <vs-button class="mr-3 mb-2" @click="addClientFn ">{{ edit ? 'Update' : 'Submit'}}</vs-button>
+            <vs-button class="mr-3 mb-2"
+            color="success"
+            @click="addClientFn">{{
+              edit ? "Update" : "Submit"
+            }}</vs-button>
             <vs-button
               color="warning"
               type="border"
               class="mb-2"
-              @click="client_name = description =  ''; check3 = false;"
-            >Cancel</vs-button>
-            <vs-button
-              class="justify-end"
-              color="success"
-              type="filled"
-              :to="{ path: '/dashboard/client' }"
-            >Back to Clients</vs-button>
+              @click="
+                client_name = description = '';
+                check3 = false;
+              "
+              >Cancel</vs-button
+            >
           </div>
         </div>
       </vx-card>
