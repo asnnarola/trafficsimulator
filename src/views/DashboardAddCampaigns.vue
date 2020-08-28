@@ -85,10 +85,7 @@
             </span>
           </div>
           <div class="vx-col sm:w-2/3 w-full">
-
-              <vs-textarea v-model="keywords"
-              height="100px"
-               />
+            <vs-textarea v-model="keywords" height="100px" />
 
             <!-- <vs-input
               type="text"
@@ -107,7 +104,10 @@
           <div class="vx-col sm:w-1/2 w-full">
             <vs-input type="text" class="w-full" v-model="keyword_formating" />
           </div>
-          <vs-button type="border" text-color="#28C76F"
+          <vs-button
+            type="border"
+            text-color="#28C76F"
+            @click="updateSearchKeywords"
             >Update Keyword</vs-button
           >
         </div>
@@ -136,13 +136,11 @@
           <div class="vx-col sm:w-1/2 w-full">
             <!-- <vs-input type="text" class="w-full"  v-model="input8" /> -->
             <vx-input-group class="mb-base">
-              <vs-input />
+              <vs-input type="text" class="w-full" v-model="url" />
 
               <template slot="append">
                 <div class="append-text btn-addon">
-                  <vs-button color="primary" :to="{ path: '/dashboard/client' }"
-                    >Search</vs-button
-                  >
+                  <vs-button color="primary">Search</vs-button>
                 </div>
               </template>
             </vx-input-group>
@@ -211,7 +209,12 @@
           </div>
           <div class="vx-col sm:w-2/3 w-full">
             <template>
-              <v-select :options="paused" :dir="$vs.rtl ? 'rtl' : 'ltr'" />
+              <v-select
+                label="labelState"
+                v-model="paused"
+                :options="InitialStatus"
+                :dir="$vs.rtl ? 'rtl' : 'ltr'"
+              />
             </template>
           </div>
         </div>
@@ -224,10 +227,7 @@
           </div>
           <div class="vx-col sm:w-2/3 w-full">
             <template>
-              <v-select
-                :options="stay_duration"
-                :dir="$vs.rtl ? 'rtl' : 'ltr'"
-              />
+              <vs-input type="text" class="w-full" v-model="stay_duration" />
             </template>
           </div>
         </div>
@@ -302,6 +302,7 @@
 import axios from "axios";
 import vselect from "vue-select";
 import flatPickr from "vue-flatpickr-component";
+import _ from "underscore";
 import "flatpickr/dist/flatpickr.css";
 export default {
   data() {
@@ -309,8 +310,8 @@ export default {
       client: null,
       clients: [],
       type: ["search", "direct"],
-      paused: [],
-      stay_duration: [],
+      paused: { labelState: "Active", val: false },
+      stay_duration: "",
       country: [],
       state: [],
       volume_size: [],
@@ -322,10 +323,15 @@ export default {
       campaign_type: "search",
       city: "",
       volume: "",
-      start_date: " ",
-      end_date: " ",
+      start_date: null,
+      end_date: null,
       setDescrption: "",
+      url: "",
       search_method: ["url", "addressbar"],
+      InitialStatus: [
+        { labelState: "Active", val: false },
+        { labelState: "In-Active", val: true }
+      ],
       configFromdateTimePicker: {
         minDate: new Date(),
         maxDate: null
@@ -361,23 +367,56 @@ export default {
           console.log(error);
         });
     },
+    updateSearchKeywords() {
+      if (!_.isEmpty(this.keyword_formating)) {
+        var formatData = this.keyword_formating.split("KW");
+
+        if (!_.isEmpty(this.keywords)) {
+          var keyWords = this.keywords.split("\n");
+          var singleLineKeyWords = "";
+          keyWords.map((data, index) => {
+            singleLineKeyWords =
+              index == 0
+                ? data + " " + formatData[1]
+                : singleLineKeyWords + "\n" + data + " " + formatData[1];
+          });
+          this.keywords = singleLineKeyWords;
+        }
+      }
+    },
     addCampaignList() {
+      var keyWords = [];
+      if (!_.isEmpty(this.keywords)) {
+        keyWords = this.keywords.split("\n");
+        keyWords.map((data, index) => {
+          keyWords[index] = data.toLowerCase();
+        });
+      }
+
       var this_pointer = this;
       axios({
         method: "post",
         url: "http://adminapi.varuntandon.com/v1/campaigns",
         data: {
-          client: this.client.client_name,
-          campaign_name: this.campaign_name,
-          brand_name: this.brand_name,
-          stay_duration: "3,15",
-          start_date: this.start_date,
-          end_date: this.end_date,
+          client:
+            this.client && this.client.client_name && this.client.client_name
+              ? this.client.client_name
+              : undefined,
+          campaign_name: _.isEmpty(this.campaign_name) ? undefined : this.campaign_name,
+          brand_name: _.isEmpty(this.brand_name) ? undefined :this.brand_name ,
+          stay_duration: _.isEmpty(this.stay_duration) ? undefined :this.stay_duration ,
+          start_date: !_.isEmpty(this.start_date) ? this.start_date : undefined,
+          end_date: !_.isEmpty(this.end_date) ? this.end_date : undefined,
           country: "us",
           search_method: this.search,
           type: this.campaign_type,
-          url: "http://www.bet365.com",
-          volume_size: this.volume.tag_name
+          url: this.url,
+          volume_size: this.volume.tag_name,
+          state: "ny",
+          city: ["houston", "brooklyn"],
+          keywords: keyWords && keyWords.length ? keyWords : undefined,
+          paused: this.paused.val,
+          city_targeting_method: "priority"
         },
         headers: {
           "content-type": "application/json"
@@ -394,23 +433,40 @@ export default {
             this_pointer.campaign_name = null;
             //(this_pointer.description = null);
           } else {
+            // this_pointer.$vs.notify({
+            //   title: "Campaign Already Exist",
+            //   color: "danger",
+            //   position: "top-right"
+            // });
+          }
+        })
+        .catch(function(error, response) {
+          var errorResponse = Object.assign({}, error);
+
+          if (
+            errorResponse.response.data.detail[0] &&
+            errorResponse.response.data.detail[0].loc &&
+            errorResponse.response.data.detail[0].loc.length
+          ) {
             this_pointer.$vs.notify({
-              title: "Campaign Already Exist",
+              title:
+                errorResponse.response.data.detail[0].loc[2] +
+                " " +
+                errorResponse.response.data.detail[0].msg,
+              color: "danger",
+              position: "top-right"
+            });
+          } else {
+            this_pointer.$vs.notify({
+              title: errorResponse.response.data.detail[0],
               color: "danger",
               position: "top-right"
             });
           }
-        })
-        .catch(function(error) {
-          // this_pointer.$vs.notify({
-          //   title: "Campaign Already Exist",
-          //   color: "danger",
-          //   position: "top-right"
-          // });
         });
     },
     setDescrptionFn(event) {
-      console.log("cliemts",this.client,event)
+      console.log("cliemts", this.client, event);
       this.setDescrption = event.description;
     },
     addVolumeTag() {

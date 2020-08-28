@@ -84,27 +84,50 @@ export default [
 
     ]
   },
+
+
   {
-    url: null,
-    name: "System Settings",
-    tag: '2',
-    tagColor: 'warning',
-    icon: 'SettingsIcon',
+    header: 'System Settings',
+    icon: 'FileIcon',
     i18n: 'System Settings',
-    submenu: [
+    items: [
       {
         url: '/settings/global-settings',
         name: 'Global Settings',
         slug: 'global-settings',
-        i18n: 'Global Settings'
+        i18n: 'Global Settings',
+        icon: 'SettingsIcon',
       },
       {
         url: '/settings/system-status',
         name: 'System Status',
         slug: 'system-status',
-        i18n: 'System Status'
+        i18n: 'System Status',
+        icon: 'SettingsIcon',
       }
     ]
-  }
+  },
+  // {
+  //   url: null,
+  //   name: "System Settings",
+  //   tag: '2',
+  //   tagColor: 'warning',
+  //   icon: 'SettingsIcon',
+  //   i18n: 'System Settings',
+  //   submenu: [
+  //     {
+  //       url: '/settings/global-settings',
+  //       name: 'Global Settings',
+  //       slug: 'global-settings',
+  //       i18n: 'Global Settings'
+  //     },
+  //     {
+  //       url: '/settings/system-status',
+  //       name: 'System Status',
+  //       slug: 'system-status',
+  //       i18n: 'System Status'
+  //     }
+  //   ]
+  // }
 
 ]
