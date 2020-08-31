@@ -169,7 +169,7 @@
                   <feather-icon
                     icon="EditIcon"
                     svgClasses="w-5 h-5 hover:text-primary stroke-current"
-                    @click.stop="editData(tr)"
+                    @click.stop="popupActive2=true"
                   />
                   <feather-icon
                     icon="TrashIcon"
@@ -290,7 +290,7 @@
                   <feather-icon
                     icon="EditIcon"
                     svgClasses="w-5 h-5 hover:text-primary stroke-current"
-                    @click.stop="editData(tr)"
+                    @click.stop="popupActive2=true"
                   />
                   <feather-icon
                     icon="TrashIcon"
@@ -305,6 +305,42 @@
         </vs-table>
       </div>
     </vx-card>
+
+ <!-- POPUP !-->
+    <vs-popup  title="Edit Campaign-Client Name" :active.sync="popupActive2">
+              <label>Client Name</label>
+              <v-select
+                v-model="client"
+                label="client_name"
+                :options="clients"
+                :dir="$vs.rtl ? 'rtl' : 'ltr'" 
+              ></v-select>
+
+            <label>Brand Name</label>
+             <vs-input type="text" class="w-full" v-model="campaign_name" />
+
+            <label>End Date</label>
+            <flat-pickr
+              class="w-full"
+              placeholder="End Date"
+              v-model="endDate"
+            />
+
+            <label>Volume Size/Daily Site Visits</label>
+            <v-select
+                label="tag_name"
+                v-model="volume"
+                :options="volume_size"
+                :dir="$vs.rtl ? 'rtl' : 'ltr'"
+              />
+
+              <label>Stay Duration in seconds(from,to)</label>
+             <vs-input type="text" class="w-full" />
+          
+                 <vs-button class="justify-bottom primary mt-4" type="border"
+              >Update</vs-button>
+    </vs-popup>
+
   </div>
 </template>
 
@@ -321,12 +357,17 @@ export default {
       selected: [],
       itemsPerPage: 5,
       isMounted: false,
+      value1: '',
+      value2: '',
+      popupActive2: false,
+      popupActive3: false,
       clients: [],
       client: null,
       type: ["Search", "Direct"],
       startDate: moment().format("YYYY-MM-DD"),
       endDate: null,
       stay_duration: " ",
+      volume_size: [],
       campaigns_list: [],
       active_campaign_list:[],
       in_active_campaign_list:[]
@@ -420,6 +461,25 @@ export default {
         .catch(function(error) {
           console.log(error);
         });
+    },
+    addVolumeTag() {
+      var this_pointer = this;
+      axios({
+        method: "get",
+        url: "http://adminapi.varuntandon.com/v1/tvt",
+        headers: {
+          "content-type": "application/json"
+        }
+      })
+        .then(function(response) {
+          console.log("FourthResponse", response);
+          this_pointer.volume_size = response.data.tags;
+          
+          console.log(this_pointer.volume_size);
+        })
+        .catch(function(error) {
+          console.log(error);
+        });
     }
   },
   created() {
@@ -432,6 +492,7 @@ export default {
   mounted() {
     this.getClientList();
     this.getCampaignList();
+    this.addVolumeTag();
     this.isMounted = true;
   }
 };
