@@ -67,7 +67,7 @@
           pagination
           :max-items="itemsPerPage"
           search
-          :data="products"
+          :data="active_campaign_list"
         >
           <div
             slot="header"
@@ -87,40 +87,9 @@
             </div>
 
             <!-- ITEMS PER PAGE -->
-            <vs-dropdown
-              vs-trigger-click
-              class="cursor-pointer mb-4 mr-4 items-per-page-handler"
-            >
-              <div
-                class="p-4 border border-solid d-theme-border-grey-light rounded-full d-theme-dark-bg cursor-pointer flex items-center justify-between font-medium"
-              >
-                <span class="mr-2"
-                  >{{ currentPage * itemsPerPage - (itemsPerPage - 1) }} -
-                  {{
-                    products.length - currentPage * itemsPerPage > 0
-                      ? currentPage * itemsPerPage
-                      : products.length
-                  }}
-                  of {{ queriedItems }}</span
-                >
-                <feather-icon icon="ChevronDownIcon" svgClasses="h-4 w-4" />
-              </div>
-              <!-- <vs-button class="btn-drop" type="line" color="primary" icon-pack="feather" icon="icon-chevron-down"></vs-button> -->
-              <vs-dropdown-menu>
-                <vs-dropdown-item @click="itemsPerPage = 4">
-                  <span>4</span>
-                </vs-dropdown-item>
-                <vs-dropdown-item @click="itemsPerPage = 10">
-                  <span>10</span>
-                </vs-dropdown-item>
-                <vs-dropdown-item @click="itemsPerPage = 15">
-                  <span>15</span>
-                </vs-dropdown-item>
-                <vs-dropdown-item @click="itemsPerPage = 20">
-                  <span>20</span>
-                </vs-dropdown-item>
-              </vs-dropdown-menu>
-            </vs-dropdown>
+
+
+
           </div>
 
           <template slot="thead">
@@ -139,12 +108,12 @@
             <vs-th>Action</vs-th>
           </template>
 
-          <template slot-scope>
+          <template slot-scope={data}>
             <tbody>
               <vs-tr
                 :data="tr"
                 :key="indextr"
-                v-for="(tr, indextr) in campaigns_list"
+                v-for="(tr, indextr) in data"
               >
                 <vs-td>
                   <p class="start-date font-medium truncate">
@@ -224,8 +193,9 @@
           v-model="selected"
           pagination
           :max-items="itemsPerPage"
+           @change-page="handleChangePage"
           search
-          :data="products"
+          :data="in_active_campaign_list"
         >
           <div
             slot="header"
@@ -244,41 +214,7 @@
               </span>
             </div>
 
-            <!-- ITEMS PER PAGE -->
-            <vs-dropdown
-              vs-trigger-click
-              class="cursor-pointer mb-4 mr-4 items-per-page-handler"
-            >
-              <div
-                class="p-4 border border-solid d-theme-border-grey-light rounded-full d-theme-dark-bg cursor-pointer flex items-center justify-between font-medium"
-              >
-                <span class="mr-2"
-                  >{{ currentPage * itemsPerPage - (itemsPerPage - 1) }} -
-                  {{
-                    products.length - currentPage * itemsPerPage > 0
-                      ? currentPage * itemsPerPage
-                      : products.length
-                  }}
-                  of {{ queriedItems }}</span
-                >
-                <feather-icon icon="ChevronDownIcon" svgClasses="h-4 w-4" />
-              </div>
-              <!-- <vs-button class="btn-drop" type="line" color="primary" icon-pack="feather" icon="icon-chevron-down"></vs-button> -->
-              <vs-dropdown-menu>
-                <vs-dropdown-item @click="itemsPerPage = 4">
-                  <span>4</span>
-                </vs-dropdown-item>
-                <vs-dropdown-item @click="itemsPerPage = 10">
-                  <span>10</span>
-                </vs-dropdown-item>
-                <vs-dropdown-item @click="itemsPerPage = 15">
-                  <span>15</span>
-                </vs-dropdown-item>
-                <vs-dropdown-item @click="itemsPerPage = 20">
-                  <span>20</span>
-                </vs-dropdown-item>
-              </vs-dropdown-menu>
-            </vs-dropdown>
+
           </div>
 
           <template slot="thead">
@@ -297,7 +233,7 @@
             <vs-th>Action</vs-th>
           </template>
 
-          <template slot-scope="{ data }">
+          <template slot-scope={data}>
             <tbody>
               <vs-tr :data="tr" :key="indextr" v-for="(tr, indextr) in data">
                 <vs-td>
@@ -383,7 +319,7 @@ export default {
   data() {
     return {
       selected: [],
-      itemsPerPage: 2,
+      itemsPerPage: 5,
       isMounted: false,
       clients: [],
       client: null,
@@ -391,7 +327,9 @@ export default {
       startDate: moment().format("YYYY-MM-DD"),
       endDate: null,
       stay_duration: " ",
-      campaigns_list: []
+      campaigns_list: [],
+      active_campaign_list:[],
+      in_active_campaign_list:[]
     };
   },
   components: {
@@ -465,6 +403,17 @@ export default {
       })
         .then(function(response) {
           console.log("secondResponse", response);
+
+           this_pointer.active_campaign_list=response.data.campaigns.filter(function(c_data){
+             return c_data.status=='active'
+           })
+
+
+
+           this_pointer.in_active_campaign_list=response.data.campaigns.filter(function(c_data){
+             return c_data.status=='paused'
+           })
+
           this_pointer.campaigns_list = response.data.campaigns;
           console.log(this_pointer.campaigns);
         })
