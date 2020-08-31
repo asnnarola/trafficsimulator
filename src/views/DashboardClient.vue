@@ -13,7 +13,6 @@
       </div>
     </div>
 
-
     <vs-divider></vs-divider>
 
     <vs-table v-model="selected" pagination max-items="10" search :data="users">
@@ -23,6 +22,7 @@
       <template slot="thead">
         <vs-th sort-key="client_name">Client Name</vs-th>
         <vs-th sort-key="description">Description</vs-th>
+        <vs-th sort-key="description">Date</vs-th>
         <!-- <vs-th sort-key="id">ID</vs-th> -->
         <vs-th sort-key="actions">Actions</vs-th>
       </template>
@@ -35,26 +35,18 @@
           <vs-td :data="data[indextr].description">{{
             data[indextr].description
           }}</vs-td>
+            <vs-td :data="data[indextr].date"></vs-td>
           <vs-td>
             <div class="d-flex">
-              <vs-button
-                color="success"
-                type="gradient"
-                icon-pack="feather"
-                icon="icon-edit"
-                icon-after
-                @click="editClient(data[indextr])"
-                >Edit</vs-button
-              >
-              <vs-button
-                color="danger"
-                type="gradient"
-                icon-pack="feather"
-                icon="icon-trash"
-                icon-after
-                @click="editClient(data[indextr])"
-                >Delete</vs-button
-              >
+              <feather-icon
+                icon="EditIcon"
+                svgClasses="w-5 h-5 hover:text-primary stroke-current"
+              />
+              <feather-icon
+                icon="TrashIcon"
+                svgClasses="w-5 h-5 hover:text-danger stroke-current"
+                class="ml-2"
+              />
             </div>
           </vs-td>
           <!-- <vs-td :data="data[indextr].id">

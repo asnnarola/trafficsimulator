@@ -283,6 +283,7 @@
                   <feather-icon
                     icon="EditIcon"
                     svgClasses="w-5 h-5 hover:text-primary stroke-current"
+                    @click="getCLientInfo(tr.id)"
                     @click.stop="popupActive2 = true"
                   />
                   <feather-icon
@@ -300,33 +301,44 @@
     </vx-card>
 
     <!-- POPUP !-->
-    <vs-popup title="Edit Campaign-Client Name" :active.sync="popupActive2">
+    <vs-popup title="Edit Campaign" :active.sync="popupActive2">
       <label>Client Name</label>
       <v-select
-        v-model="client"
+        v-model="editCampaign.client"
         label="client_name"
         :options="clients"
         :dir="$vs.rtl ? 'rtl' : 'ltr'"
       ></v-select>
 
       <label>Brand Name</label>
-      <vs-input type="text" class="w-full" v-model="campaign_name" />
+      <vs-input type="text" class="w-full" v-model="editCampaign.brand_name" />
 
       <label>End Date</label>
-      <flat-pickr class="w-full" placeholder="End Date" v-model="endDate" />
+      <flat-pickr
+        class="w-full"
+        placeholder="End Date"
+        v-model="editCampaign.end_date"
+      />
 
       <label>Volume Size/Daily Site Visits</label>
       <v-select
         label="tag_name"
-        v-model="volume"
+        v-model="editCampaign.volume_size"
         :options="volume_size"
         :dir="$vs.rtl ? 'rtl' : 'ltr'"
       />
 
       <label>Stay Duration in seconds(from,to)</label>
-      <vs-input type="text" class="w-full" />
+      <vs-input
+        type="text"
+        v-model="editCampaign.stay_duration"
+        class="w-full"
+      />
 
-      <vs-button class="justify-bottom primary mt-4" type="border"
+      <vs-button
+        class="justify-bottom primary mt-4"
+        @click="updateCampaignFn"
+        type="border"
         >Update</vs-button
       >
     </vs-popup>
@@ -350,6 +362,7 @@ export default {
       value2: "",
       popupActive2: false,
       popupActive3: false,
+      editCampaign: {},
       clients: [],
       client: {
         client_name: "All CLient",
@@ -405,10 +418,26 @@ export default {
     toggleDataSidebar(val = false) {
       this.addNewDataSidebar = val;
     },
+    getCLientInfo(campgain_id) {
+      var this_pointer = this;
+      axios({
+        method: "get",
+        url: "http://adminapi.varuntandon.com/v1/campaigns/" + campgain_id,
+
+        headers: { "content-type": "application/json" }
+      })
+        .then(function(response) {
+          this_pointer.editCampaign = response.data;
+          console.log("secondResponse", response);
+        })
+        .catch(function(error) {
+          console.log(error);
+        });
+    },
     getCampgainByClientFn(event) {
       console.log("cliemts", event);
 
-      if (event == null || event.id=='All') {
+      if (event == null || event.id == "All") {
         this.getCampaignList();
       } else {
         var this_pointer = this;
@@ -504,6 +533,44 @@ export default {
           console.log(error);
         });
     },
+    updateCampaignFn() {
+      var this_pointer = this;
+      axios({
+        method: "put",
+        url:
+          "http://adminapi.varuntandon.com/v1/campaigns/" +
+          this.editCampaign.id,
+        headers: {
+          "content-type": "application/json"
+        },
+        data: {
+          client: this.editCampaign.client,
+          brand_name: this.editCampaign.brand_name,
+          end_date: this.editCampaign.end_date,
+          volume_size: this.editCampaign.volume_size,
+          stay_duration: this.editCampaign.stay_duration,
+          city_targeting_method: "priority"
+        }
+      })
+        .then(function(response) {
+          console.log("updateResponse", response);
+          if (response.data.success) {
+            this_pointer.popupActive2 = false;
+            this_pointer.$vs.notify({
+              title: "Campaign Updated",
+              color: "success",
+              position: "top-right"
+            });
+
+            this_pointer.getCampaignList();
+            //(this_pointer.description = null);
+          }
+        })
+        .catch(function(error) {
+          console.log(error);
+        });
+    },
+
     addVolumeTag() {
       var this_pointer = this;
       axios({
