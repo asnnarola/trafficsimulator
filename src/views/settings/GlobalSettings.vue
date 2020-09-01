@@ -58,7 +58,7 @@
     <vs-divider></vs-divider>&nbsp;
     <h3>Proxy Providers</h3>
     <!-- PROXY TABLE !-->
-    <vs-table :data="info">
+    <vs-table :data="proxyList">
       <template slot="thead">
         <vs-th>Provider Name</vs-th>
         <vs-th>User</vs-th>
@@ -69,16 +69,46 @@
 
       <template slot-scope="{data}">
         <vs-tr :key="indextr" v-for="(tr, indextr) in data">
-          <vs-td :data="data[indextr].provider_name">{{ data[indextr].provider_name }}</vs-td>
-
-          <vs-td :data="data[indextr].id">
-            {{ data[indextr].user }}
-            <vs-input icon-pack="feather" icon="icon-user" class="is-label-placeholder" />
+          <vs-td :data="data[indextr].provider">
+            <span
+              v-if="!(edit === indextr)"
+              @click="setData(data[indextr], indextr)"
+            >{{ data[indextr].provider }}</span>
+            <vs-input
+              v-if="(edit === indextr)"
+              class="inputx"
+              placeholder="Provider Name"
+              v-model="provider"
+            />
           </vs-td>
 
-          <vs-td :data="data[indextr].id">
-            <vs-input icon-pack="feather" icon="icon-lock" class="is-label-placeholder" />
-            {{ data[indextr].password }}
+          <vs-td :data="data[indextr].username">
+            <span
+              v-if="!(edit === indextr)"
+              @click="setData(data[indextr],indextr)"
+            >{{ data[indextr].username }}</span>
+            <vs-input
+             v-if="(edit === indextr)"
+              class="is-label-placeholder"
+              icon-pack="feather"
+              icon="icon-user"
+              placeholder="User"
+              v-model="username"
+            />
+            <!-- <vs-input icon-pack="feather" icon="icon-user" class="is-label-placeholder" /> -->
+          </vs-td>
+
+          <vs-td :data="data[indextr].password">
+            <span>{{ data[indextr].password }}</span>
+            <vs-input
+             v-if="(edit === indextr)"
+              class="is-label-placeholder"
+              icon-pack="feather"
+              icon="icon-user"
+              placeholder="Password"
+              v-model="password"
+            ></vs-input>
+            <!-- <vs-input icon-pack="feather" icon="icon-lock" class="is-label-placeholder" /> -->
           </vs-td>
 
           <vs-td :data="data[indextr].active">
@@ -86,14 +116,13 @@
             {{ data[indextr].active }}
           </vs-td>
 
-          <vs-td :data="data[indextr].update_provider">
+          <vs-td :data="data[indextr].id">
             <vs-button
               :disabled="!(edit === indextr)"
-              @click="updateTag(data[indextr].id)"
+              @click="updateProxyList(data[indextr].id)"
               color="primary"
               type="filled"
             >Update</vs-button>
-            {{data[indextr].update_provider}}
           </vs-td>
         </vs-tr>
       </template>
@@ -106,7 +135,9 @@
       <vx-card>
         <div class="vx-row mb-6">
           <div class="vx-col sm:w-1/3 w-full">
-            <span><strong>Spike_Percent_Chance</strong></span>
+            <span>
+              <strong>Spike_Percent_Chance</strong>
+            </span>
           </div>
           <div class="vx-col sm:w-1/3 w-full">
             <vs-input class="w-full" v-model="input1" />
@@ -114,7 +145,9 @@
         </div>
         <div class="vx-row mb-6">
           <div class="vx-col sm:w-1/3 w-full">
-            <span><strong>Downturn_Percent_Chance</strong></span>
+            <span>
+              <strong>Downturn_Percent_Chance</strong>
+            </span>
           </div>
           <div class="vx-col sm:w-1/3 w-full">
             <vs-input class="w-full" type="email" v-model="input2" />
@@ -122,7 +155,9 @@
         </div>
         <div class="vx-row mb-6">
           <div class="vx-col sm:w-1/3 w-full">
-            <span><strong>Spike_for_days</strong></span>
+            <span>
+              <strong>Spike_for_days</strong>
+            </span>
           </div>
           <div class="vx-col sm:w-1/3 w-full">
             <v-select :options="type" v-model="spike_days" :dir="$vs.rtl ? 'rtl' : 'ltr'"></v-select>
@@ -130,7 +165,9 @@
         </div>
         <div class="vx-row mb-6">
           <div class="vx-col sm:w-1/3 w-full">
-            <span><strong>Downturn_for_days</strong></span>
+            <span>
+              <strong>Downturn_for_days</strong>
+            </span>
           </div>
           <div class="vx-col sm:w-1/3 w-full">
             <v-select :options="type1" v-model="downturn_days" :dir="$vs.rtl ? 'rtl' : 'ltr'"></v-select>
@@ -138,7 +175,9 @@
         </div>
         <div class="vx-row mb-6">
           <div class="vx-col sm:w-1/3 w-full">
-            <span><strong>Spike_to_how_many_Levels_Up</strong></span>
+            <span>
+              <strong>Spike_to_how_many_Levels_Up</strong>
+            </span>
           </div>
           <div class="vx-col sm:w-1/3 w-full">
             <v-select :options="type3" v-model="level" :dir="$vs.rtl ? 'rtl' : 'ltr'"></v-select>
@@ -152,54 +191,46 @@
 </template>
 
 <script>
-import vSelect from 'vue-select'
+import vSelect from "vue-select";
+import axios from "axios";
 export default {
   data() {
     return {
       info: [
         {
           id: 1,
-          provider_name: "Oxylabs"
+          provider: "Oxylabs"
         },
         {
           id: 2,
-          provider_name: "Smartproxy"
+          provider: "Smartproxy"
         },
         {
           id: 3,
-          provider_name: "Packetstream"
+          provider: "Packetstream"
         }
       ],
-      type:[
-        '3',
-        '4',
-        '5',
-        '6'
-      ],
-      type1:[
-        '2',
-        '3',
-        '4',
-        '5',
-        '6'
-      ],
-      type3:[
-        '3',
-        '4'
-      ],
+      type: ["3", "4", "5", "6"],
+      type1: ["2", "3", "4", "5", "6"],
+      type3: ["3", "4"],
       trafficVolumeTags: [],
+      proxyList: [],
       tag_name: null,
       min_hit: null,
       max_hit: null,
       edit: null,
-      checkbox2: false
+      checkbox2: false,
+      username: null,
+      password: null,
+      provider: null
     };
   },
-  components:{
-      'v-select' : vSelect
+  components: {
+    "v-select": vSelect
   },
   mounted() {
     this.getTrafficVolumeTags();
+    this.getProxyList();
   },
   methods: {
     getTrafficVolumeTags() {
@@ -238,10 +269,62 @@ export default {
         .catch(error => console.log(error));
     },
     setData(data, index) {
+      this.provider = provider;
       this.tag_name = data.tag_name;
       this.min_hit = data.min_hit;
       this.max_hit = data.max_hit;
       this.edit = index;
+    },
+    getProxyList() {
+      var this_pointer = this;
+      axios({
+        method: "get",
+        url: "http://adminapi.varuntandon.com/v1/proxy",
+        headers: { "content-type": "application/json" }
+      })
+        .then(function(response) {
+          console.log("firstResponse", response);
+          this_pointer.proxyList = response.data.accounts;
+          console.log(
+            "response",
+            this_pointer.proxyList,
+            response.data.accounts
+          );
+        })
+        .catch(function(error) {
+          console.log(error);
+        });
+    },
+    updateProxyList(account_id) {
+      axios.put("http://adminapi.varuntandon.com/v1/proxy/{account_id}"),
+        {
+          provider: this.provider,
+          username: this.username,
+          password: this.password,
+          active: this.active
+        }
+          .then(function(response) {
+            if (response.data.success) {
+              var newProxy = {
+                id: account_id,
+                provider: this.provider,
+                username: this.username,
+                password: this.password,
+                active: this.active
+              };
+
+              this.proxyList = this.proxyList.map(acc =>
+                acc.id === account_id ? (acc = newProxy) : acc
+              );
+              this.provider = null;
+              this.username = null;
+              this.password = null;
+              this.edit = -1;
+            }
+          })
+          .catch(function(error) {
+            console.log(error);
+          });
     }
   }
 };
