@@ -67,27 +67,15 @@
       </template>
 
       <template slot-scope="{data}">
-        <vs-tr :key="indextr" v-for="(tr, indextr) in data">
+        <vs-tr :key="indextr" v-for="(tr, indextr) in data" id="update-name">
           <vs-td :data="data[indextr].provider">
-            <span
-              v-if="!(edit === indextr)"
-              @click="setData(data[indextr], indextr)"
-            >{{ data[indextr].provider }}</span>
-            <vs-input
-              v-if="(edit === indextr)"
-              class="inputx"
-              placeholder="Provider Name"
-              v-model="provider"
-            />
+            <span>{{ data[indextr].provider }}</span>
           </vs-td>
 
           <vs-td :data="data[indextr].username">
-            <span
-              v-if="!(edit === indextr)"
-              @click="setData(data[indextr],indextr)"
-            >{{ data[indextr].username }}</span>
+            <span v-if="!(editProxy === indextr)">{{ data[indextr].username }}</span>
             <vs-input
-              v-if="(edit === indextr)"
+              v-if="(editProxy === indextr)"
               class="is-label-placeholder"
               icon-pack="feather"
               icon="icon-user"
@@ -98,9 +86,9 @@
           </vs-td>
 
           <vs-td :data="data[indextr].password">
-            <span>{{ data[indextr].password }}</span>
+            <span v-if="!(editProxy === indextr)">{{ data[indextr].password }}</span>
             <vs-input
-              v-if="(edit === indextr)"
+              v-if="(editProxy === indextr)"
               class="is-label-placeholder"
               icon-pack="feather"
               icon="icon-user"
@@ -111,17 +99,15 @@
           </vs-td>
 
           <vs-td :data="data[indextr].active">
-            <vs-checkbox v-model="checkBox2"></vs-checkbox>
-            {{ data[indextr].active }}
+            <vs-checkbox v-model="active" :checked="data[indextr].active"></vs-checkbox>
           </vs-td>
 
           <vs-td :data="data[indextr].id">
             <vs-button
-              :disabled="!(edit === indextr)"
-              @click="updateProxyList(data[indextr].id)"
+              @click="(editProxy === indextr) ? updateProxyList(data[indextr].id):setUpdateData(data[indextr],indextr)"
               color="primary"
               type="filled"
-            >Update</vs-button>
+            >{{(editProxy === indextr) ? 'Update  ' : 'Edit'}}</vs-button>
           </vs-td>
         </vs-tr>
       </template>
@@ -198,16 +184,16 @@ export default {
       info: [
         {
           id: 1,
-          provider: "Oxylabs",
+          provider: "Oxylabs"
         },
         {
           id: 2,
-          provider: "Smartproxy",
+          provider: "Smartproxy"
         },
         {
           id: 3,
-          provider: "Packetstream",
-        },
+          provider: "Packetstream"
+        }
       ],
       type: ["3", "4", "5", "6"],
       type1: ["2", "3", "4", "5", "6"],
@@ -218,15 +204,22 @@ export default {
       min_hit: null,
       max_hit: null,
       edit: null,
+      editProxy: null,
       newtvt: false,
       checkbox2: false,
       username: null,
       password: null,
       provider: null,
+      input1: null,
+      input2: null,
+      spike_days: null,
+      downturn_days: null,
+      level: null,
+      active: null
     };
   },
   components: {
-    "v-select": vSelect,
+    "v-select": vSelect
   },
   mounted() {
     this.getTrafficVolumeTags();
@@ -236,28 +229,28 @@ export default {
     getTrafficVolumeTags() {
       this.$http
         .get("http://adminapi.varuntandon.com/v1/tvt")
-        .then((response) => {
+        .then(response => {
           this.trafficVolumeTags = response.data.tags;
           console.log(response);
         })
-        .catch((error) => console.log(error));
+        .catch(error => console.log(error));
     },
     updateTag(tag_id) {
       this.$http
         .put(`http://adminapi.varuntandon.com/v1/tvt/${tag_id}`, {
           tag_name: this.tag_name,
           min_hit: this.min_hit,
-          max_hit: this.max_hit,
+          max_hit: this.max_hit
         })
-        .then((response) => {
+        .then(response => {
           if (response.data.success) {
             var newTag = {
               id: tag_id,
               tag_name: this.tag_name,
               min_hit: this.min_hit,
-              max_hit: this.max_hit,
+              max_hit: this.max_hit
             };
-            this.trafficVolumeTags = this.trafficVolumeTags.map((tag) =>
+            this.trafficVolumeTags = this.trafficVolumeTags.map(tag =>
               tag.id === tag_id ? (tag = newTag) : tag
             );
             this.tag_name = null;
@@ -266,7 +259,7 @@ export default {
             this.edit = -1;
           }
         })
-        .catch((error) => console.log(error));
+        .catch(error => console.log(error));
     },
     setData(data, index) {
       // this.provider = provider;
@@ -279,7 +272,7 @@ export default {
       this.trafficVolumeTags.push({
         tag_name: "",
         min_hit: null,
-        max_hit: null,
+        max_hit: null
       });
       this.edit = this.trafficVolumeTags.length - 1;
       this.newtvt = true;
@@ -288,11 +281,11 @@ export default {
       const newTag = {
         tag_name: this.tag_name,
         min_hit: this.min_hit,
-        max_hit: this.max_hit,
+        max_hit: this.max_hit
       };
       this.$http
         .post("http://adminapi.varuntandon.com/v1/tvt", newTag)
-        .then((response) => {
+        .then(response => {
           if (response.data.success) {
             console.log("tvt added!");
             this.getTrafficVolumeTags();
@@ -304,15 +297,16 @@ export default {
           } else {
             console.log("tvt already exist!");
           }
+          console.log("tvt response", response);
         });
     },
     removeTrafficVolumeTag(tag_id) {
       this.$http
         .delete(`http://adminapi.varuntandon.com/v1/tvt/${tag_id}`)
-        .then((response) => {
+        .then(response => {
           if (response.data.success) {
             const index = this.trafficVolumeTags.findIndex(
-              (tag) => tag.id === tag_id
+              tag => tag.id === tag_id
             );
             this.trafficVolumeTags.splice(index, 1);
             console.log("Removed Successfully");
@@ -320,57 +314,59 @@ export default {
         });
     },
     getProxyList() {
-      var this_pointer = this;
       axios({
         method: "get",
         url: "http://adminapi.varuntandon.com/v1/proxy",
-        headers: { "content-type": "application/json" },
+        headers: { "content-type": "application/json" }
       })
-        .then(function (response) {
+        .then(response => {
           console.log("firstResponse", response);
-          this_pointer.proxyList = response.data.accounts;
-          console.log(
-            "response",
-            this_pointer.proxyList,
-            response.data.accounts
-          );
+          this.proxyList = response.data.accounts;
+          console.log("response", this.proxyList, response.data.accounts);
         })
-        .catch(function (error) {
+        .catch(function(error) {
           console.log(error);
         });
     },
     updateProxyList(account_id) {
-      axios.put("http://adminapi.varuntandon.com/v1/proxy/{account_id}"),
-        {
+      axios
+        .put(`http://adminapi.varuntandon.com/v1/proxy/${account_id}`, {
           provider: this.provider,
           username: this.username,
           password: this.password,
-          active: this.active,
-        }
-          .then(function (response) {
-            if (response.data.success) {
-              var newProxy = {
-                id: account_id,
-                provider: this.provider,
-                username: this.username,
-                password: this.password,
-                active: this.active,
-              };
+          active: this.active
+        })
+        .then(function(response) {
+          if (response.data.success) {
+            var newProxy = {
+              //id: account_id,
+              provider: this.provider,
+              username: this.username,
+              password: this.password,
+              active: this.active
+            };
 
-              this.proxyList = this.proxyList.map((acc) =>
-                acc.id === account_id ? (acc = newProxy) : acc
-              );
-              this.provider = null;
-              this.username = null;
-              this.password = null;
-              this.edit = -1;
-            }
-          })
-          .catch(function (error) {
-            console.log(error);
-          });
+            this.proxyList = this.proxyList.map(acc =>
+              acc.id === account_id ? (acc = newProxy) : acc
+            );
+            this.provider = null;
+            this.username = null;
+            this.password = null;
+            this.edit = -1;
+          }
+        })
+        .catch(function(error) {
+          console.log(error);
+        });
     },
-  },
+    setUpdateData(data, index) {
+      this.provider = data.provider;
+      this.username = data.username;
+      this.password = data.password;
+      this.active = data.active;
+      this.editProxy = index;
+    }
+  }
 };
 </script>
 

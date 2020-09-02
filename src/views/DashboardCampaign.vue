@@ -5,13 +5,13 @@
         <div class="flex flex-wrap items-center justify-between">
           <vx-input-group class="mb-base mr-3">
             <span>
-              <b><h3>View Campaigns</h3></b>
+              <b>
+                <h3>View Campaigns</h3>
+              </b>
             </span>
           </vx-input-group>
           <div class="flex items-center">
-            <vs-button class="mb-base mr-3" @click="addNewCampaign"
-              >Add a new Campaign</vs-button
-            >
+            <vs-button class="mb-base mr-3" @click="addNewCampaign">Add a new Campaign</vs-button>
           </div>
         </div>
 
@@ -41,11 +41,7 @@
         <div class="vx-row">
           <div class="vx-col sm:w-1/2 w-full mb-2">
             <label>End Date</label>
-            <flat-pickr
-              class="w-full"
-              placeholder="End Date"
-              v-model="endDate"
-            />
+            <flat-pickr class="w-full" placeholder="End Date" v-model="endDate" />
           </div>
           <div class="vx-col sm:w-1/2 w-full mb-2">
             <label>Start Date</label>
@@ -71,19 +67,16 @@
           search
           :data="active_campaign_list"
         >
-          <div
-            slot="header"
-            class="flex flex-wrap-reverse items-center flex-grow justify-between"
-          >
-            <div
-              class="flex flex-wrap-reverse items-center data-list-btn-container"
-            >
+          <div slot="header" class="flex flex-wrap-reverse items-center flex-grow justify-between">
+            <div class="flex flex-wrap-reverse items-center data-list-btn-container">
               <span class="ml-2 text-base text-primary">
                 <strong>
                   Active Campaigns-
-                  <span class="ml-2 text-base text-warning">{{
+                  <span class="ml-2 text-base text-warning">
+                    {{
                     this.client.client_name
-                  }}</span>
+                    }}
+                  </span>
                 </strong>
               </span>
             </div>
@@ -111,9 +104,7 @@
             <tbody>
               <vs-tr :data="tr" :key="indextr" v-for="(tr, indextr) in data">
                 <vs-td>
-                  <p class="start-date font-medium truncate">
-                    {{ tr.start_date }}
-                  </p>
+                  <p class="start-date font-medium truncate">{{ tr.start_date }}</p>
                 </vs-td>
 
                 <vs-td>
@@ -172,6 +163,12 @@
                     class="ml-2"
                     @click.stop="deleteData(tr.id)"
                   />
+                  <feather-icon
+                    icon="FileIcon"
+                    class="ml-2"
+                    svgClasses="w-5 h-5 hover:text-primary stroke-current"
+                    @click="viewStats"
+                  />
                 </vs-td>
               </vs-tr>
             </tbody>
@@ -192,19 +189,16 @@
           search
           :data="in_active_campaign_list"
         >
-          <div
-            slot="header"
-            class="flex flex-wrap-reverse items-center flex-grow justify-between"
-          >
-            <div
-              class="flex flex-wrap-reverse items-center data-list-btn-container"
-            >
+          <div slot="header" class="flex flex-wrap-reverse items-center flex-grow justify-between">
+            <div class="flex flex-wrap-reverse items-center data-list-btn-container">
               <span class="ml-2 text-base text-danger">
                 <strong>
                   In-active Campaigns-
-                  <span class="ml-2 text-base text-warning">{{
+                  <span class="ml-2 text-base text-warning">
+                    {{
                     this.client.client_name
-                  }}</span>
+                    }}
+                  </span>
                 </strong>
               </span>
             </div>
@@ -230,9 +224,7 @@
             <tbody>
               <vs-tr :data="tr" :key="indextr" v-for="(tr, indextr) in data">
                 <vs-td>
-                  <p class="start-date font-medium truncate">
-                    {{ tr.start_date }}
-                  </p>
+                  <p class="start-date font-medium truncate">{{ tr.start_date }}</p>
                 </vs-td>
 
                 <vs-td>
@@ -314,11 +306,7 @@
       <vs-input type="text" class="w-full" v-model="editCampaign.brand_name" />
 
       <label>End Date</label>
-      <flat-pickr
-        class="w-full"
-        placeholder="End Date"
-        v-model="editCampaign.end_date"
-      />
+      <flat-pickr class="w-full" placeholder="End Date" v-model="editCampaign.end_date" />
 
       <label>Volume Size/Daily Site Visits</label>
       <v-select
@@ -329,18 +317,9 @@
       />
 
       <label>Stay Duration in seconds(from,to)</label>
-      <vs-input
-        type="text"
-        v-model="editCampaign.stay_duration"
-        class="w-full"
-      />
+      <vs-input type="text" v-model="editCampaign.stay_duration" class="w-full" />
 
-      <vs-button
-        class="justify-bottom primary mt-4"
-        @click="updateCampaignFn"
-        type="border"
-        >Update</vs-button
-      >
+      <vs-button class="justify-bottom primary mt-4" @click="updateCampaignFn" type="border">Update</vs-button>
     </vs-popup>
   </div>
 </template>
@@ -402,6 +381,9 @@ export default {
   methods: {
     addNewCampaign() {
       this.$router.push("/dashboard/addcampaigns");
+    },
+    viewStats(){
+      this.$router.push("/dashboard/viewstatus");
     },
     //TABLE LAYOUT METHODS
 
