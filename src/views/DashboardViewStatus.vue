@@ -14,7 +14,7 @@
             <v-select
               v-model="keyword"
               label="keyword_list"
-              @click="getKeywordList"
+              @click="getKeywordList(campaign_id)"
               :options="keywordList"
               :dir="$vs.rtl ? 'rtl' : 'ltr'"
             ></v-select>
@@ -73,7 +73,7 @@
 
 <script>
 import vselect from "vue-select";
-import axios from 'axios'
+import axios from "axios";
 export default {
   data() {
     return {
@@ -90,27 +90,38 @@ export default {
         }
       ],
       keywordList: [],
-      keyword: null
+      keyword: null,
+      //campaign: [],
+      campaign_id: ""
     };
   },
   components: {
     "v-select": vselect
   },
   methods: {
-    getKeywordList(campaign_id) {
-      axios
+    // getCampaignId(campaign_id) {
+    //   this.$http
+    //     .get(`http://adminapi.varuntandon.com/v1/campaigns/${campaign_id}`)
+    //     .then(response => {
+    //       let campaign_data = response.data.campaigns
+    //       console.log('firstresponse',response);
+    //       this.campaign = this.campaign_data
+    //       console.log("generated response", this.campaign);
+    //     })
+    //     .catch(error => {
+    //       console.log(error);
+    //     });
+    // },
+    getKeywordList() {
+      //  console.log("responsee", this.campaigns);
+
+      this.$http
         .get(
-          'http://adminapi.varuntandon.com/v1/campaigns/{campaign_id}/keywords'+ campaign_id 
+          `http://adminapi.varuntandon.com/v1/campaigns/${this.campaign_id}/keywords`
         )
         .then(response => {
-        //     if(response.data.success){
-        //         var newList = {
-        //             id: campaign_id
-        //         }
-        //     }
-        //   this.keywordList = this.keywordList.map(key => key.id === campaign_id)
-         this.keywordList = response.data
-          console.log("keyword response", response);
+          console.log(response.data);
+
         })
         .catch(error => {
           console.log(error);
@@ -118,7 +129,26 @@ export default {
     }
   },
   mounted() {
-    this.getKeywordList();
+    //this.getKeywordList();
+    // console.log("secondresponse", this.$route.params.id);
+    // if (Object.keys(this.$route.params).length) {
+    //   this.campaign_id = this.$route.params.id;
+    //   this.getKeywordList();
+
+    //   // if (Object.keys(this.$route.params).length) {
+    //   // this.campaign_id = this.$route.params.campaign_id;
+    //   // this.getKeywordList();
+    // }
+
+    var querypara = window.location.search.split("?campaign_id=");
+
+    if (querypara && querypara.length) {
+      this.campaign_id = querypara[1];
+      this.keywordList = this.campaign_id
+      this.getKeywordList();
+    }
+
+    //this.getCampaignId();
   }
 };
 </script>

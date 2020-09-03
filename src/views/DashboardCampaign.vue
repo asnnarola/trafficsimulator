@@ -167,7 +167,7 @@
                     icon="FileIcon"
                     class="ml-2"
                     svgClasses="w-5 h-5 hover:text-primary stroke-current"
-                    @click="viewStats"
+                    @click="viewStats(tr.id)"
                   />
                 </vs-td>
               </vs-tr>
@@ -382,8 +382,16 @@ export default {
     addNewCampaign() {
       this.$router.push("/dashboard/addcampaigns");
     },
-    viewStats(){
-      this.$router.push("/dashboard/viewstatus");
+    viewStats(id) {
+      this.$router.push({
+        name: "dashboard-viewstatus",
+        params: {
+          id: id
+        },
+        query: {
+          campaign_id: id
+        }
+      });
     },
     //TABLE LAYOUT METHODS
 
