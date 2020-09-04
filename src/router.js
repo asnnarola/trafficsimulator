@@ -85,7 +85,8 @@ const router = new Router({
           component: () => import("./views/DashboardViewStatus.vue"),
           meta: {
             rule: "admin"
-          }
+          },
+          props: true
         },
 
         // =============================================================================

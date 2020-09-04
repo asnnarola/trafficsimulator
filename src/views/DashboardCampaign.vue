@@ -32,7 +32,7 @@
             <label>Campaign Type</label>
             <v-select
               class="w-full"
-              label-placeholder="client_name"
+              label-placeholder="campaign_type"
               :options="type"
               :dir="$vs.rtl ? 'rtl' : 'ltr'"
             />
@@ -167,7 +167,7 @@
                     icon="FileIcon"
                     class="ml-2"
                     svgClasses="w-5 h-5 hover:text-primary stroke-current"
-                    @click="viewStats(tr.id)"
+                    @click="viewStats(tr)"
                   />
                 </vs-td>
               </vs-tr>
@@ -382,14 +382,12 @@ export default {
     addNewCampaign() {
       this.$router.push("/dashboard/addcampaigns");
     },
-    viewStats(id) {
+    viewStats(data) {
+      // alert(campaignId + " " + keywordId);
       this.$router.push({
         name: "dashboard-viewstatus",
         params: {
-          id: id
-        },
-        query: {
-          campaign_id: id
+          data: data
         }
       });
     },
@@ -579,6 +577,14 @@ export default {
         .catch(function(error) {
           console.log(error);
         });
+    },
+    displayCampaignDetails(campaignInfo) {
+      this.$router.push({
+        name: "dashboard-viewstatus",
+        params: {
+          campaignInfo: campaignInfo
+        }
+      });
     }
   },
   created() {
