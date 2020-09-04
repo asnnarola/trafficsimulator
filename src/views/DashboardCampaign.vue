@@ -284,6 +284,12 @@
                     class="ml-2"
                     @click.stop="deleteData(tr.id)"
                   />
+                  <feather-icon
+                    icon="FileIcon"
+                    class="ml-2"
+                    svgClasses="w-5 h-5 hover:text-primary stroke-current"
+                    @click="viewStats(tr)"
+                  />
                 </vs-td>
               </vs-tr>
             </tbody>
