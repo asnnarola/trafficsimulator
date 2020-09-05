@@ -185,7 +185,6 @@
           v-model="selected"
           pagination
           :max-items="itemsPerPage"
-          @change-page="handleChangePage"
           search
           :data="in_active_campaign_list"
         >
@@ -327,6 +326,23 @@
 
       <vs-button class="justify-bottom primary mt-4" @click="updateCampaignFn" type="border">Update</vs-button>
     </vs-popup>
+
+    <!-- POPUP for DELETE FUNCTIONALITY !-->
+    <div class="demo-alignment">
+      <vs-popup
+        class="holamundo"
+        title="Are you sure you want to delete campaign name, brand name, client name ?"
+        :active.sync="popupActive"
+      >
+        <span>
+          <strong></strong>
+        </span>
+        <div class="vx-col sm:w-2/3 w-full ml-auto">
+          <vs-button class="mr-3 mb-2" color="warning" type="border" @click="removeClientData">Yes</vs-button>
+          <vs-button class="mr-3 mb-2" color="warning" type="border" @click="popupActive=false">No</vs-button>
+        </div>
+      </vs-popup>
+    </div>
   </div>
 </template>
 
@@ -391,9 +407,12 @@ export default {
     viewStats(data) {
       // alert(campaignId + " " + keywordId);
       this.$router.push({
-        name: "dashboard-viewstatus",
-        params: {
-          data: data
+        path: "/dashboard/viewstatus",
+        query: {
+          campaignId: data.id,
+          clientName: data.client,
+          brandName: data.brand_name,
+          campaignName: data.campaign_name
         }
       });
     },
