@@ -89,11 +89,12 @@
             <vs-th sort-key="end_date">End Date</vs-th>
             <vs-th sort-key="brand_name">Brand Name</vs-th>
             <vs-th sort-key="campaign_name">Campaign Name</vs-th>
+            <vs-th sort-key="keyword_formating">Keyword Format</vs-th>
             <vs-th sort-key="type">Type</vs-th>
             <vs-th sort-key="search_method">Search Method</vs-th>
             <vs-th sort-key="url">URL</vs-th>
-            <vs-th sort-key="price"></vs-th>
-            <vs-th sort-key="stay_duration">Timestamp</vs-th>
+            <vs-th sort-key>Visits Per Day</vs-th>
+            <vs-th sort-key="stay_duration">Time spend</vs-th>
             <vs-th sort-key="country">Country</vs-th>
             <vs-th sort-key="state">State</vs-th>
             <vs-th sort-key="city">City</vs-th>
@@ -117,6 +118,10 @@
 
                 <vs-td>
                   <p class="campaign_name">{{ tr.campaign_name }}</p>
+                </vs-td>
+
+                <vs-td>
+                  <p class="keyword_formating">{{ tr.keyword_formating }}</p>
                 </vs-td>
 
                 <vs-td>
@@ -161,13 +166,19 @@
                     icon="TrashIcon"
                     svgClasses="w-5 h-5 hover:text-danger stroke-current"
                     class="ml-2"
-                    @click.stop="deleteData(tr.id)"
+                    @click="campaignActionsFn(tr.id)"
                   />
                   <feather-icon
                     icon="FileIcon"
                     class="ml-2"
                     svgClasses="w-5 h-5 hover:text-primary stroke-current"
                     @click="viewStats(tr)"
+                  />
+                  <feather-icon
+                    icon="PauseIcon"
+                    class="ml-2"
+                    svgClasses="w-5 h-5 hover:text-primary stroke-current"
+                    @click="pauseResumeCampaign(tr.id,'pause')"
                   />
                 </vs-td>
               </vs-tr>
@@ -208,11 +219,12 @@
             <vs-th sort-key="end_date">End Date</vs-th>
             <vs-th sort-key="brand_name">Brand Name</vs-th>
             <vs-th sort-key="campaign_name">Campaign Name</vs-th>
+            <vs-th sort-key="keyword_formating">Keyword Format</vs-th>
             <vs-th sort-key="type">Type</vs-th>
             <vs-th sort-key="search_method">Search Method</vs-th>
             <vs-th sort-key="url">URL</vs-th>
-            <vs-th sort-key="price"></vs-th>
-            <vs-th sort-key="stay_duration">Timestamp</vs-th>
+            <vs-th sort-key>Visits Per Day</vs-th>
+            <vs-th sort-key="stay_duration">Time spend</vs-th>
             <vs-th sort-key="country">Country</vs-th>
             <vs-th sort-key="state">State</vs-th>
             <vs-th sort-key="city">City</vs-th>
@@ -236,6 +248,10 @@
 
                 <vs-td>
                   <p class="campaign_name">{{ tr.campaign_name }}</p>
+                </vs-td>
+
+                <vs-td>
+                  <p class="keyword_formating">{{ tr.keyword_formating }}</p>
                 </vs-td>
 
                 <vs-td>
@@ -281,13 +297,19 @@
                     icon="TrashIcon"
                     svgClasses="w-5 h-5 hover:text-danger stroke-current"
                     class="ml-2"
-                    @click.stop="deleteData(tr.id)"
+                    @click.stop="campaignActionsFn(tr.id)"
                   />
                   <feather-icon
                     icon="FileIcon"
                     class="ml-2"
                     svgClasses="w-5 h-5 hover:text-primary stroke-current"
                     @click="viewStats(tr)"
+                  />
+                  <feather-icon
+                    icon="PlayIcon"
+                    class="ml-2"
+                    svgClasses="w-5 h-5 hover:text-primary stroke-current"
+                    @click="pauseResumeCampaign(tr.id,'resume')"
                   />
                 </vs-td>
               </vs-tr>
@@ -331,14 +353,14 @@
     <div class="demo-alignment">
       <vs-popup
         class="holamundo"
-        title="Are you sure you want to delete campaign name, brand name, client name ?"
+        title="Are you sure you want to delete campaign ?"
         :active.sync="popupActive"
       >
         <span>
           <strong></strong>
         </span>
         <div class="vx-col sm:w-2/3 w-full ml-auto">
-          <vs-button class="mr-3 mb-2" color="warning" type="border" @click="removeClientData">Yes</vs-button>
+          <vs-button class="mr-3 mb-2" color="warning" type="border" @click="removeCampaignData">Yes</vs-button>
           <vs-button class="mr-3 mb-2" color="warning" type="border" @click="popupActive=false">No</vs-button>
         </div>
       </vs-popup>
@@ -361,6 +383,7 @@ export default {
       isMounted: false,
       value1: "",
       value2: "",
+      popupActive: false,
       popupActive2: false,
       popupActive3: false,
       editCampaign: {},
@@ -376,7 +399,8 @@ export default {
       volume_size: [],
       campaigns_list: [],
       active_campaign_list: [],
-      in_active_campaign_list: []
+      in_active_campaign_list: [],
+      action: null
     };
   },
   components: {
@@ -418,10 +442,55 @@ export default {
     },
     //TABLE LAYOUT METHODS
 
-    deleteData(id) {
-      this.$store.dispatch("dataList/removeItem", id).catch(err => {
-        console.error(err);
-      });
+    campaignActionsFn(campaign_id) {
+      this.popupActive = true;
+      this.deleteCampaignId = campaign_id;
+    },
+    removeCampaignData(campaign_id) {
+      this.$http
+        .get(
+          `http://adminapi.varuntandon.com/v1/campaigns/${this.deleteCampaignId}/delete`
+        )
+        .then(response => {
+          if (response.data.success) {
+            this.$vs.notify({
+              title: "Deleted Successfully",
+              color: "success",
+              position: "top-right"
+            });
+            this.popupActive = false;
+            this.getCampaignList();
+          }
+        })
+        .catch(error => {
+          console.log(error);
+        });
+    },
+    pauseResumeCampaign(campaign_id, action) {
+      this.$http
+        .get(
+          `http://adminapi.varuntandon.com/v1/campaigns/${campaign_id}/${action}`
+        )
+        .then(response => {
+          if (response.data.success) {
+            this.$vs.notify({
+              title: "Campaign " + action + " successfully.",
+              color: "success",
+              position: "top-right"
+            });
+          }
+          // else if (response.data.success === "resume") {
+          //   this.$vs.notify({
+          //     title: "Campaign Resumed",
+          //     color: "dark",
+          //     position: "top-right"
+          //   });
+          // }
+          this.getCampaignList();
+        })
+        .catch(error => {
+          console.log(error);
+        });
     },
     editData(data) {
       // this.sidebarData = JSON.parse(JSON.stringify(this.blankData))

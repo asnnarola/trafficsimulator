@@ -6,7 +6,9 @@
         <div class="flex flex-wrap items-center justify-between">
           <vx-input-group class="mb-base mr-3">
             <span>
-              <b><h3>Add New Campaign</h3></b>
+              <b>
+                <h3>Add New Campaign</h3>
+              </b>
             </span>
           </vx-input-group>
           <div class="flex items-center">
@@ -14,8 +16,7 @@
               class="justify-end mb-base mr-3"
               type="filled"
               :to="{ path: '/dashboard/allcampaign' }"
-              >Back to Campaigns</vs-button
-            >
+            >Back to Campaigns</vs-button>
           </div>
         </div>
         <vs-divider></vs-divider>
@@ -60,11 +61,7 @@
           </div>
           <div class="vx-col sm:w-2/3 w-full">
             <template>
-              <v-select
-                :options="type"
-                v-model="campaign_type"
-                :dir="$vs.rtl ? 'rtl' : 'ltr'"
-              />
+              <v-select :options="type" v-model="campaign_type" :dir="$vs.rtl ? 'rtl' : 'ltr'" />
             </template>
           </div>
         </div>
@@ -92,7 +89,7 @@
               class="w-full"
               v-model="keywords"
               placeholder="Search.."
-            /> -->
+            />-->
           </div>
         </div>
         <div class="vx-row mb-6">
@@ -104,12 +101,7 @@
           <div class="vx-col sm:w-1/2 w-full">
             <vs-input type="text" class="w-full" v-model="keyword_formating" />
           </div>
-          <vs-button
-            type="border"
-            text-color="#28C76F"
-            @click="updateSearchKeywords"
-            >Update Keyword</vs-button
-          >
+          <vs-button type="border" text-color="#28C76F" @click="updateSearchKeywords">Update Keyword</vs-button>
         </div>
         <div class="vx-row mb-6">
           <div class="vx-col sm:w-1/3 w-full">
@@ -119,11 +111,7 @@
           </div>
           <div class="vx-col sm:w-2/3 w-full">
             <template>
-              <v-select
-                :options="search_method"
-                v-model="search"
-                :dir="$vs.rtl ? 'rtl' : 'ltr'"
-              />
+              <v-select :options="search_method" v-model="search" :dir="$vs.rtl ? 'rtl' : 'ltr'" />
             </template>
           </div>
         </div>
@@ -240,11 +228,7 @@
           </div>
           <div class="vx-col sm:w-2/3 w-full">
             <template></template>
-            <v-select
-              label="countryName"
-              :options="country"
-              :dir="$vs.rtl ? 'rtl' : 'ltr'"
-            />
+            <v-select label="countryName" :options="country" :dir="$vs.rtl ? 'rtl' : 'ltr'" />
           </div>
         </div>
 
@@ -256,11 +240,7 @@
           </div>
           <div class="vx-col sm:w-2/3 w-full">
             <template>
-              <v-select
-                label="stateName"
-                :options="state"
-                :dir="$vs.rtl ? 'rtl' : 'ltr'"
-              />
+              <v-select label="stateName" :options="state" :dir="$vs.rtl ? 'rtl' : 'ltr'" />
             </template>
           </div>
         </div>
@@ -282,15 +262,8 @@
 
         <div class="vx-row">
           <div class="vx-col w-full">
-            <vs-button
-              class="mr-3 mb-2"
-              color="success"
-              @click="addCampaignList"
-              >Submit</vs-button
-            >
-            <vs-button color="warning" type="border" class="mb-2"
-              >Cancel</vs-button
-            >
+            <vs-button class="mr-3 mb-2" color="success" @click="addCampaignList">Submit</vs-button>
+            <vs-button color="warning" type="border" class="mb-2">Cancel</vs-button>
           </div>
         </div>
       </vx-card>
@@ -402,9 +375,13 @@ export default {
             this.client && this.client.client_name && this.client.client_name
               ? this.client.client_name
               : undefined,
-          campaign_name: _.isEmpty(this.campaign_name) ? undefined : this.campaign_name,
-          brand_name: _.isEmpty(this.brand_name) ? undefined :this.brand_name ,
-          stay_duration: _.isEmpty(this.stay_duration) ? undefined :this.stay_duration ,
+          campaign_name: _.isEmpty(this.campaign_name)
+            ? undefined
+            : this.campaign_name,
+          brand_name: _.isEmpty(this.brand_name) ? undefined : this.brand_name,
+          stay_duration: _.isEmpty(this.stay_duration)
+            ? undefined
+            : this.stay_duration,
           start_date: !_.isEmpty(this.start_date) ? this.start_date : undefined,
           end_date: !_.isEmpty(this.end_date) ? this.end_date : undefined,
           country: "us",
@@ -430,7 +407,23 @@ export default {
               color: "success",
               position: "top-right"
             });
+            this_pointer.client = null;
             this_pointer.campaign_name = null;
+            this_pointer.brand_name = null;
+            this_pointer.stay_duration = null;
+            this_pointer.start_date = null;
+            this_pointer.end_date = null;
+            this_pointer.country = null;
+            this_pointer.url = null;
+            this_pointer.state = null;
+            this_pointer.city = null;
+            this_pointer.paused = null;
+            this_pointer.city_targeting_method = null;
+            this_pointer.volume = null;
+            this_pointer.keywords = null;
+            this_pointer.keyword_formating = null;
+            this_pointer.setDescrption = null;
+
             //(this_pointer.description = null);
           } else {
             // this_pointer.$vs.notify({

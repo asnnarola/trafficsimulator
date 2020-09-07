@@ -96,6 +96,8 @@
           </div>
         </div>
 
+        <vs-divider></vs-divider>
+
         <!--STATS TABLE !-->
         <div class="vx-row mb-6">
           <div class="vx-col sm:w-1/3 w-full">
