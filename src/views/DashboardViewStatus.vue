@@ -77,21 +77,21 @@
         <div class="vx-row mb-6">
           <div class="vx-col sm:w-1/3 w-full">
             <span>
-              <strong>Actual Visits in last 30 days:</strong>
+              <strong>Actual Visits in last 30 days:{{this.xyz}}</strong>
             </span>
           </div>
         </div>
         <div class="vx-row mb-6">
           <div class="vx-col sm:w-1/3 w-full">
             <span>
-              <strong>Actual Visits in last 60 days:</strong>
+              <strong>Actual Visits in last 60 days:{{this.lastDays}}</strong>
             </span>
           </div>
         </div>
         <div class="vx-row mb-6">
           <div class="vx-col sm:w-1/3 w-full">
             <span>
-              <strong>Actual Visits in last 180 days:</strong>
+              <strong>Actual Visits in last 180 days:{{this.setDay}}</strong>
             </span>
           </div>
         </div>
@@ -164,7 +164,10 @@ export default {
         brand_name: ""
       },
       keywords: [],
-      campaignId: null
+      campaignId: null,
+      xyz: 0,
+      lastDays: 0,
+      setDay: 0
       //setName: ""
     };
   },
@@ -172,8 +175,8 @@ export default {
     "v-select": vSelect
   },
   methods: {
-    getKeywordList() {
-      this.$http
+    async getKeywordList() {
+      await this.$http
         .get(
           `http://adminapi.varuntandon.com/v1/campaigns/${this.campaignId}/keywords`
         )
@@ -185,6 +188,9 @@ export default {
             this.keywords[key.id] = key.keyword;
           });
           console.log(this.keywords);
+          this.getStatsFor30Days();
+          this.getStatsFor60Days();
+          this.getStatsFor180Days();
         })
         .catch(error => {
           console.log(error);
@@ -196,14 +202,73 @@ export default {
           `http://adminapi.varuntandon.com/v1/stats/by_keyword/${this.keywordId}`,
           {
             params: {
-              start_date: "2019-09-10"
+              start_date: "2019-02-10"
             }
           }
         )
 
         .then(response => {
           console.log("FirstResponse", response.data);
-          this.statsList = response.data.stats;
+          //this.statsList = response.data.stats;
+
+          this.statsList = [
+            {
+              campaign: 0,
+              keyword: 0,
+              date: "2020-08-07",
+              hits_requested: 0,
+              hits_achieved: 500
+            },
+            {
+              campaign: 0,
+              keyword: 0,
+              date: "2019-09-01",
+              hits_requested: 0,
+              hits_achieved: 10
+            },
+            {
+              campaign: 0,
+              keyword: 0,
+              date: "2020-08-24",
+              hits_requested: 0,
+              hits_achieved: 15
+            },
+            {
+              campaign: 0,
+              keyword: 0,
+              date: "2020-07-09",
+              hits_requested: 0,
+              hits_achieved: 200
+            },
+            {
+              campaign: 0,
+              keyword: 0,
+              date: "2020-01-01",
+              hits_requested: 0,
+              hits_achieved: 0
+            },
+            {
+              campaign: 0,
+              keyword: 0,
+              date: "2020-02-01",
+              hits_requested: 0,
+              hits_achieved: 0
+            },
+            {
+              campaign: 0,
+              keyword: 0,
+              date: "2019-10-01",
+              hits_requested: 0,
+              hits_achieved: 0
+            },
+            {
+              campaign: 0,
+              keyword: 0,
+              date: "2019-11-01",
+              hits_requested: 0,
+              hits_achieved: 0
+            }
+          ];
           console.log("SecondResponse", this.statsList, response.data.stats);
         })
         .catch(error => {
@@ -225,14 +290,87 @@ export default {
         .catch(function(error) {
           console.log(error);
         });
+    },
+    getStatsFor30Days() {
+      let date = new Date();
+      let last30Days = new Date(date.setDate(date.getDate() - 30));
+      this.$http
+        .get(
+          `http://adminapi.varuntandon.com/v1/stats/by_keyword/${this.keywordId}`,
+          {
+            params: {
+              start_date: moment(last30Days).format("YYYY-MM-DD")
+            }
+          }
+        )
+        .then(response => {
+          this.statsList.forEach(record => {
+            this.xyz = this.xyz + record.hits_achieved;
+            console.log(record.hits_achieved);
+          });
+        })
+        .catch(error => {
+          console.log(error);
+        });
+    },
+    getStatsFor60Days() {
+      let now = new Date();
+      let last60Days = new Date(now.setDate(now.getDate() - 60));
+      this.$http
+        .get(
+          `http://adminapi.varuntandon.com/v1/stats/by_keyword/${this.keywordId}`,
+          {
+            params: {
+              start_date: moment(last60Days).format("YYYY-MM-DD")
+            }
+          }
+        )
+        .then(response => {
+          this.statsList.forEach(record => {
+            this.lastDays = this.lastDays + record.hits_achieved;
+            console.log(record.hits_achieved);
+          });
+        })
+        .catch(error => {
+          console.log(error);
+        });
+    },
+    getStatsFor180Days() {
+      let now = new Date();
+      let last180Days = new Date(now.setDate(now.getDate() - 180));
+      this.$http
+        .get(
+          `http://adminapi.varuntandon.com/v1/stats/by_keyword/${this.keywordId}`,
+          {
+            params: {
+              start_date: moment(last180Days).format("YYYY-MM-DD")
+            }
+          }
+        )
+        .then(response => {
+          this.statsList.forEach(record => {
+            this.setDay = this.setDay + record.hits_achieved;
+            console.log(record.hits_achieved);
+          });
+        })
+        .catch(error => {
+          console.log(error);
+        });
     }
   },
+
   mounted() {
     if (Object.keys(this.$route.query).length) {
       this.campaignId = this.$route.query.campaignId;
     }
     this.getClientInfo(this.campaignId);
     this.getKeywordList();
+    this.getStatsFor30Days();
+    this.getStatsFor60Days();
+    this.getStatsFor180Days();
+
+    // var actual_visits = 0
+    // response.data.forEach(record => actual_visits + record.hitsAchieved)
   }
 };
 </script>
