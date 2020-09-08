@@ -26,7 +26,7 @@
             </span>
           </div>
           <div class="vx-col sm:w-1/3 w-full">
-            <vs-input type="text" class="w-full" v-model="campaignInfo.client"></vs-input>
+            <vs-input type="text" class="w-full" :value="campaignInfo.client"></vs-input>
           </div>
         </div>
         <div class="vx-row mb-6">
@@ -36,7 +36,7 @@
             </span>
           </div>
           <div class="vx-col sm:w-1/3 w-full">
-            <vs-input type="text" class="w-full" v-model="campaignInfo.campaign_name"></vs-input>
+            <vs-input type="text" class="w-full" :value="campaignInfo.campaign_name"></vs-input>
           </div>
         </div>
         <div class="vx-row mb-6">
@@ -46,7 +46,7 @@
             </span>
           </div>
           <div class="vx-col sm:w-1/3 w-full">
-            <vs-input type="text" class="w-full" v-model="campaignInfo.brand_name"></vs-input>
+            <vs-input type="text" class="w-full" :value="campaignInfo.brand_name"></vs-input>
           </div>
         </div>
         <div class="vx-row mb-6">
@@ -158,8 +158,13 @@ export default {
       sdate: null,
       hitsRequested: null,
       hitsAchieved: null,
-      campaignInfo: null,
-      keywords: []
+      campaignInfo: {
+        client: "",
+        campaign_name: "",
+        brand_name: ""
+      },
+      keywords: [],
+      campaignId: null
       //setName: ""
     };
   },
@@ -170,7 +175,7 @@ export default {
     getKeywordList() {
       this.$http
         .get(
-          `http://adminapi.varuntandon.com/v1/campaigns/${this.campaignInfo.id}/keywords`
+          `http://adminapi.varuntandon.com/v1/campaigns/${this.campaignId}/keywords`
         )
         .then(response => {
           console.log(response.data);
@@ -191,7 +196,7 @@ export default {
           `http://adminapi.varuntandon.com/v1/stats/by_keyword/${this.keywordId}`,
           {
             params: {
-              start_date: this.date
+              start_date: "2019-09-10"
             }
           }
         )
@@ -204,17 +209,29 @@ export default {
         .catch(error => {
           console.log(error);
         });
+    },
+    getClientInfo(campaign_id) {
+      var this_pointer = this;
+      axios({
+        method: "get",
+        url: "http://adminapi.varuntandon.com/v1/campaigns/" + campaign_id,
+
+        headers: { "content-type": "application/json" }
+      })
+        .then(function(response) {
+          this_pointer.campaignInfo = response.data;
+          console.log("response", response.data);
+        })
+        .catch(function(error) {
+          console.log(error);
+        });
     }
   },
   mounted() {
     if (Object.keys(this.$route.query).length) {
-      this.campaignInfo = {
-        client: this.$route.query.clientName,
-        id: this.$route.query.campaignId,
-        brand_name: this.$route.query.brandName,
-        campaign_name: this.$route.query.campaignName
-      };
+      this.campaignId = this.$route.query.campaignId;
     }
+    this.getClientInfo(this.campaignId);
     this.getKeywordList();
   }
 };
