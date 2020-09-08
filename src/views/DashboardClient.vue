@@ -23,7 +23,6 @@
         <vs-th sort-key="client_name">Client Name</vs-th>
         <vs-th sort-key="description">Description</vs-th>
         <vs-th sort-key="description">Date</vs-th>
-        <!-- <vs-th sort-key="id">ID</vs-th> -->
         <vs-th sort-key="actions">Actions</vs-th>
       </template>
       <template slot-scope="{ data }">
@@ -65,18 +64,18 @@
               <strong></strong>
             </span>
             <div class="vx-col sm:w-2/3 w-full ml-auto">
-            <vs-button
-              class="mr-3 mb-2"
-              color="warning"
-              type="border"
-              @click="removeClientData"
-            >Yes</vs-button>
-            <vs-button
-              class="mr-3 mb-2"
-              color="warning"
-              type="border"
-              @click="popupActive=false"
-            >No</vs-button>
+              <vs-button
+                class="mr-3 mb-2"
+                color="warning"
+                type="border"
+                @click="removeClientData"
+              >Yes</vs-button>
+              <vs-button
+                class="mr-3 mb-2"
+                color="warning"
+                type="border"
+                @click="popupActive=false"
+              >No</vs-button>
             </div>
           </vs-popup>
         </div>
@@ -145,29 +144,23 @@ export default {
       console.log("client_id", client_id);
       this.$http
         .delete(
-          "http://adminapi.varuntandon.com/v1/campaigns/client/" +
-            this.deleteClientId
+          `http://adminapi.varuntandon.com/v1/campaigns/client/${this.deleteClientId}`
         )
         .then(response => {
           if (response.data.success) {
             this.$vs.notify({
-              title: "Client deleted Successfully",
+              title: "Client Deleted Successfully",
               color: "success",
               position: "top-right"
             });
+            this.popupActive = false;
+            this.getClientFn();
             console.log("rrresponse", response.data.success);
-          } else {
-            this.$vs.notify({
-              title: "Error",
-              color: "danger",
-              position: "top-right"
-            });
           }
         });
     },
     deleteClientFn(client_id) {
       this.popupActive = true;
-      //client_list = this.clients.client_id;
       this.deleteClientId = client_id;
     }
   },
@@ -184,5 +177,4 @@ export default {
 .d-flex button {
   margin: 0 0.5rem;
 }
-
 </style>

@@ -146,7 +146,6 @@
             <template>
               <v-select
                 label="tag_name"
-                :value="tag_name"
                 v-model="volume"
                 :options="volume_size"
                 :dir="$vs.rtl ? 'rtl' : 'ltr'"
@@ -423,14 +422,6 @@ export default {
             this_pointer.keywords = null;
             this_pointer.keyword_formating = null;
             this_pointer.setDescrption = null;
-
-            //(this_pointer.description = null);
-          } else {
-            // this_pointer.$vs.notify({
-            //   title: "Campaign Already Exist",
-            //   color: "danger",
-            //   position: "top-right"
-            // });
           }
         })
         .catch(function(error, response) {
