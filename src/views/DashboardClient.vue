@@ -23,7 +23,7 @@
         <vs-th sort-key="client_name">Client Name</vs-th>
         <vs-th sort-key="description">Description</vs-th>
         <vs-th sort-key="description">Date</vs-th>
-        <vs-th sort-key="actions">Actions</vs-th>
+        <vs-th v-if="isAdmin" sort-key="actions">Actions</vs-th>
       </template>
       <template slot-scope="{ data }">
         <vs-tr :data="tr" :key="indextr" v-for="(tr, indextr) in data">
@@ -39,7 +39,7 @@
             }}
           </vs-td>
           <vs-td :data="data[indextr].date"></vs-td>
-          <vs-td>
+          <vs-td v-if="isAdmin">
             <div class="d-flex">
               <feather-icon icon="EditIcon" svgClasses="w-5 h-5 hover:text-primary stroke-current" />
               <feather-icon
@@ -107,6 +107,11 @@ export default {
       setName: "",
       removeClient: []
     };
+  },
+  computed: {
+    isAdmin() {
+      return this.$store.state.userRole === 'admin'
+    }
   },
   methods: {
     addClient() {

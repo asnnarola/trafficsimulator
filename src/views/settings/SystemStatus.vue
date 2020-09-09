@@ -7,7 +7,7 @@
       <h3 v-if="appInfo">System Health: {{ appInfo.status.healthy ? 'Good' : 'Bad' }}</h3>
       <vs-divider></vs-divider>
 
-      <div class="vx-row mb-6">
+      <div class="vx-row mb-6" v-if="isAdmin">
         <div class="vx-col sm:w-1/3 w-full">
           <h3>System Reboot:</h3>
         </div>
@@ -29,7 +29,7 @@
         <div class="vx-col sm:w-1/3 w-full">
           <vs-button size="large" @click="showErrorLog">Show Error Log</vs-button>
         </div>
-        <div class="vx-col sm:w-1/3 w-full">
+        <div class="vx-col sm:w-1/3 w-full" v-if="isAdmin">
           <vs-button size="large" @click="clearErrorLog">Clear Error Log</vs-button>
         </div>
       </div>
@@ -41,7 +41,7 @@
         <div class="vx-col sm:w-1/3 w-full">
           <vs-button size="large" @click="showRuntimeLog">Show Runtime Log</vs-button>
         </div>
-        <div class="vx-col sm:w-1/3 w-full">
+        <div class="vx-col sm:w-1/3 w-full" v-if="isAdmin">
           <vs-button size="large" @click="clearRuntimeLog">Clear Runtime Log</vs-button>
         </div>
       </div>&nbsp;
@@ -58,6 +58,11 @@ export default {
       textarea: "",
       appInfo: null,
     };
+  },
+  computed: {
+    isAdmin() {
+      return this.$store.state.userRole === "admin";
+    },
   },
   mounted() {
     this.getAppInfo();

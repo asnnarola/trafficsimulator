@@ -8,8 +8,8 @@
         <vs-th>Name</vs-th>
         <vs-th>Min</vs-th>
         <vs-th>Max</vs-th>
-        <vs-th>Update Text</vs-th>
-        <vs-th>Remove</vs-th>
+        <vs-th v-if="isAdmin">Update Text</vs-th>
+        <vs-th v-if="isAdmin">Remove</vs-th>
       </template>
 
       <template slot-scope="{data}">
@@ -31,14 +31,14 @@
             <span v-if="!(edit === indextr)">{{ data[indextr].max_hit }}</span>
             <vs-input v-if="(edit === indextr)" class="inputx" placeholder="Max" v-model="max_hit" />
           </vs-td>
-          <vs-td :data="data[indextr].id">
+          <vs-td :data="data[indextr].id" v-if="isAdmin">
             <vs-button
               @click="newtvt && (edit === indextr) ? addNewTrafficVolumeTag() : (edit === indextr) ? updateTag(data[indextr].id) : setData(data[indextr], indextr)"
               color="primary"
               type="filled"
             >{{ newtvt && (edit === indextr) ? 'Add New' : (edit === indextr) ? 'Update text' : 'Edit' }}</vs-button>
           </vs-td>
-          <vs-td :data="data[indextr].id">
+          <vs-td :data="data[indextr].id" v-if="isAdmin">
             <vs-button
               @click="removeTrafficVolumeTag(data[indextr].id)"
               color="danger"
@@ -49,7 +49,7 @@
         </vs-tr>
       </template>
     </vs-table>
-    <vs-button
+    <vs-button v-if="isAdmin"
       @click="addNewTrafficRow"
       class="mb-base mt-4"
       type="filled"
@@ -63,7 +63,7 @@
         <vs-th>User</vs-th>
         <vs-th>Password</vs-th>
         <vs-th>Active ?</vs-th>
-        <vs-th>Update Provier</vs-th>
+        <vs-th v-if="isAdmin">Update Provier</vs-th>
       </template>
 
       <template slot-scope="{data}">
@@ -102,12 +102,12 @@
             <vs-checkbox v-model="active" :checked="data[indextr].active"></vs-checkbox>
           </vs-td>
 
-          <vs-td :data="data[indextr].id">
+          <vs-td v-if="isAdmin" :data="data[indextr].id">
             <vs-button
               @click="(editProxy === indextr) ? updateProxyList(data[indextr].id):setUpdateData(data[indextr],indextr)"
               color="primary"
               type="filled"
-            >{{(editProxy === indextr) ? 'Update  ' : 'Edit'}}</vs-button>
+            >{{(editProxy === indextr) ? 'Update ' : 'Edit'}}</vs-button>
           </vs-td>
         </vs-tr>
       </template>
@@ -169,7 +169,7 @@
           </div>
         </div>
 
-        <vs-button class="mb-base mt-4" type="filled">Update Spike Up/ Down Config</vs-button>
+        <vs-button v-if="isAdmin" class="mb-base mt-4" type="filled">Update Spike Up/ Down Config</vs-button>
       </vx-card>
     </template>
   </div>
@@ -184,16 +184,16 @@ export default {
       info: [
         {
           id: 1,
-          provider: "Oxylabs"
+          provider: "Oxylabs",
         },
         {
           id: 2,
-          provider: "Smartproxy"
+          provider: "Smartproxy",
         },
         {
           id: 3,
-          provider: "Packetstream"
-        }
+          provider: "Packetstream",
+        },
       ],
       type: ["3", "4", "5", "6"],
       type1: ["2", "3", "4", "5", "6"],
@@ -215,11 +215,16 @@ export default {
       spike_days: null,
       downturn_days: null,
       level: null,
-      active: null
+      active: null,
     };
   },
   components: {
-    "v-select": vSelect
+    "v-select": vSelect,
+  },
+  computed: {
+    isAdmin() {
+      return this.$store.state.userRole === "admin";
+    },
   },
   mounted() {
     this.getTrafficVolumeTags();
@@ -229,28 +234,28 @@ export default {
     getTrafficVolumeTags() {
       this.$http
         .get("http://adminapi.varuntandon.com/v1/tvt")
-        .then(response => {
+        .then((response) => {
           this.trafficVolumeTags = response.data.tags;
           console.log(response);
         })
-        .catch(error => console.log(error));
+        .catch((error) => console.log(error));
     },
     updateTag(tag_id) {
       this.$http
         .put(`http://adminapi.varuntandon.com/v1/tvt/${tag_id}`, {
           tag_name: this.tag_name,
           min_hit: this.min_hit,
-          max_hit: this.max_hit
+          max_hit: this.max_hit,
         })
-        .then(response => {
+        .then((response) => {
           if (response.data.success) {
             var newTag = {
               id: tag_id,
               tag_name: this.tag_name,
               min_hit: this.min_hit,
-              max_hit: this.max_hit
+              max_hit: this.max_hit,
             };
-            this.trafficVolumeTags = this.trafficVolumeTags.map(tag =>
+            this.trafficVolumeTags = this.trafficVolumeTags.map((tag) =>
               tag.id === tag_id ? (tag = newTag) : tag
             );
             this.tag_name = null;
@@ -259,7 +264,7 @@ export default {
             this.edit = -1;
           }
         })
-        .catch(error => console.log(error));
+        .catch((error) => console.log(error));
     },
     setData(data, index) {
       // this.provider = provider;
@@ -272,7 +277,7 @@ export default {
       this.trafficVolumeTags.push({
         tag_name: "",
         min_hit: null,
-        max_hit: null
+        max_hit: null,
       });
       this.edit = this.trafficVolumeTags.length - 1;
       this.newtvt = true;
@@ -281,11 +286,11 @@ export default {
       const newTag = {
         tag_name: this.tag_name,
         min_hit: this.min_hit,
-        max_hit: this.max_hit
+        max_hit: this.max_hit,
       };
       this.$http
         .post("http://adminapi.varuntandon.com/v1/tvt", newTag)
-        .then(response => {
+        .then((response) => {
           if (response.data.success) {
             console.log("tvt added!");
             this.getTrafficVolumeTags();
@@ -303,10 +308,10 @@ export default {
     removeTrafficVolumeTag(tag_id) {
       this.$http
         .delete(`http://adminapi.varuntandon.com/v1/tvt/${tag_id}`)
-        .then(response => {
+        .then((response) => {
           if (response.data.success) {
             const index = this.trafficVolumeTags.findIndex(
-              tag => tag.id === tag_id
+              (tag) => tag.id === tag_id
             );
             this.trafficVolumeTags.splice(index, 1);
             console.log("Removed Successfully");
@@ -317,14 +322,14 @@ export default {
       axios({
         method: "get",
         url: "http://adminapi.varuntandon.com/v1/proxy",
-        headers: { "content-type": "application/json" }
+        headers: { "content-type": "application/json" },
       })
-        .then(response => {
+        .then((response) => {
           console.log("firstResponse", response);
           this.proxyList = response.data.accounts;
           console.log("response", this.proxyList, response.data.accounts);
         })
-        .catch(function(error) {
+        .catch(function (error) {
           console.log(error);
         });
     },
@@ -334,19 +339,19 @@ export default {
           provider: this.provider,
           username: this.username,
           password: this.password,
-          active: this.active
+          active: this.active,
         })
-        .then(function(response) {
+        .then(function (response) {
           if (response.data.success) {
             var newProxy = {
               //id: account_id,
               provider: this.provider,
               username: this.username,
               password: this.password,
-              active: this.active
+              active: this.active,
             };
 
-            this.proxyList = this.proxyList.map(acc =>
+            this.proxyList = this.proxyList.map((acc) =>
               acc.id === account_id ? (acc = newProxy) : acc
             );
             this.provider = null;
@@ -355,7 +360,7 @@ export default {
             this.edit = -1;
           }
         })
-        .catch(function(error) {
+        .catch(function (error) {
           console.log(error);
         });
     },
@@ -365,8 +370,8 @@ export default {
       this.password = data.password;
       this.active = data.active;
       this.editProxy = index;
-    }
-  }
+    },
+  },
 };
 </script>
 
