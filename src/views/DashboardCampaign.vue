@@ -290,7 +290,7 @@
                   <feather-icon
                     icon="EditIcon"
                     svgClasses="w-5 h-5 hover:text-primary stroke-current"
-                    @click="getCLientInfo(tr.id)"
+                    @click="getClientInfo(tr.id)"
                     @click.stop="popupActive2 = true"
                   />
                   <feather-icon
@@ -433,10 +433,7 @@ export default {
       this.$router.push({
         path: "/dashboard/viewstatus",
         query: {
-          campaignId: data.id,
-          clientName: data.client,
-          brandName: data.brand_name,
-          campaignName: data.campaign_name
+          campaignId: data.id
         }
       });
     },
@@ -500,7 +497,7 @@ export default {
     toggleDataSidebar(val = false) {
       this.addNewDataSidebar = val;
     },
-    getCLientInfo(campgain_id) {
+    getClientInfo(campgain_id) {
       var this_pointer = this;
       axios({
         method: "get",
