@@ -113,6 +113,13 @@ const mutations = {
     }
     // Store data in localStorage
     localStorage.setItem('userInfo', JSON.stringify(userInfo))
+  },
+
+  SET_LOGIN_STATUS(state, status) {
+    state.isLoggedIn = status
+  },
+  SET_USER_ROLE(state, role) {
+    state.userRole = role
   }
 }
 

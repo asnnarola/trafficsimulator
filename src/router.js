@@ -19,6 +19,7 @@
 import Vue from "vue";
 import Router from "vue-router";
 import auth from "@/auth/authService";
+import store from "./store/store";
 
 import firebase from "firebase/app";
 import "firebase/auth";
@@ -52,7 +53,8 @@ const router = new Router({
           name: "dashboard-client",
           component: () => import("./views/DashboardClient.vue"),
           meta: {
-            rule: "admin"
+            rule: "admin",
+            requiresAuth: true
           }
         },
         {
@@ -60,7 +62,8 @@ const router = new Router({
           name: "dashboard-clientdescription",
           component: () => import("./views/DashboardClientDescription.vue"),
           meta: {
-            rule: "admin"
+            rule: "admin",
+            requiresAuth: true
           }
         },
         {
@@ -68,7 +71,8 @@ const router = new Router({
           name: "dashboard-allcampaign",
           component: () => import("./views/DashboardCampaign.vue"),
           meta: {
-            rule: "admin"
+            rule: "admin",
+            requiresAuth: true
           }
         },
         {
@@ -76,7 +80,8 @@ const router = new Router({
           name: "dashboard-addcampaigns",
           component: () => import("./views/DashboardAddCampaigns.vue"),
           meta: {
-            rule: "admin"
+            rule: "admin",
+            requiresAuth: true
           }
         },
         {
@@ -84,7 +89,8 @@ const router = new Router({
           name: "dashboard-viewstatus",
           component: () => import("./views/DashboardViewStatus.vue"),
           meta: {
-            rule: "admin"
+            rule: "admin",
+            requiresAuth: true
           },
           props: true
         },
@@ -97,7 +103,8 @@ const router = new Router({
           name: "Global Settings",
           component: () => import("@/views/settings/GlobalSettings.vue"),
           meta: {
-            rule: "admin"
+            rule: "admin",
+            requiresAuth: true
           }
         },
         {
@@ -105,7 +112,21 @@ const router = new Router({
           name: "System Status",
           component: () => import("@/views/settings/SystemStatus.vue"),
           meta: {
-            rule: "admin"
+            rule: "admin",
+            requiresAuth: true
+          }
+        },
+
+        // =============================================================================
+        // Users
+        // =============================================================================\
+        {
+          path: "/users",
+          name: "Users",
+          component: () => import("@/views/users/Index.vue"),
+          meta: {
+            rule: "admin",
+            requiresAuth: true
           }
         }
       ]
@@ -129,11 +150,12 @@ const router = new Router({
           }
         },
         {
-          path: "/pages/login",
-          name: "page-login",
-          component: () => import("@/views/pages/login/Login.vue"),
+          path: "/login",
+          name: "Login",
+          component: () => import("@/views/Login.vue"),
           meta: {
-            rule: "editor"
+            rule: "editor",
+            requiresGuest: true
           }
         },
         {
@@ -141,7 +163,8 @@ const router = new Router({
           name: "page-register",
           component: () => import("@/views/pages/register/Register.vue"),
           meta: {
-            rule: "editor"
+            rule: "editor",
+            requiresGuest: true
           }
         },
         {
@@ -149,7 +172,8 @@ const router = new Router({
           name: "page-forgot-password",
           component: () => import("@/views/pages/ForgotPassword.vue"),
           meta: {
-            rule: "editor"
+            rule: "editor",
+            requiresGuest: true
           }
         },
         {
@@ -157,7 +181,8 @@ const router = new Router({
           name: "page-reset-password",
           component: () => import("@/views/pages/ResetPassword.vue"),
           meta: {
-            rule: "editor"
+            rule: "editor",
+            requiresGuest: true
           }
         },
         {
@@ -216,6 +241,27 @@ const router = new Router({
       redirect: "/pages/error-404"
     }
   ]
+});
+
+router.beforeEach((to, from, next) => {
+  if (to.matched.some(record => record.meta.requiresAuth)) {
+    if (store.state.userRole === "editor" && to.name === "Users") {
+      next("/");
+    }
+    if (!store.state.isLoggedIn) {
+      next({
+        name: "Login"
+      });
+    } else {
+      next();
+    }
+  } else if (to.matched.some(record => record.meta.requiresGuest)) {
+    if (!store.state.isLoggedIn) {
+      next();
+    } else {
+      next("/");
+    }
+  }
 });
 
 router.afterEach(() => {

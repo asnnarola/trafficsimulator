@@ -18,7 +18,6 @@
   Author URL: http://www.themeforest.net/user/pixinvent
 ==========================================================================================*/
 
-
 export default [
   // {
   //   url: "/apps/email",
@@ -55,58 +54,71 @@ export default [
   //   ]
   // },
   {
-    header: 'Clients',
-    icon: 'FileIcon',
-    i18n: 'Clients',
+    header: "Clients",
+    icon: "FileIcon",
+    i18n: "Clients",
     items: [
       {
-        url: '/dashboard/client',
-        slug: 'dashboard-client',
-        name: 'Client',
-        icon: 'UserIcon',
-        i18n: 'Client'
-      },
-
-    ]
-  },
-  {
-    header: 'Campaigns',
-    icon: 'FileIcon',
-    i18n: 'Campaigns',
-    items: [
-      {
-        url: '/dashboard/allcampaign',
-        slug: 'dashboard-allcampaign',
-        name: 'Campaigns',
-        icon: 'PackageIcon',
-        i18n: 'Campaigns'
-      },
-
-    ]
-  },
-
-
-  {
-    header: 'System Settings',
-    icon: 'FileIcon',
-    i18n: 'System Settings',
-    items: [
-      {
-        url: '/settings/global-settings',
-        name: 'Global Settings',
-        slug: 'global-settings',
-        i18n: 'Global Settings',
-        icon: 'SettingsIcon',
-      },
-      {
-        url: '/settings/system-status',
-        name: 'System Status',
-        slug: 'system-status',
-        i18n: 'System Status',
-        icon: 'SettingsIcon',
+        url: "/dashboard/client",
+        slug: "dashboard-client",
+        name: "Client",
+        icon: "UserIcon",
+        i18n: "Client"
       }
     ]
   },
+  {
+    header: "Campaigns",
+    icon: "FileIcon",
+    i18n: "Campaigns",
+    items: [
+      {
+        url: "/dashboard/allcampaign",
+        slug: "dashboard-allcampaign",
+        name: "Campaigns",
+        icon: "PackageIcon",
+        i18n: "Campaigns"
+      }
+    ]
+  },
+
+  {
+    header: "System Settings",
+    icon: "FileIcon",
+    i18n: "System Settings",
+    items: [
+      {
+        url: "/settings/global-settings",
+        name: "Global Settings",
+        slug: "global-settings",
+        i18n: "Global Settings",
+        icon: "SettingsIcon"
+      },
+      {
+        url: "/settings/system-status",
+        name: "System Status",
+        slug: "system-status",
+        i18n: "System Status",
+        icon: "SettingsIcon"
+      }
+    ]
+  },
+  localStorage.getItem("isAdmin")
+    ? {
+        header: "Users",
+        icon: "FileIcon",
+        i18n: "Users",
+        items: [
+          {
+            url: "/users",
+            slug: "users",
+            name: "Users",
+            icon: "UsersIcon",
+            i18n: "Users"
+          }
+        ]
+      }
+    : {}
   // {
   //   url: null,
   //   name: "System Settings",
@@ -129,5 +141,4 @@ export default [
   //     }
   //   ]
   // }
-
-]
+];

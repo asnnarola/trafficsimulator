@@ -84,6 +84,8 @@ const state = {
   starredPages            : navbarSearchAndPinList['pages'].data.filter((page) => page.is_bookmarked),
   theme                   : themeConfig.theme || 'light',
   themePrimaryColor       : colors.primary,
+  isLoggedIn              : localStorage.getItem('isAdmin') || localStorage.getItem('isEditor'),
+  userRole                : localStorage.getItem('isAdmin') ? 'admin' : 'editor' ,
 
   // Can be used to get current window with
   // Note: Above breakpoint state is for internal use of sidebar & navbar component
