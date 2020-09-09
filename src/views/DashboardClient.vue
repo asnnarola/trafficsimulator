@@ -8,7 +8,7 @@
           </b>
         </span>
       </vx-input-group>
-      <div class="flex items-center">
+      <div v-if="isAdmin" class="flex items-center">
         <vs-button class="mb-base mr-3" @click="addClient">Add Client</vs-button>
       </div>
     </div>
