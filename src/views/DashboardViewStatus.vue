@@ -73,25 +73,45 @@
               <strong>Actual Lifetime Visits:</strong>
             </span>
           </div>
-        </div>
-        <div class="vx-row mb-6">
           <div class="vx-col sm:w-1/3 w-full">
             <span>
-              <strong>Actual Visits in last 30 days:{{this.xyz}}</strong>
+              <strong>{{this.lifetime_visits}}</strong>
             </span>
           </div>
         </div>
         <div class="vx-row mb-6">
           <div class="vx-col sm:w-1/3 w-full">
             <span>
-              <strong>Actual Visits in last 60 days:{{this.lastDays}}</strong>
+              <strong>Actual Visits in last 30 days:</strong>
+            </span>
+          </div>
+          <div class="vx-col sm:w-1/3 w-full">
+            <span>
+              <strong>{{this.xyz}}</strong>
             </span>
           </div>
         </div>
         <div class="vx-row mb-6">
           <div class="vx-col sm:w-1/3 w-full">
             <span>
-              <strong>Actual Visits in last 180 days:{{this.setDay}}</strong>
+              <strong>Actual Visits in last 60 days:</strong>
+            </span>
+          </div>
+          <div class="vx-col sm:w-1/3 w-full">
+            <span>
+              <strong>{{this.lastDays}}</strong>
+            </span>
+          </div>
+        </div>
+        <div class="vx-row mb-6">
+          <div class="vx-col sm:w-1/3 w-full">
+            <span>
+              <strong>Actual Visits in last 180 days:</strong>
+            </span>
+          </div>
+          <div class="vx-col sm:w-1/3 w-full">
+            <span>
+              <strong>{{this.setDay}}</strong>
             </span>
           </div>
         </div>
@@ -167,7 +187,9 @@ export default {
       campaignId: null,
       xyz: 0,
       lastDays: 0,
-      setDay: 0
+      setDay: 0,
+      setDays: 0,
+      lifetime_visits: 0
       //setName: ""
     };
   },
@@ -175,8 +197,8 @@ export default {
     "v-select": vSelect
   },
   methods: {
-    async getKeywordList() {
-      await this.$http
+    getKeywordList() {
+      this.$http
         .get(
           `http://adminapi.varuntandon.com/v1/campaigns/${this.campaignId}/keywords`
         )
@@ -189,8 +211,7 @@ export default {
           });
           console.log(this.keywords);
           this.getStatsFor30Days();
-          this.getStatsFor60Days();
-          this.getStatsFor180Days();
+          //  this.getLifetimeVisits();
         })
         .catch(error => {
           console.log(error);
@@ -222,7 +243,7 @@ export default {
             {
               campaign: 0,
               keyword: 0,
-              date: "2019-09-01",
+              date: "2019-09-12",
               hits_requested: 0,
               hits_achieved: 10
             },
@@ -257,9 +278,9 @@ export default {
             {
               campaign: 0,
               keyword: 0,
-              date: "2019-10-01",
+              date: "2019-02-01",
               hits_requested: 0,
-              hits_achieved: 0
+              hits_achieved: 1000
             },
             {
               campaign: 0,
@@ -292,21 +313,33 @@ export default {
         });
     },
     getStatsFor30Days() {
-      let date = new Date();
-      let last30Days = new Date(date.setDate(date.getDate() - 30));
+      let now = new Date();
+      let last30Days = new Date(now.setDate(now.getDate() - 30));
       this.$http
         .get(
-          `http://adminapi.varuntandon.com/v1/stats/by_keyword/${this.keywordId}`,
-          {
-            params: {
-              start_date: moment(last30Days).format("YYYY-MM-DD")
-            }
-          }
+          `http://adminapi.varuntandon.com/v1/campaigns/${this.campaignId}/keywords`
+          // {
+          //   params: {
+          //     start_date: moment(last30Days).format("YYYY-MM-DD")
+          //   }
+          // }
         )
+        // .then(response => {
+        //   this.statsList.forEach(record => {
+        //     this.xyz = this.xyz + record.hits_achieved;
+        //     console.log(record.hits_achieved);
+        //   });
+        // })
         .then(response => {
           this.statsList.forEach(record => {
-            this.xyz = this.xyz + record.hits_achieved;
-            console.log(record.hits_achieved);
+            if (
+              moment(record.date).isAfter(
+                moment(last30Days).format("YYYY-MM-DD")
+              )
+            ) {
+              this.xyz = this.xyz + record.hits_achieved;
+              console.log(record.hits_achieved);
+            }
           });
         })
         .catch(error => {
@@ -317,18 +350,33 @@ export default {
       let now = new Date();
       let last60Days = new Date(now.setDate(now.getDate() - 60));
       this.$http
+        // .get(
+        //   `http://adminapi.varuntandon.com/v1/stats/by_keyword/${this.keywordId}`,
+        //   {
+        //     params: {
+        //       start_date: moment(last60Days).format("YYYY-MM-DD")
+        //     }
+        //   }
+        // )
+        // .then(response => {
+        //   this.statsList.forEach(record => {
+        //     this.lastDays = this.lastDays + record.hits_achieved;
+        //     console.log(record.hits_achieved);
+        //   });
+        // })
         .get(
-          `http://adminapi.varuntandon.com/v1/stats/by_keyword/${this.keywordId}`,
-          {
-            params: {
-              start_date: moment(last60Days).format("YYYY-MM-DD")
-            }
-          }
+          `http://adminapi.varuntandon.com/v1/campaigns/${this.campaignId}/keywords`
         )
         .then(response => {
           this.statsList.forEach(record => {
-            this.lastDays = this.lastDays + record.hits_achieved;
-            console.log(record.hits_achieved);
+            if (
+              moment(record.date).isAfter(
+                moment(last60Days).format("YYYY-MM-DD")
+              )
+            ) {
+              this.lastDays = this.lastDays + record.hits_achieved;
+              console.log(record.hits_achieved);
+            }
           });
         })
         .catch(error => {
@@ -339,18 +387,67 @@ export default {
       let now = new Date();
       let last180Days = new Date(now.setDate(now.getDate() - 180));
       this.$http
+        // .get(
+        //   `http://adminapi.varuntandon.com/v1/stats/by_keyword/${this.keywordId}`,
+        //   {
+        //     params: {
+        //       start_date: moment(last180Days).format("YYYY-MM-DD")
+        //     }
+        //   }
+        // )
+        // .then(response => {
+        //   this.statsList.forEach(record => {
+        //     this.setDay = this.setDay + record.hits_achieved;
+        //     console.log(record.hits_achieved);
+        //   });
+        // })
         .get(
-          `http://adminapi.varuntandon.com/v1/stats/by_keyword/${this.keywordId}`,
-          {
-            params: {
-              start_date: moment(last180Days).format("YYYY-MM-DD")
-            }
-          }
+          `http://adminapi.varuntandon.com/v1/campaigns/${this.campaignId}/keywords`
         )
         .then(response => {
           this.statsList.forEach(record => {
-            this.setDay = this.setDay + record.hits_achieved;
-            console.log(record.hits_achieved);
+            if (
+              moment(record.date).isAfter(
+                moment(last180Days).format("YYYY-MM-DD")
+              )
+            ) {
+              this.setDay = this.setDay + record.hits_achieved;
+              console.log(record.hits_achieved);
+            }
+          });
+        })
+        .catch(error => {
+          console.log(error);
+        });
+    },
+
+    getLifetimeVisits() {
+      this.$http
+        // .get(
+        //   `http://adminapi.varuntandon.com/v1/stats/by_keyword/${this.keywordId}`,
+        //   {
+        //     params: {
+        //       start_date: moment(last180Days).format("YYYY-MM-DD")
+        //     }
+        //   }
+        // )
+        // .then(response => {
+        //   this.statsList.forEach(record => {
+        //     this.setDay = this.setDay + record.hits_achieved;
+        //     console.log(record.hits_achieved);
+        //   });
+        // })
+        .get(
+          `http://adminapi.varuntandon.com/v1/campaigns/${this.campaignId}/keywords`
+        )
+        .then(response => {
+          this.lifetime_visits = 0;
+          console.log("list count", this.statsList);
+          this.statsList.forEach(record => {
+            {
+              this.lifetime_visits =
+                this.lifetime_visits + record.hits_achieved;
+            }
           });
         })
         .catch(error => {
@@ -368,6 +465,7 @@ export default {
     this.getStatsFor30Days();
     this.getStatsFor60Days();
     this.getStatsFor180Days();
+    this.getLifetimeVisits();
 
     // var actual_visits = 0
     // response.data.forEach(record => actual_visits + record.hitsAchieved)

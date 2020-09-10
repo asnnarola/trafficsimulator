@@ -143,14 +143,15 @@
             </span>
           </div>
           <div class="vx-col sm:w-2/3 w-full">
-            <template>
-              <v-select
-                label="tag_name"
-                v-model="volume"
-                :options="volume_size"
-                :dir="$vs.rtl ? 'rtl' : 'ltr'"
+            <vs-select class="w-full select-large" label="Traffic Volume" v-model="volume">
+              <vs-select-item
+                :key="index"
+                :value="item.tag_name"
+                :text="`${item.min_hit}-${item.max_hit}`"
+                v-for="(item,index) in volume_size"
+                class="w-full"
               />
-            </template>
+            </vs-select>
           </div>
         </div>
 
@@ -209,7 +210,7 @@
         <div class="vx-row mb-6">
           <div class="vx-col sm:w-1/3 w-full">
             <span>
-              <strong>Lenght of Time Range to spend in seconds.</strong>
+              <strong>Length of Time Range to spend in seconds.</strong>
             </span>
           </div>
           <div class="vx-col sm:w-2/3 w-full">
@@ -226,8 +227,15 @@
             </span>
           </div>
           <div class="vx-col sm:w-2/3 w-full">
-            <template></template>
-            <v-select label="countryName" :options="country" :dir="$vs.rtl ? 'rtl' : 'ltr'" />
+            <vs-select class="w-full select-large" label="Country" v-model="country_name">
+              <vs-select-item
+                :key="index"
+                :value="item"
+                :text="item"
+                v-for="(item,index) in country"
+                class="w-full"
+              />
+            </vs-select>
           </div>
         </div>
 
@@ -284,8 +292,8 @@ export default {
       type: ["search", "direct"],
       paused: { labelState: "Active", val: false },
       stay_duration: "",
-      country: [],
-      state: [],
+      country: ["us", "in"],
+      state: ["Washington DC", "California"],
       volume_size: [],
       campaign_name: " ",
       brand_name: " ",
@@ -293,6 +301,7 @@ export default {
       keyword_formating: "",
       search: "addressbar",
       campaign_type: "search",
+      country_name: "",
       city: "",
       volume: "",
       start_date: null,
@@ -383,11 +392,11 @@ export default {
             : this.stay_duration,
           start_date: !_.isEmpty(this.start_date) ? this.start_date : undefined,
           end_date: !_.isEmpty(this.end_date) ? this.end_date : undefined,
-          country: "us",
+          country: this.country_name,
           search_method: this.search,
           type: this.campaign_type,
           url: this.url,
-          volume_size: this.volume.tag_name,
+          volume_size: this.volume,
           state: "ny",
           city: ["houston", "brooklyn"],
           keywords: keyWords && keyWords.length ? keyWords : undefined,
@@ -412,7 +421,7 @@ export default {
             this_pointer.stay_duration = null;
             this_pointer.start_date = null;
             this_pointer.end_date = null;
-            this_pointer.country = null;
+            this_pointer.country_name = null;
             this_pointer.url = null;
             this_pointer.state = null;
             this_pointer.city = null;
