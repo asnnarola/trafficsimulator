@@ -227,28 +227,44 @@
             </span>
           </div>
           <div class="vx-col sm:w-2/3 w-full">
-            <vs-select class="w-full select-large" label="Country" v-model="country_name">
+            <!-- <vs-select class="w-full select-large" label="Traffic Volume" v-model="volume">
               <vs-select-item
                 :key="index"
-                :value="item"
-                :text="item"
-                v-for="(item,index) in country"
+                :value="item.tag_name"
+                :text="`${item.min_hit}-${item.max_hit}`"
+                v-for="(item,index) in volume_size"
+                class="w-full"
+              />
+            </vs-select>-->
+            <vs-select class="w-full select-large" label="Country" v-model="country_code">
+              <vs-select-item value text="Select Country" disabled></vs-select-item>
+              <vs-select-item
+                :key="index"
+                :value="item.iso"
+                :text="`${item.country}-${item.iso}`"
+                v-for="(item,index) in countryList"
                 class="w-full"
               />
             </vs-select>
           </div>
         </div>
 
-        <div class="vx-row mb-6">
+        <div class="vx-row mb-6" v-if="country_code == 'US' ">
           <div class="vx-col sm:w-1/3 w-full">
             <span>
               <strong>Location State</strong>
             </span>
           </div>
           <div class="vx-col sm:w-2/3 w-full">
-            <template>
-              <v-select label="stateName" :options="state" :dir="$vs.rtl ? 'rtl' : 'ltr'" />
-            </template>
+            <vs-select class="w-full select-large" label="States" v-model="stateName">
+              <vs-select-item
+                :key="index"
+                :value="item.state"
+                :text="`${item.state}-${item.iso}`"
+                v-for="(item,index) in stateList"
+                class="w-full"
+              />
+            </vs-select>
           </div>
         </div>
 
@@ -284,6 +300,8 @@ import vselect from "vue-select";
 import flatPickr from "vue-flatpickr-component";
 import _ from "underscore";
 import "flatpickr/dist/flatpickr.css";
+import { countries } from "../assets/utils/country";
+import { states } from "../assets/utils/state";
 export default {
   data() {
     return {
@@ -292,8 +310,6 @@ export default {
       type: ["search", "direct"],
       paused: { labelState: "Active", val: false },
       stay_duration: "",
-      country: ["us", "in"],
-      state: ["Washington DC", "California"],
       volume_size: [],
       campaign_name: " ",
       brand_name: " ",
@@ -301,13 +317,16 @@ export default {
       keyword_formating: "",
       search: "addressbar",
       campaign_type: "search",
-      country_name: "",
+      country_code: "",
       city: "",
       volume: "",
       start_date: null,
       end_date: null,
       setDescrption: "",
       url: "",
+      countryList: countries,
+      stateList: states,
+      stateName: "",
       search_method: ["url", "addressbar"],
       InitialStatus: [
         { labelState: "Active", val: false },
@@ -392,12 +411,12 @@ export default {
             : this.stay_duration,
           start_date: !_.isEmpty(this.start_date) ? this.start_date : undefined,
           end_date: !_.isEmpty(this.end_date) ? this.end_date : undefined,
-          country: this.country_name,
+          country: this.country_code,
           search_method: this.search,
           type: this.campaign_type,
           url: this.url,
           volume_size: this.volume,
-          state: "ny",
+          state: this.stateName,
           city: ["houston", "brooklyn"],
           keywords: keyWords && keyWords.length ? keyWords : undefined,
           paused: this.paused.val,
@@ -421,7 +440,7 @@ export default {
             this_pointer.stay_duration = null;
             this_pointer.start_date = null;
             this_pointer.end_date = null;
-            this_pointer.country_name = null;
+            this_pointer.country_code = null;
             this_pointer.url = null;
             this_pointer.state = null;
             this_pointer.city = null;
@@ -492,6 +511,7 @@ export default {
     this.getCampaignClient();
     //this.addCampaignName();
     this.addVolumeTag();
+    console.log(this.countries);
   }
 };
 </script>

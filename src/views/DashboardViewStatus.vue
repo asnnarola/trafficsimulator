@@ -132,7 +132,7 @@
           </div>
         </div>&nbsp;
         <div>
-          <vs-table max-items="3" pagination :data="statsList">
+          <vs-table max-items="10" pagination :data="statsList">
             <template slot="thead">
               <vs-th>Date</vs-th>
               <vs-th>Requested Visits</vs-th>

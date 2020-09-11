@@ -10,7 +10,7 @@
               </b>
             </span>
           </vx-input-group>
-          <div class="flex items-center">
+          <div class="flex items-center" v-if="isAdmin">
             <vs-button class="mb-base mr-3" @click="addNewCampaign">Add a new Campaign</vs-button>
           </div>
         </div>
