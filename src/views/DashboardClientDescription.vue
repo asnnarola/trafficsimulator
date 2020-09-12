@@ -6,42 +6,37 @@
         <div class="flex flex-wrap items-center justify-between">
           <vx-input-group class="mb-base mr-3">
             <span>
-              <b><h3>Client Details</h3></b>
+              <b>
+                <h3>Client Details</h3>
+              </b>
             </span>
-
-
           </vx-input-group>
           <div class="flex items-center">
-
             <vs-button
               class="justify-end mb-base mr-3"
-
               type="filled"
               :to="{ path: '/dashboard/client' }"
-              >Back to Clients</vs-button
-            >
+            >Back to Clients</vs-button>
           </div>
         </div>
 
-
-
-        <div class="vx-row mb-6">
+        <div class="vx-row mb-6" :data="clientDes">
           <div class="vx-col w-full">
             <label>Client Name</label>
-            <vs-input class="w-full" v-model="client_name" />
+            <vs-input class="w-full" :value="clientDes.client_name" />
           </div>
         </div>
-        <div class="mt-5">
+        <div class="mt-5" :data="clientDes">
           <label>Add Description</label>
-          <vs-textarea v-model="description" />
+          <vs-textarea :value="clientDes.description" />
         </div>
         <div class="vx-row">
           <div class="vx-col w-full">
-            <vs-button class="mr-3 mb-2"
-            color="success"
-            @click="addClientFn">{{
+            <vs-button class="mr-3 mb-2" color="success" @click="addClientFn">
+              {{
               edit ? "Update" : "Submit"
-            }}</vs-button>
+              }}
+            </vs-button>
             <vs-button
               color="warning"
               type="border"
@@ -50,8 +45,7 @@
                 client_name = description = '';
                 check3 = false;
               "
-              >Cancel</vs-button
-            >
+            >Cancel</vs-button>
           </div>
         </div>
       </vx-card>
@@ -67,7 +61,12 @@ export default {
       check3: "",
       client_name: "",
       description: "",
-      edit: false
+      edit: false,
+      clientId: null,
+      clientDes: {
+        client_name: "",
+        description: ""
+      }
     };
   },
   methods: {
@@ -109,14 +108,34 @@ export default {
             position: "top-right"
           });
         });
+    },
+    getClientFn(client_id) {
+      var this_pointer = this;
+      axios({
+        method: "get",
+        url: "http://adminapi.varuntandon.com/v1/clients/",
+        headers: { "content-type": "application/json" }
+      })
+        .then(function(response) {
+          console.log("firstResponse", response);
+          this_pointer.clientDes = response.data.clients;
+          console.log(
+            "response",
+            this_pointer.clientDes,
+            response.data.clients
+          );
+        })
+        .catch(function(error) {
+          console.log(error);
+        });
     }
   },
   mounted() {
-    if (Object.keys(this.$route.params).length) {
-      this.client_name = this.$route.params.clientInfo.client_name;
-      this.description = this.$route.params.clientInfo.description;
+    if (Object.keys(this.$route.query).length) {
+      this.clientId = this.$route.query.clientId;
       this.edit = true;
     }
+    this.getClientFn(this.clientId);
   }
 };
 </script>

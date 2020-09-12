@@ -10,7 +10,7 @@
               </b>
             </span>
           </vx-input-group>
-          <div class="flex items-center">
+          <div class="flex items-center" v-if="isAdmin">
             <vs-button class="mb-base mr-3" @click="addNewCampaign">Add a new Campaign</vs-button>
           </div>
         </div>
@@ -65,7 +65,7 @@
           pagination
           :max-items="itemsPerPage"
           search
-          :data="active_campaign_list"
+          :data="activeCampaignList"
         >
           <div slot="header" class="flex flex-wrap-reverse items-center flex-grow justify-between">
             <div class="flex flex-wrap-reverse items-center data-list-btn-container">
@@ -98,7 +98,7 @@
             <vs-th sort-key="country">Country</vs-th>
             <vs-th sort-key="state">State</vs-th>
             <vs-th sort-key="city">City</vs-th>
-            <vs-th>Action</vs-th>
+            <vs-th v-if="isAdmin">Action</vs-th>
           </template>
 
           <template slot-scope="{ data }">
@@ -156,7 +156,7 @@
                   <p class="city">{{ tr.city.join() }}</p>
                 </vs-td>
 
-                <vs-td class="whitespace-no-wrap">
+                <vs-td class="whitespace-no-wrap" v-if="isAdmin">
                   <feather-icon
                     icon="EditIcon"
                     svgClasses="w-5 h-5 hover:text-primary stroke-current"
@@ -198,7 +198,7 @@
           pagination
           :max-items="itemsPerPage"
           search
-          :data="in_active_campaign_list"
+          :data="inactivecampaignlist"
         >
           <div slot="header" class="flex flex-wrap-reverse items-center flex-grow justify-between">
             <div class="flex flex-wrap-reverse items-center data-list-btn-container">
@@ -229,7 +229,7 @@
             <vs-th sort-key="country">Country</vs-th>
             <vs-th sort-key="state">State</vs-th>
             <vs-th sort-key="city">City</vs-th>
-            <vs-th>Action</vs-th>
+            <vs-th v-if="isAdmin">Action</vs-th>
           </template>
 
           <template slot-scope="{ data }">
@@ -287,7 +287,7 @@
                   <p class="city">{{ tr.city.join() }}</p>
                 </vs-td>
 
-                <vs-td class="whitespace-no-wrap">
+                <vs-td class="whitespace-no-wrap" v-if="isAdmin">
                   <feather-icon
                     icon="EditIcon"
                     svgClasses="w-5 h-5 hover:text-primary stroke-current"
@@ -409,6 +409,9 @@ export default {
     flatPickr
   },
   computed: {
+    isAdmin() {
+      return this.$store.state.userRole === "admin";
+    },
     currentPage() {
       if (this.isMounted) {
         return this.$refs.table.currentx;
@@ -422,6 +425,24 @@ export default {
       return this.$refs.table
         ? this.$refs.table.queriedResults.length
         : this.products.length;
+    },
+    activeCampaignList() {
+      return this.campaigns_list.filter(item => {
+        if (this.startDate == moment().format("YYYY-MM-DD")) {
+          return item.status === "active";
+        } else {
+          return item.status === "active" && item.start_date == this.startDate;
+        }
+      });
+    },
+    inactivecampaignlist() {
+      return this.campaigns_list.filter(item => {
+        if (this.startDate == moment().format("YYYY-MM-DD")) {
+          return item.status === "paused";
+        } else {
+          return item.status === "paused" && item.start_date == this.startDate;
+        }
+      });
     }
   },
 
@@ -498,11 +519,11 @@ export default {
     toggleDataSidebar(val = false) {
       this.addNewDataSidebar = val;
     },
-    getClientInfo(campgain_id) {
+    getClientInfo(campaign_id) {
       var this_pointer = this;
       axios({
         method: "get",
-        url: "http://adminapi.varuntandon.com/v1/campaigns/" + campgain_id,
+        url: "http://adminapi.varuntandon.com/v1/campaigns/" + campaign_id,
 
         headers: { "content-type": "application/json" }
       })
@@ -584,7 +605,8 @@ export default {
         url:
           "http://adminapi.varuntandon.com/v1/campaigns?" +
           "start_date=" +
-          this.startDate,
+          this.startDate +
+          "&limit=100",
 
         headers: { "content-type": "application/json" }
       })
@@ -594,17 +616,29 @@ export default {
             client_name: "All Client",
             id: "All"
           };
-          this_pointer.active_campaign_list = response.data.campaigns.filter(
-            function(c_data) {
-              return c_data.status == "active";
-            }
-          );
+          //this_pointer.active_campaign_list = this_pointer.activeCampaignList;
+          // this_pointer.active_campaign_list = response.data.campaigns.filter(
+          //   // function(c_data) {
+          //   //   return c_data.status == "active";
+          //   // }
+          //   item => {
+          //     return (
+          //       item.status === "active" &&
+          //       item.start_date == this_pointer.startDate
+          //     );
+          //   }
+          // );
 
-          this_pointer.in_active_campaign_list = response.data.campaigns.filter(
-            function(c_data) {
-              return c_data.status == "paused";
-            }
-          );
+          // this_pointer.in_active_campaign_list = response.data.campaigns.filter(
+          //   function(c_data) {
+          //     return c_data.status == "paused";
+          //   }
+          // );
+
+          //       return this.campaigns_list.filter(item => {
+          //      return item.status === "active" && item.start_date == this.startDate;
+          //    });
+          //  },
 
           this_pointer.campaigns_list = response.data.campaigns;
           console.log(this_pointer.campaigns);
@@ -694,7 +728,6 @@ export default {
   }
 };
 </script>
-
 <style lang="scss">
 #data-list-list-view {
   .vs-con-table {

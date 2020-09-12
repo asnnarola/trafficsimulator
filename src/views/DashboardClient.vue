@@ -15,7 +15,7 @@
 
     <vs-divider></vs-divider>
 
-    <vs-table v-model="selected" pagination max-items="10" search :data="users">
+    <vs-table v-model="selected" pagination max-items="50" search :data="users">
       <template slot="header">
         <h3>Clients</h3>
       </template>
@@ -41,7 +41,11 @@
           <vs-td :data="data[indextr].date"></vs-td>
           <vs-td v-if="isAdmin">
             <div class="d-flex">
-              <feather-icon icon="EditIcon" svgClasses="w-5 h-5 hover:text-primary stroke-current" />
+              <feather-icon
+                icon="EditIcon"
+                svgClasses="w-5 h-5 hover:text-primary stroke-current"
+                @click="editClient(tr)"
+              />
               <feather-icon
                 icon="TrashIcon"
                 svgClasses="w-5 h-5 hover:text-danger stroke-current"
@@ -110,7 +114,7 @@ export default {
   },
   computed: {
     isAdmin() {
-      return this.$store.state.userRole === 'admin'
+      return this.$store.state.userRole === "admin";
     }
   },
   methods: {
@@ -133,15 +137,11 @@ export default {
           console.log(error);
         });
     },
-    setClientNameFn(event) {
-      console.log("clients", this.client, event);
-      this.setName = event.data[indextr].client_name;
-    },
-    editClient(clientInfo) {
+    editClient(data) {
       this.$router.push({
-        name: "dashboard-clientdescription",
-        params: {
-          clientInfo: clientInfo
+        path: "/dashboard/clientdescription",
+        query: {
+          clientId: data.id
         }
       });
     },
