@@ -165,6 +165,7 @@
                   <feather-icon
                     icon="EditIcon"
                     svgClasses="w-5 h-5 hover:text-primary stroke-current"
+                    @click="getClientInfo(tr.id)"
                     @click.stop="popupActive2 = true"
                   />
                   <feather-icon
