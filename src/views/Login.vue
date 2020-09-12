@@ -57,11 +57,9 @@
                   <span class="text-danger text-sm">{{ errors.first('password') }}</span>
 
                   <div class="flex flex-wrap justify-between my-5">
-                    <vs-checkbox v-model="checkbox_remember_me" class="mb-3">Remember Me</vs-checkbox>
                     <router-link to="/pages/forgot-password">Forgot Password?</router-link>
                   </div>
                   <div class="flex flex-wrap justify-between mb-3">
-                    <vs-button type="border">Register</vs-button>
                     <vs-button :disabled="!validateForm" @click="login">Login</vs-button>
                   </div>
                 </div>
@@ -82,13 +80,13 @@ export default {
     return {
       email: null,
       password: null,
-      checkbox_remember_me: false,
+      checkbox_remember_me: false
     };
   },
   computed: {
     validateForm() {
       return !this.errors.any() && this.email !== "" && this.password !== "";
-    },
+    }
   },
   methods: {
     login() {
@@ -99,7 +97,7 @@ export default {
         this.$vs.notify({
           title: "Login Successful",
           color: "success",
-          position: "top-right",
+          position: "top-right"
         });
         location.reload();
       } else if (
@@ -112,18 +110,18 @@ export default {
         this.$vs.notify({
           title: "Login Successful",
           color: "success",
-          position: "top-right",
+          position: "top-right"
         });
         location.reload();
       } else {
         this.$vs.notify({
           title: "Invalid Credentials",
           color: "danger",
-          position: "top-right",
+          position: "top-right"
         });
       }
-    },
-  },
+    }
+  }
 };
 </script>
 

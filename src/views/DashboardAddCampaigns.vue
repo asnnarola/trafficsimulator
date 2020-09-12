@@ -309,6 +309,7 @@ export default {
       clients: [],
       type: ["search", "direct"],
       paused: { labelState: "Active", val: false },
+      paused: "Active",
       stay_duration: "",
       volume_size: [],
       campaign_name: " ",
@@ -317,7 +318,7 @@ export default {
       keyword_formating: "",
       search: "addressbar",
       campaign_type: "search",
-      country_code: "",
+      country_code: "US",
       city: "",
       volume: "",
       start_date: null,
@@ -435,6 +436,8 @@ export default {
               position: "top-right"
             });
             this_pointer.client = null;
+            this_pointer.campaign_type = "search";
+            this_pointer.paused.val = false;
             this_pointer.campaign_name = null;
             this_pointer.brand_name = null;
             this_pointer.stay_duration = null;
