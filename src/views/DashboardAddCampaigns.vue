@@ -445,7 +445,7 @@ export default {
             this_pointer.end_date = null;
             this_pointer.country_code = null;
             this_pointer.url = null;
-            this_pointer.state = null;
+            this_pointer.stateName = null;
             this_pointer.city = null;
             this_pointer.paused = null;
             this_pointer.city_targeting_method = null;

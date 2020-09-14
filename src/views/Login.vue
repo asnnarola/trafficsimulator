@@ -24,19 +24,19 @@
             <div class="vx-col sm:w-full md:w-full lg:w-1/2 d-theme-dark-bg">
               <div class="px-8 pt-8 login-tabs-container">
                 <div class="vx-card__title mb-4">
-                  <h4 class="mb-4">Login</h4>
+                  <h4 class="mb-6">Login</h4>
                   <p>Welcome back, please login to your account.</p>
                 </div>
-
-                <div>
+                <vs-divider></vs-divider>
+                <div class="vx-col pt-6">
                   <vs-input
                     v-validate="'required|email|min:3'"
                     data-vv-validate-on="blur"
                     name="email"
                     icon-no-border
                     icon="icon icon-user"
-                    icon-pack="feather"
                     label-placeholder="Email"
+                    icon-pack="feather"
                     v-model="email"
                     class="w-full"
                   />
@@ -52,15 +52,19 @@
                     icon-pack="feather"
                     label-placeholder="Password"
                     v-model="password"
-                    class="w-full mt-6"
+                    class="w-full mt-6 pt-3"
                   />
                   <span class="text-danger text-sm">{{ errors.first('password') }}</span>
 
-                  <div class="flex flex-wrap justify-between my-5">
+                  <div class="flex flex-wrap justify-end my-5">
                     <router-link to="/pages/forgot-password">Forgot Password?</router-link>
                   </div>
-                  <div class="flex flex-wrap justify-between mb-3">
-                    <vs-button :disabled="!validateForm" @click="login">Login</vs-button>
+                  <div class="m-6 clearfix justify-between">
+                    <vs-button
+                      class="bg-primary-gradient w-full"
+                      :disabled="!validateForm"
+                      @click="login"
+                    >Login</vs-button>
                   </div>
                 </div>
               </div>

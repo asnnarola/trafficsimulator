@@ -400,7 +400,7 @@ export default {
       },
       type: ["Search", "Direct"],
       startDate: moment().format("YYYY-MM-DD"),
-      endDate: moment().format("YYYY-MM-DD"),
+      endDate: null,
       stay_duration: " ",
       volume_size: [],
       campaigns_list: [],
@@ -436,36 +436,16 @@ export default {
         if (this.startDate == moment().format("YYYY-MM-DD")) {
           return item.status === "active";
         } else {
-          return item.status === "active" && item.start_date > this.startDate;
+          return item.status === "active" && item.start_date == this.startDate;
         }
       });
-      // this.campaigns_list.filter(item => {
-      //   if (
-      //     moment(item.end_date).isBefore(moment(endDate).format("YYYY-MM-DD"))
-      //   ) {
-      //     return item.status === "active";
-      //   } else {
-      //     return item.status === "active" && item.end_date < endDate;
-      //   }
-      // });
-      // return this.campaigns_list.filter(item => {
-      //   if (this.endDate == moment().format("YYYY-MM-DD")) {
-      //     return item.status === "active";
-      //   } else {
-      //     return (
-      //       item.status === "active" &&
-      //       item.end_date < this.endDate &&
-      //       this.startDate === null
-      //     );
-      //   }
-      // });
     },
     inactivecampaignlist() {
       return this.campaigns_list.filter(item => {
         if (this.startDate == moment().format("YYYY-MM-DD")) {
           return item.status === "paused";
         } else {
-          return item.status === "paused" && item.start_date > this.startDate;
+          return item.status === "paused" && item.start_date == this.startDate;
         }
       });
     }
@@ -627,7 +607,7 @@ export default {
       var this_pointer = this;
       axios({
         method: "get",
-        url: `http://adminapi.varuntandon.com/v1/campaigns?start_date=${this.startDate}&end_date=${this.endDate}&limit=100`,
+        url: `http://adminapi.varuntandon.com/v1/campaigns?start_date=${this.startDate}&limit=100`,
         headers: { "content-type": "application/json" }
       })
         .then(function(response) {
