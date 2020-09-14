@@ -45,7 +45,7 @@
               class="w-full"
               placeholder="End Date"
               v-model="endDate"
-              @on-change="getCampaignList"
+              @click="getCampaignList"
             />
           </div>
           <div class="vx-col sm:w-1/2 w-full mb-2">
@@ -54,7 +54,7 @@
               class="w-full"
               placeholder="Start Date"
               v-model="startDate"
-              @on-change="getCampaignList"
+              @click="getCampaignList"
             />
             <!-- @click="getCampaignList"/> -->
           </div>
@@ -70,7 +70,7 @@
           pagination
           :max-items="itemsPerPage"
           search
-          :data="activeCampaignList"
+          :data="active_campaign_list"
         >
           <div slot="header" class="flex flex-wrap-reverse items-center flex-grow justify-between">
             <div class="flex flex-wrap-reverse items-center data-list-btn-container">
@@ -203,7 +203,7 @@
           pagination
           :max-items="itemsPerPage"
           search
-          :data="inactivecampaignlist"
+          :data="in_active_campaign_list"
         >
           <div slot="header" class="flex flex-wrap-reverse items-center flex-grow justify-between">
             <div class="flex flex-wrap-reverse items-center data-list-btn-container">
@@ -399,8 +399,8 @@ export default {
         id: "All"
       },
       type: ["Search", "Direct"],
-      startDate: moment().format("YYYY-MM-DD"),
-      endDate: null,
+      startDate: moment().format("2019-01-01"),
+      endDate: moment().format("2019-01-01"),
       stay_duration: " ",
       volume_size: [],
       campaigns_list: [],
@@ -430,25 +430,25 @@ export default {
       return this.$refs.table
         ? this.$refs.table.queriedResults.length
         : this.products.length;
-    },
-    activeCampaignList() {
-      return this.campaigns_list.filter(item => {
-        if (this.startDate == moment().format("YYYY-MM-DD")) {
-          return item.status === "active";
-        } else {
-          return item.status === "active" && item.start_date == this.startDate;
-        }
-      });
-    },
-    inactivecampaignlist() {
-      return this.campaigns_list.filter(item => {
-        if (this.startDate == moment().format("YYYY-MM-DD")) {
-          return item.status === "paused";
-        } else {
-          return item.status === "paused" && item.start_date == this.startDate;
-        }
-      });
     }
+    // activeCampaignList() {
+    //   return this.campaigns_list.filter(item => {
+    //     if (this.startDate == moment().format("YYYY-MM-DD")) {
+    //       return item.status === "active";
+    //     } else {
+    //       return item.status === "active" && item.start_date > this.startDate;
+    //     }
+    //   });
+    // },
+    // inactivecampaignlist() {
+    //   return this.campaigns_list.filter(item => {
+    //     if (this.startDate == moment().format("YYYY-MM-DD")) {
+    //       return item.status === "paused";
+    //     } else {
+    //       return item.status === "paused" && item.start_date == this.startDate;
+    //     }
+    //   });
+    // }
   },
 
   methods: {
@@ -605,9 +605,9 @@ export default {
     },
     getCampaignList() {
       var this_pointer = this;
-      axios({
+      this.$http({
         method: "get",
-        url: `http://adminapi.varuntandon.com/v1/campaigns?start_date=${this.startDate}&limit=100`,
+        url: `http://adminapi.varuntandon.com/v1/campaigns?start_date=${this_pointer.startDate}&end_date=${this_pointer.endDate}&limit=100`,
         headers: { "content-type": "application/json" }
       })
         .then(function(response) {
@@ -616,30 +616,32 @@ export default {
             client_name: "All Client",
             id: "All"
           };
-          //this_pointer.active_campaign_list = this_pointer.activeCampaignList;
-          // this_pointer.active_campaign_list = response.data.campaigns.filter(
-          //   // function(c_data) {
-          //   //   return c_data.status == "active";
-          //   // }
-          //   item => {
-          //     return (
-          //       item.status === "active" &&
-          //       item.start_date == this_pointer.startDate
-          //     );
-          //   }
-          // );
+          this_pointer.active_campaign_list = this_pointer.activeCampaignList;
+          this_pointer.active_campaign_list = response.data.campaigns.filter(
+            // function(c_data) {
+            //   if (this_pointer.startDate == start_date) {
+            //     return c_data.status == "active";
+            //   } else {
+            //     c_data.status == "active" &&
+            //       c_data.start_date == this_pointer.startDate;
+            //   }
+            // }
+            function(c_data) {
+              if (
+                moment(this_pointer.start_date).isAfter(
+                  moment(this_pointer.startDate).format("YYYY-MM-DD")
+                )
+              ) {
+                return c_data.status == "active";
+              }
+            }
+          );
 
-          // this_pointer.in_active_campaign_list = response.data.campaigns.filter(
-          //   function(c_data) {
-          //     return c_data.status == "paused";
-          //   }
-          // );
-
-          //       return this.campaigns_list.filter(item => {
-          //      return item.status === "active" && item.start_date == this.startDate;
-          //    });
-          //  },
-
+          this_pointer.in_active_campaign_list = response.data.campaigns.filter(
+            function(c_data) {
+              return c_data.status == "paused";
+            }
+          );
           this_pointer.campaigns_list = response.data.campaigns;
           console.log(this_pointer.campaigns);
         })
