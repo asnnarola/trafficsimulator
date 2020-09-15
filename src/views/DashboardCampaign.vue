@@ -434,11 +434,16 @@ export default {
     activeCampaignList() {
       return this.campaigns_list.filter(item => {
         return item.status == "active" && item.start_date > this.startDate;
+        return item.status == "active" && item.end_date < this.endDate;
       });
     },
     inActiveCampaignList() {
       return this.campaigns_list.filter(item => {
         return item.status == "paused" && item.start_date > this.startDate;
+      });
+
+      return this.campaigns_list.filter(item => {
+        return item.status == "paused" && item.end_date < this.endDate;
       });
     }
   },
@@ -612,24 +617,6 @@ export default {
           this_pointer.active_campaign_list = this_pointer.activeCampaignList;
           this_pointer.in_active_campaign_list =
             this_pointer.inActiveCampaignList;
-          // this_pointer.active_campaign_list = response.data.campaigns.filter(
-
-          //   function(c_data) {
-          //     if (
-          //       moment(this_pointer.start_date).isAfter(
-          //         moment(this_pointer.startDate).format("YYYY-MM-DD")
-          //       )
-          //     ) {
-          //       return c_data.status == "active";
-          //     }
-          //   }
-          // );
-
-          // this_pointer.in_active_campaign_list = response.data.campaigns.filter(
-          //   function(c_data) {
-          //     return c_data.status == "paused";
-          //   }
-          // );
 
           this_pointer.campaigns_list = response.data.campaigns;
           console.log(this_pointer.campaigns);
