@@ -22,7 +22,7 @@
       <template slot="thead">
         <vs-th sort-key="client_name">Client Name</vs-th>
         <vs-th sort-key="description">Description</vs-th>
-        <vs-th sort-key="description">Date</vs-th>
+        <vs-th sort-key="">Date</vs-th>
         <vs-th v-if="isAdmin" sort-key="actions">Actions</vs-th>
       </template>
       <template slot-scope="{ data }">

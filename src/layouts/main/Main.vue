@@ -166,16 +166,13 @@ import TheFooter from "@/layouts/components/TheFooter.vue";
 import themeConfig from "@/../themeConfig.js";
 import VNavMenu from "@/layouts/components/vertical-nav-menu/VerticalNavMenu.vue";
 
-const VxTour = () => import("@/components/VxTour.vue");
-
 export default {
   components: {
     BackToTop,
     HNavMenu,
     TheFooter,
     TheNavbarVertical,
-    VNavMenu,
-    VxTour
+    VNavMenu
   },
   data() {
     return {
