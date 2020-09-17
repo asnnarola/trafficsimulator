@@ -35,7 +35,6 @@
 </template>
 
 <script>
-import ImportExcel from '@/components/excel/ImportExcel.vue'
 
 export default {
   components: {

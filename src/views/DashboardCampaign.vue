@@ -62,269 +62,278 @@
       </vx-card>
     </div>
     <!------------------------------------------------TABLE LAYOUT-ACTIVE--------------------------------------------!-->
-    <vx-card>
-      <div id="data-list-list-view" class="data-list-container">
-        <vs-table
-          ref="table"
-          v-model="selected"
-          pagination
-          :max-items="itemsPerPage"
-          search
-          :data="activeCampaignList"
-        >
-          <div slot="header" class="flex flex-wrap-reverse items-center flex-grow justify-between">
-            <div class="flex flex-wrap-reverse items-center data-list-btn-container">
-              <span class="ml-2 text-base text-primary">
-                <strong>
-                  Active Campaigns-
-                  <span class="ml-2 text-base text-warning">
-                    {{
-                    this.client.client_name
-                    }}
-                  </span>
-                </strong>
-              </span>
+    <div class="vx-col md:w-4/3 w-full mb-base">
+      <vx-card>
+        <div id="data-list-list-view" class="data-list-container">
+          <vs-table
+            ref="table"
+            v-model="selected"
+            pagination
+            :max-items="itemsPerPage"
+            search
+            :data="activeCampaignList"
+          >
+            <div
+              slot="header"
+              class="flex flex-wrap-reverse items-center flex-grow justify-between"
+            >
+              <div class="flex flex-wrap-reverse items-center data-list-btn-container">
+                <span class="ml-2 text-base text-primary">
+                  <strong>
+                    Active Campaigns-
+                    <span class="ml-2 text-base text-warning">
+                      {{
+                      this.client.client_name
+                      }}
+                    </span>
+                  </strong>
+                </span>
+              </div>
+
+              <!-- ITEMS PER PAGE -->
             </div>
 
-            <!-- ITEMS PER PAGE -->
-          </div>
+            <template slot="thead">
+              <vs-th sort-key="start_date">Start Date</vs-th>
+              <vs-th sort-key="end_date">End Date</vs-th>
+              <vs-th sort-key="brand_name">Brand Name</vs-th>
+              <vs-th sort-key="campaign_name">Campaign Name</vs-th>
+              <vs-th sort-key="keyword_formating">Keyword Format</vs-th>
+              <vs-th sort-key="type">Type</vs-th>
+              <vs-th sort-key="search_method">Search Method</vs-th>
+              <vs-th sort-key="url">URL</vs-th>
+              <vs-th sort-key>Visits Per Day</vs-th>
+              <vs-th sort-key="stay_duration">Time spend</vs-th>
+              <vs-th sort-key="country">Country</vs-th>
+              <vs-th sort-key="state">State</vs-th>
+              <vs-th sort-key="city">City</vs-th>
+              <vs-th v-if="isAdmin">Action</vs-th>
+            </template>
 
-          <template slot="thead">
-            <vs-th sort-key="start_date">Start Date</vs-th>
-            <vs-th sort-key="end_date">End Date</vs-th>
-            <vs-th sort-key="brand_name">Brand Name</vs-th>
-            <vs-th sort-key="campaign_name">Campaign Name</vs-th>
-            <vs-th sort-key="keyword_formating">Keyword Format</vs-th>
-            <vs-th sort-key="type">Type</vs-th>
-            <vs-th sort-key="search_method">Search Method</vs-th>
-            <vs-th sort-key="url">URL</vs-th>
-            <vs-th sort-key>Visits Per Day</vs-th>
-            <vs-th sort-key="stay_duration">Time spend</vs-th>
-            <vs-th sort-key="country">Country</vs-th>
-            <vs-th sort-key="state">State</vs-th>
-            <vs-th sort-key="city">City</vs-th>
-            <vs-th v-if="isAdmin">Action</vs-th>
-          </template>
+            <template slot-scope="{ data }">
+              <tbody>
+                <vs-tr :data="tr" :key="indextr" v-for="(tr, indextr) in data">
+                  <vs-td>
+                    <p class="start-date font-medium truncate">{{ tr.start_date }}</p>
+                  </vs-td>
 
-          <template slot-scope="{ data }">
-            <tbody>
-              <vs-tr :data="tr" :key="indextr" v-for="(tr, indextr) in data">
-                <vs-td>
-                  <p class="start-date font-medium truncate">{{ tr.start_date }}</p>
-                </vs-td>
+                  <vs-td>
+                    <p class="end-date">{{ tr.end_date }}</p>
+                  </vs-td>
 
-                <vs-td>
-                  <p class="end-date">{{ tr.end_date }}</p>
-                </vs-td>
+                  <vs-td>
+                    <p class="brand_name">{{ tr.brand_name }}</p>
+                  </vs-td>
 
-                <vs-td>
-                  <p class="brand_name">{{ tr.brand_name }}</p>
-                </vs-td>
+                  <vs-td>
+                    <p class="campaign_name">{{ tr.campaign_name }}</p>
+                  </vs-td>
 
-                <vs-td>
-                  <p class="campaign_name">{{ tr.campaign_name }}</p>
-                </vs-td>
+                  <vs-td>
+                    <p class="keyword_formating">{{ tr.keyword_formating }}</p>
+                  </vs-td>
 
-                <vs-td>
-                  <p class="keyword_formating">{{ tr.keyword_formating }}</p>
-                </vs-td>
+                  <vs-td>
+                    <p class="type">{{ tr.type }}</p>
+                  </vs-td>
 
-                <vs-td>
-                  <p class="type">{{ tr.type }}</p>
-                </vs-td>
+                  <vs-td>
+                    <p class="search_method">{{ tr.search_method }}</p>
+                  </vs-td>
 
-                <vs-td>
-                  <p class="search_method">{{ tr.search_method }}</p>
-                </vs-td>
+                  <vs-td>
+                    <p class="url">{{ tr.url }}</p>
+                  </vs-td>
 
-                <vs-td>
-                  <p class="url">{{ tr.url }}</p>
-                </vs-td>
+                  <vs-td>
+                    <p class="brand_type"></p>
+                  </vs-td>
 
-                <vs-td>
-                  <p class="brand_type"></p>
-                </vs-td>
+                  <vs-td>
+                    <p class="stay_duration">{{ tr.stay_duration }}</p>
+                  </vs-td>
 
-                <vs-td>
-                  <p class="stay_duration">{{ tr.stay_duration }}</p>
-                </vs-td>
+                  <vs-td>
+                    <p class="country">{{ tr.country }}</p>
+                  </vs-td>
 
-                <vs-td>
-                  <p class="country">{{ tr.country }}</p>
-                </vs-td>
+                  <vs-td>
+                    <p class="state">{{ tr.state }}</p>
+                  </vs-td>
 
-                <vs-td>
-                  <p class="state">{{ tr.state }}</p>
-                </vs-td>
+                  <vs-td>
+                    <p class="city">{{ tr.city.join() }}</p>
+                  </vs-td>
 
-                <vs-td>
-                  <p class="city">{{ tr.city.join() }}</p>
-                </vs-td>
-
-                <vs-td class="whitespace-no-wrap" v-if="isAdmin">
-                  <feather-icon
-                    icon="EditIcon"
-                    svgClasses="w-5 h-5 hover:text-primary stroke-current"
-                    @click="getClientInfo(tr.id)"
-                    @click.stop="popupActive2 = true"
-                  />
-                  <feather-icon
-                    icon="TrashIcon"
-                    svgClasses="w-5 h-5 hover:text-danger stroke-current"
-                    class="ml-2"
-                    @click="campaignActionsFn(tr.id)"
-                  />
-                  <feather-icon
-                    icon="FileIcon"
-                    class="ml-2"
-                    svgClasses="w-5 h-5 hover:text-primary stroke-current"
-                    @click="viewStats(tr)"
-                  />
-                  <feather-icon
-                    icon="PauseIcon"
-                    class="ml-2"
-                    svgClasses="w-5 h-5 hover:text-primary stroke-current"
-                    @click="pauseResumeCampaign(tr.id,'pause')"
-                  />
-                </vs-td>
-              </vs-tr>
-            </tbody>
-          </template>
-        </vs-table>
-      </div>
-    </vx-card>
+                  <vs-td class="whitespace-no-wrap" v-if="isAdmin">
+                    <feather-icon
+                      icon="EditIcon"
+                      svgClasses="w-5 h-5 hover:text-primary stroke-current"
+                      @click="getClientInfo(tr.id)"
+                      @click.stop="popupActive2 = true"
+                    />
+                    <feather-icon
+                      icon="TrashIcon"
+                      svgClasses="w-5 h-5 hover:text-danger stroke-current"
+                      class="ml-2"
+                      @click="campaignActionsFn(tr.id)"
+                    />
+                    <feather-icon
+                      icon="FileIcon"
+                      class="ml-2"
+                      svgClasses="w-5 h-5 hover:text-primary stroke-current"
+                      @click="viewStats(tr)"
+                    />
+                    <feather-icon
+                      icon="PauseIcon"
+                      class="ml-2"
+                      svgClasses="w-5 h-5 hover:text-primary stroke-current"
+                      @click="pauseResumeCampaign(tr.id,'pause')"
+                    />
+                  </vs-td>
+                </vs-tr>
+              </tbody>
+            </template>
+          </vs-table>
+        </div>
+      </vx-card>
+    </div>
 
     <!------------------------------------------------TABLE LAYOUT-INACTIVE------------------------------------------------!-->
-    <vx-card>
-      <div id="data-list-list-view" class="data-list-container">
-        <vs-table
-          ref="table"
-          v-model="selected"
-          pagination
-          :max-items="itemsPerPage"
-          search
-          :data="inActiveCampaignList"
-        >
-          <div slot="header" class="flex flex-wrap-reverse items-center flex-grow justify-between">
-            <div class="flex flex-wrap-reverse items-center data-list-btn-container">
-              <span class="ml-2 text-base text-danger">
-                <strong>
-                  In-active Campaigns-
-                  <span class="ml-2 text-base text-warning">
-                    {{
-                    this.client.client_name
-                    }}
-                  </span>
-                </strong>
-              </span>
+    <div class="vx-col md:w-4/3 w-full mb-base">
+      <vx-card>
+        <div id="data-list-list-view" class="data-list-container">
+          <vs-table
+            ref="table"
+            v-model="selected"
+            pagination
+            :max-items="itemsPerPage"
+            search
+            :data="inActiveCampaignList"
+          >
+            <div
+              slot="header"
+              class="flex flex-wrap-reverse items-center flex-grow justify-between"
+            >
+              <div class="flex flex-wrap-reverse items-center data-list-btn-container">
+                <span class="ml-2 text-base text-danger">
+                  <strong>
+                    In-active Campaigns-
+                    <span class="ml-2 text-base text-warning">
+                      {{
+                      this.client.client_name
+                      }}
+                    </span>
+                  </strong>
+                </span>
+              </div>
             </div>
-          </div>
 
-          <template slot="thead">
-            <vs-th sort-key="start_date">Start Date</vs-th>
-            <vs-th sort-key="end_date">End Date</vs-th>
-            <vs-th sort-key="brand_name">Brand Name</vs-th>
-            <vs-th sort-key="campaign_name">Campaign Name</vs-th>
-            <vs-th sort-key="keyword_formating">Keyword Format</vs-th>
-            <vs-th sort-key="type">Type</vs-th>
-            <vs-th sort-key="search_method">Search Method</vs-th>
-            <vs-th sort-key="url">URL</vs-th>
-            <vs-th sort-key>Visits Per Day</vs-th>
-            <vs-th sort-key="stay_duration">Time spend</vs-th>
-            <vs-th sort-key="country">Country</vs-th>
-            <vs-th sort-key="state">State</vs-th>
-            <vs-th sort-key="city">City</vs-th>
-            <vs-th v-if="isAdmin">Action</vs-th>
-          </template>
+            <template slot="thead">
+              <vs-th sort-key="start_date">Start Date</vs-th>
+              <vs-th sort-key="end_date">End Date</vs-th>
+              <vs-th sort-key="brand_name">Brand Name</vs-th>
+              <vs-th sort-key="campaign_name">Campaign Name</vs-th>
+              <vs-th sort-key="keyword_formating">Keyword Format</vs-th>
+              <vs-th sort-key="type">Type</vs-th>
+              <vs-th sort-key="search_method">Search Method</vs-th>
+              <vs-th sort-key="url">URL</vs-th>
+              <vs-th sort-key>Visits Per Day</vs-th>
+              <vs-th sort-key="stay_duration">Time spend</vs-th>
+              <vs-th sort-key="country">Country</vs-th>
+              <vs-th sort-key="state">State</vs-th>
+              <vs-th sort-key="city">City</vs-th>
+              <vs-th v-if="isAdmin">Action</vs-th>
+            </template>
 
-          <template slot-scope="{ data }">
-            <tbody>
-              <vs-tr :data="tr" :key="indextr" v-for="(tr, indextr) in data">
-                <vs-td>
-                  <p class="start-date font-medium truncate">{{ tr.start_date }}</p>
-                </vs-td>
+            <template slot-scope="{ data }">
+              <tbody>
+                <vs-tr :data="tr" :key="indextr" v-for="(tr, indextr) in data">
+                  <vs-td>
+                    <p class="start-date font-medium truncate">{{ tr.start_date }}</p>
+                  </vs-td>
 
-                <vs-td>
-                  <p class="end-date">{{ tr.end_date }}</p>
-                </vs-td>
+                  <vs-td>
+                    <p class="end-date">{{ tr.end_date }}</p>
+                  </vs-td>
 
-                <vs-td>
-                  <p class="brand_name">{{ tr.brand_name }}</p>
-                </vs-td>
+                  <vs-td>
+                    <p class="brand_name">{{ tr.brand_name }}</p>
+                  </vs-td>
 
-                <vs-td>
-                  <p class="campaign_name">{{ tr.campaign_name }}</p>
-                </vs-td>
+                  <vs-td>
+                    <p class="campaign_name">{{ tr.campaign_name }}</p>
+                  </vs-td>
 
-                <vs-td>
-                  <p class="keyword_formating">{{ tr.keyword_formating }}</p>
-                </vs-td>
+                  <vs-td>
+                    <p class="keyword_formating">{{ tr.keyword_formating }}</p>
+                  </vs-td>
 
-                <vs-td>
-                  <p class="type">{{ tr.type }}</p>
-                </vs-td>
+                  <vs-td>
+                    <p class="type">{{ tr.type }}</p>
+                  </vs-td>
 
-                <vs-td>
-                  <p class="search_method">{{ tr.search_method }}</p>
-                </vs-td>
+                  <vs-td>
+                    <p class="search_method">{{ tr.search_method }}</p>
+                  </vs-td>
 
-                <vs-td>
-                  <p class="url">{{ tr.url }}</p>
-                </vs-td>
+                  <vs-td>
+                    <p class="url">{{ tr.url }}</p>
+                  </vs-td>
 
-                <vs-td>
-                  <p class="brand_type"></p>
-                </vs-td>
+                  <vs-td>
+                    <p class="brand_type"></p>
+                  </vs-td>
 
-                <vs-td>
-                  <p class="stay_duration">{{ tr.stay_duration }}</p>
-                </vs-td>
+                  <vs-td>
+                    <p class="stay_duration">{{ tr.stay_duration }}</p>
+                  </vs-td>
 
-                <vs-td>
-                  <p class="country">{{ tr.country }}</p>
-                </vs-td>
+                  <vs-td>
+                    <p class="country">{{ tr.country }}</p>
+                  </vs-td>
 
-                <vs-td>
-                  <p class="state">{{ tr.state }}</p>
-                </vs-td>
+                  <vs-td>
+                    <p class="state">{{ tr.state }}</p>
+                  </vs-td>
 
-                <vs-td>
-                  <p class="city">{{ tr.city.join() }}</p>
-                </vs-td>
+                  <vs-td>
+                    <p class="city">{{ tr.city.join() }}</p>
+                  </vs-td>
 
-                <vs-td class="whitespace-no-wrap" v-if="isAdmin">
-                  <feather-icon
-                    icon="EditIcon"
-                    svgClasses="w-5 h-5 hover:text-primary stroke-current"
-                    @click="getClientInfo(tr.id)"
-                    @click.stop="popupActive2 = true"
-                  />
-                  <feather-icon
-                    icon="TrashIcon"
-                    svgClasses="w-5 h-5 hover:text-danger stroke-current"
-                    class="ml-2"
-                    @click.stop="campaignActionsFn(tr.id)"
-                  />
-                  <feather-icon
-                    icon="FileIcon"
-                    class="ml-2"
-                    svgClasses="w-5 h-5 hover:text-primary stroke-current"
-                    @click="viewStats(tr)"
-                  />
-                  <feather-icon
-                    icon="PlayIcon"
-                    class="ml-2"
-                    svgClasses="w-5 h-5 hover:text-primary stroke-current"
-                    @click="pauseResumeCampaign(tr.id,'resume')"
-                  />
-                </vs-td>
-              </vs-tr>
-            </tbody>
-          </template>
-        </vs-table>
-      </div>
-    </vx-card>
-
+                  <vs-td class="whitespace-no-wrap" v-if="isAdmin">
+                    <feather-icon
+                      icon="EditIcon"
+                      svgClasses="w-5 h-5 hover:text-primary stroke-current"
+                      @click="getClientInfo(tr.id)"
+                      @click.stop="popupActive2 = true"
+                    />
+                    <feather-icon
+                      icon="TrashIcon"
+                      svgClasses="w-5 h-5 hover:text-danger stroke-current"
+                      class="ml-2"
+                      @click.stop="campaignActionsFn(tr.id)"
+                    />
+                    <feather-icon
+                      icon="FileIcon"
+                      class="ml-2"
+                      svgClasses="w-5 h-5 hover:text-primary stroke-current"
+                      @click="viewStats(tr)"
+                    />
+                    <feather-icon
+                      icon="PlayIcon"
+                      class="ml-2"
+                      svgClasses="w-5 h-5 hover:text-primary stroke-current"
+                      @click="pauseResumeCampaign(tr.id,'resume')"
+                    />
+                  </vs-td>
+                </vs-tr>
+              </tbody>
+            </template>
+          </vs-table>
+        </div>
+      </vx-card>
+    </div>
     <!-- POPUP !-->
     <vs-popup title="Edit Campaign" :active.sync="popupActive2">
       <label>Client Name</label>

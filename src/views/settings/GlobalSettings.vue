@@ -49,7 +49,8 @@
         </vs-tr>
       </template>
     </vs-table>
-    <vs-button v-if="isAdmin"
+    <vs-button
+      v-if="isAdmin"
       @click="addNewTrafficRow"
       class="mb-base mt-4"
       type="filled"
@@ -57,7 +58,7 @@
     <vs-divider></vs-divider>&nbsp;
     <h3>Proxy Providers</h3>
     <!-- PROXY TABLE !-->
-    <vs-table :data="proxyList">
+    <vs-table class="mt-4" :data="proxyList">
       <template slot="thead">
         <vs-th>Provider Name</vs-th>
         <vs-th>User</vs-th>
@@ -184,16 +185,16 @@ export default {
       info: [
         {
           id: 1,
-          provider: "Oxylabs",
+          provider: "Oxylabs"
         },
         {
           id: 2,
-          provider: "Smartproxy",
+          provider: "Smartproxy"
         },
         {
           id: 3,
-          provider: "Packetstream",
-        },
+          provider: "Packetstream"
+        }
       ],
       type: ["3", "4", "5", "6"],
       type1: ["2", "3", "4", "5", "6"],
@@ -215,16 +216,16 @@ export default {
       spike_days: null,
       downturn_days: null,
       level: null,
-      active: null,
+      active: null
     };
   },
   components: {
-    "v-select": vSelect,
+    "v-select": vSelect
   },
   computed: {
     isAdmin() {
       return this.$store.state.userRole === "admin";
-    },
+    }
   },
   mounted() {
     this.getTrafficVolumeTags();
@@ -234,28 +235,28 @@ export default {
     getTrafficVolumeTags() {
       this.$http
         .get("http://adminapi.varuntandon.com/v1/tvt")
-        .then((response) => {
+        .then(response => {
           this.trafficVolumeTags = response.data.tags;
           console.log(response);
         })
-        .catch((error) => console.log(error));
+        .catch(error => console.log(error));
     },
     updateTag(tag_id) {
       this.$http
         .put(`http://adminapi.varuntandon.com/v1/tvt/${tag_id}`, {
           tag_name: this.tag_name,
           min_hit: this.min_hit,
-          max_hit: this.max_hit,
+          max_hit: this.max_hit
         })
-        .then((response) => {
+        .then(response => {
           if (response.data.success) {
             var newTag = {
               id: tag_id,
               tag_name: this.tag_name,
               min_hit: this.min_hit,
-              max_hit: this.max_hit,
+              max_hit: this.max_hit
             };
-            this.trafficVolumeTags = this.trafficVolumeTags.map((tag) =>
+            this.trafficVolumeTags = this.trafficVolumeTags.map(tag =>
               tag.id === tag_id ? (tag = newTag) : tag
             );
             this.tag_name = null;
@@ -264,7 +265,7 @@ export default {
             this.edit = -1;
           }
         })
-        .catch((error) => console.log(error));
+        .catch(error => console.log(error));
     },
     setData(data, index) {
       // this.provider = provider;
@@ -277,7 +278,7 @@ export default {
       this.trafficVolumeTags.push({
         tag_name: "",
         min_hit: null,
-        max_hit: null,
+        max_hit: null
       });
       this.edit = this.trafficVolumeTags.length - 1;
       this.newtvt = true;
@@ -286,11 +287,11 @@ export default {
       const newTag = {
         tag_name: this.tag_name,
         min_hit: this.min_hit,
-        max_hit: this.max_hit,
+        max_hit: this.max_hit
       };
       this.$http
         .post("http://adminapi.varuntandon.com/v1/tvt", newTag)
-        .then((response) => {
+        .then(response => {
           if (response.data.success) {
             console.log("tvt added!");
             this.getTrafficVolumeTags();
@@ -308,10 +309,10 @@ export default {
     removeTrafficVolumeTag(tag_id) {
       this.$http
         .delete(`http://adminapi.varuntandon.com/v1/tvt/${tag_id}`)
-        .then((response) => {
+        .then(response => {
           if (response.data.success) {
             const index = this.trafficVolumeTags.findIndex(
-              (tag) => tag.id === tag_id
+              tag => tag.id === tag_id
             );
             this.trafficVolumeTags.splice(index, 1);
             console.log("Removed Successfully");
@@ -322,14 +323,14 @@ export default {
       axios({
         method: "get",
         url: "http://adminapi.varuntandon.com/v1/proxy",
-        headers: { "content-type": "application/json" },
+        headers: { "content-type": "application/json" }
       })
-        .then((response) => {
+        .then(response => {
           console.log("firstResponse", response);
           this.proxyList = response.data.accounts;
           console.log("response", this.proxyList, response.data.accounts);
         })
-        .catch(function (error) {
+        .catch(function(error) {
           console.log(error);
         });
     },
@@ -339,19 +340,19 @@ export default {
           provider: this.provider,
           username: this.username,
           password: this.password,
-          active: this.active,
+          active: this.active
         })
-        .then(function (response) {
+        .then(function(response) {
           if (response.data.success) {
             var newProxy = {
               //id: account_id,
               provider: this.provider,
               username: this.username,
               password: this.password,
-              active: this.active,
+              active: this.active
             };
 
-            this.proxyList = this.proxyList.map((acc) =>
+            this.proxyList = this.proxyList.map(acc =>
               acc.id === account_id ? (acc = newProxy) : acc
             );
             this.provider = null;
@@ -360,7 +361,7 @@ export default {
             this.edit = -1;
           }
         })
-        .catch(function (error) {
+        .catch(function(error) {
           console.log(error);
         });
     },
@@ -370,8 +371,8 @@ export default {
       this.password = data.password;
       this.active = data.active;
       this.editProxy = index;
-    },
-  },
+    }
+  }
 };
 </script>
 

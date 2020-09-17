@@ -134,7 +134,7 @@
         <div>
           <vs-table max-items="10" pagination :data="statsList">
             <template slot="thead">
-              <vs-th>Date</vs-th>
+              <vs-th sort-key="date">Date</vs-th>
               <vs-th>Requested Visits</vs-th>
               <vs-th>Actual Visits</vs-th>
             </template>
@@ -163,6 +163,7 @@
 
 <script>
 import vSelect from "vue-select";
+import { AgGridVue } from "ag-grid-vue";
 import axios from "axios";
 import * as moment from "moment";
 import { FormWizard, TabContent } from "vue-form-wizard";
@@ -194,9 +195,13 @@ export default {
     };
   },
   components: {
-    "v-select": vSelect
+    "v-select": vSelect,
+    AgGridVue
   },
   methods: {
+    // handleSort(key, active) {
+    //   console.log(`the date ordered: ${key} ${active}`);
+    // },
     getKeywordList() {
       this.$http
         .get(
