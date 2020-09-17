@@ -444,7 +444,7 @@ export default {
             keyWords.map((data, index) => {
               singleLineKeyWords =
                 index == 0
-                  ? data  + formatData[1]
+                  ? data + formatData[1]
                   : singleLineKeyWords + "\n" + data  + formatData[1];
             });
             this.keywords = singleLineKeyWords;

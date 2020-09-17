@@ -11,7 +11,9 @@
             </span>
           </vx-input-group>
           <div class="flex items-center" v-if="isAdmin">
-            <vs-button class="mb-base mr-3" @click="addNewCampaign">Add a new Campaign</vs-button>
+            <vs-button class="mb-base mr-3" @click="addNewCampaign"
+              >Add a new Campaign</vs-button
+            >
           </div>
         </div>
 
@@ -21,7 +23,7 @@
             <v-select
               v-model="client"
               label="client_name"
-              @input="getCampgainByClientFn"
+              @input="filterFn"
               class="w-full"
               label-placeholder="client_name"
               :options="clients"
@@ -32,6 +34,8 @@
             <label>Campaign Type</label>
             <v-select
               class="w-full"
+              v-model="campaign_type"
+              @input="filterFn"
               label-placeholder="campaign_type"
               :options="type"
               :dir="$vs.rtl ? 'rtl' : 'ltr'"
@@ -41,21 +45,32 @@
         <div class="vx-row">
           <div class="vx-col sm:w-1/2 w-full mb-2">
             <label>End Date</label>
-            <flat-pickr
+            <!-- <flat-pickr
               class="w-full"
               placeholder="End Date"
               v-model="endDate"
               @on-change="getCampaignList"
-            />
+            /> -->
+            <datepicker
+              placeholder="End Date"
+              @input="filterFn"
+              v-model="endDate"
+            ></datepicker>
           </div>
           <div class="vx-col sm:w-1/2 w-full mb-2">
             <label>Start Date</label>
-            <flat-pickr
+            <!-- <flat-pickr
               class="w-full"
               placeholder="Start Date"
               v-model="startDate"
-              @on-change="getCampaignList"
-            />
+              @on-change="filterFn"
+            /> -->
+            <datepicker
+              placeholder="Start Date"
+              @input="filterFn"
+              v-model="startDate"
+            ></datepicker>
+
             <!-- @click="getCampaignList"/> -->
           </div>
         </div>
@@ -72,15 +87,18 @@
           search
           :data="activeCampaignList"
         >
-          <div slot="header" class="flex flex-wrap-reverse items-center flex-grow justify-between">
-            <div class="flex flex-wrap-reverse items-center data-list-btn-container">
+          <div
+            slot="header"
+            class="flex flex-wrap-reverse items-center flex-grow justify-between"
+          >
+            <div
+              class="flex flex-wrap-reverse items-center data-list-btn-container"
+            >
               <span class="ml-2 text-base text-primary">
                 <strong>
                   Active Campaigns-
                   <span class="ml-2 text-base text-warning">
-                    {{
-                    this.client.client_name
-                    }}
+                    {{ this.client.client_name }}
                   </span>
                 </strong>
               </span>
@@ -110,7 +128,9 @@
             <tbody>
               <vs-tr :data="tr" :key="indextr" v-for="(tr, indextr) in data">
                 <vs-td>
-                  <p class="start-date font-medium truncate">{{ tr.start_date }}</p>
+                  <p class="start-date font-medium truncate">
+                    {{ tr.start_date }}
+                  </p>
                 </vs-td>
 
                 <vs-td>
@@ -184,7 +204,7 @@
                     icon="PauseIcon"
                     class="ml-2"
                     svgClasses="w-5 h-5 hover:text-primary stroke-current"
-                    @click="pauseResumeCampaign(tr.id,'pause')"
+                    @click="pauseResumeCampaign(tr.id, 'pause')"
                   />
                 </vs-td>
               </vs-tr>
@@ -205,15 +225,18 @@
           search
           :data="inActiveCampaignList"
         >
-          <div slot="header" class="flex flex-wrap-reverse items-center flex-grow justify-between">
-            <div class="flex flex-wrap-reverse items-center data-list-btn-container">
+          <div
+            slot="header"
+            class="flex flex-wrap-reverse items-center flex-grow justify-between"
+          >
+            <div
+              class="flex flex-wrap-reverse items-center data-list-btn-container"
+            >
               <span class="ml-2 text-base text-danger">
                 <strong>
                   In-active Campaigns-
                   <span class="ml-2 text-base text-warning">
-                    {{
-                    this.client.client_name
-                    }}
+                    {{ this.client.client_name }}
                   </span>
                 </strong>
               </span>
@@ -241,7 +264,9 @@
             <tbody>
               <vs-tr :data="tr" :key="indextr" v-for="(tr, indextr) in data">
                 <vs-td>
-                  <p class="start-date font-medium truncate">{{ tr.start_date }}</p>
+                  <p class="start-date font-medium truncate">
+                    {{ tr.start_date }}
+                  </p>
                 </vs-td>
 
                 <vs-td>
@@ -315,7 +340,7 @@
                     icon="PlayIcon"
                     class="ml-2"
                     svgClasses="w-5 h-5 hover:text-primary stroke-current"
-                    @click="pauseResumeCampaign(tr.id,'resume')"
+                    @click="pauseResumeCampaign(tr.id, 'resume')"
                   />
                 </vs-td>
               </vs-tr>
@@ -339,7 +364,11 @@
       <vs-input type="text" class="w-full" v-model="editCampaign.brand_name" />
 
       <label>End Date</label>
-      <flat-pickr class="w-full" placeholder="End Date" v-model="editCampaign.end_date" />
+      <flat-pickr
+        class="w-full"
+        placeholder="End Date"
+        v-model="editCampaign.end_date"
+      />
 
       <label>Volume Size/Daily Site Visits</label>
       <v-select
@@ -350,9 +379,18 @@
       />
 
       <label>Stay Duration in seconds(from,to)</label>
-      <vs-input type="text" v-model="editCampaign.stay_duration" class="w-full" />
+      <vs-input
+        type="text"
+        v-model="editCampaign.stay_duration"
+        class="w-full"
+      />
 
-      <vs-button class="justify-bottom primary mt-4" @click="updateCampaignFn" type="border">Update</vs-button>
+      <vs-button
+        class="justify-bottom primary mt-4"
+        @click="updateCampaignFn"
+        type="border"
+        >Update</vs-button
+      >
     </vs-popup>
 
     <!-- POPUP for DELETE FUNCTIONALITY !-->
@@ -366,8 +404,20 @@
           <strong></strong>
         </span>
         <div class="vx-col sm:w-2/3 w-full ml-auto">
-          <vs-button class="mr-3 mb-2" color="warning" type="border" @click="removeCampaignData">Yes</vs-button>
-          <vs-button class="mr-3 mb-2" color="warning" type="border" @click="popupActive=false">No</vs-button>
+          <vs-button
+            class="mr-3 mb-2"
+            color="warning"
+            type="border"
+            @click="removeCampaignData"
+            >Yes</vs-button
+          >
+          <vs-button
+            class="mr-3 mb-2"
+            color="warning"
+            type="border"
+            @click="popupActive = false"
+            >No</vs-button
+          >
         </div>
       </vs-popup>
     </div>
@@ -378,8 +428,11 @@
 import axios from "axios";
 import vselect from "vue-select";
 import flatPickr from "vue-flatpickr-component";
+import Datepicker from "vuejs-datepicker";
+
 import "flatpickr/dist/flatpickr.css";
 import moduleDataList from "@/store/data-list/moduleDataList.js";
+import _ from "underscore";
 import * as moment from "moment";
 export default {
   data() {
@@ -399,19 +452,22 @@ export default {
         id: "All"
       },
       type: ["Search", "Direct"],
-      startDate: moment().format("2019-01-01"),
-      endDate: moment().format("2019-01-01"),
+      startDate: moment("2019-01-01").format("YYYY-MM-DD"),
+      endDate: moment().format("YYYY-MM-DD"),
       stay_duration: " ",
       volume_size: [],
+      main_campaigns_list: [],
       campaigns_list: [],
       active_campaign_list: [],
       in_active_campaign_list: [],
-      action: null
+      action: null,
+      campaign_type: undefined
     };
   },
   components: {
     "v-select": vselect,
-    flatPickr
+    flatPickr,
+    Datepicker
   },
   computed: {
     isAdmin() {
@@ -430,22 +486,22 @@ export default {
       return this.$refs.table
         ? this.$refs.table.queriedResults.length
         : this.products.length;
-    },
-    activeCampaignList() {
-      return this.campaigns_list.filter(item => {
-        return item.status == "active" && item.start_date > this.startDate;
-        return item.status == "active" && item.end_date < this.endDate;
-      });
-    },
-    inActiveCampaignList() {
-      return this.campaigns_list.filter(item => {
-        return item.status == "paused" && item.start_date > this.startDate;
-      });
-
-      return this.campaigns_list.filter(item => {
-        return item.status == "paused" && item.end_date < this.endDate;
-      });
     }
+    // activeCampaignList() {
+    //   return this.campaigns_list.filter(item => {
+    //     return item.status == "active" && item.start_date > this.startDate;
+    //     return item.status == "active" && item.end_date < this.endDate;
+    //   });
+    // },
+    // inActiveCampaignList() {
+    //   return this.campaigns_list.filter(item => {
+    //     return item.status == "paused" && item.start_date > this.startDate;
+    //   });
+
+    //   return this.campaigns_list.filter(item => {
+    //     return item.status == "paused" && item.end_date < this.endDate;
+    //   });
+    // }
   },
   methods: {
     addNewCampaign() {
@@ -486,6 +542,57 @@ export default {
           console.log(error);
         });
     },
+
+    filterFn() {
+      console.log("anand", this.startDate,moment(this.startDate).format('YYYY-MM-DD'));
+      var this_pointer = this;
+      var filterResponse = this_pointer.campaigns_list;
+
+      if (this_pointer.client.id && this_pointer.client.id != "All") {
+        filterResponse = _.filter(filterResponse, function(c_list) {
+          return c_list.client == this_pointer.client.client_name;
+        });
+      }
+
+      if (filterResponse && filterResponse.length) {
+        if (this_pointer.campaign_type) {
+          filterResponse = _.filter(filterResponse, function(c_list) {
+            return c_list.type == this_pointer.campaign_type.toLowerCase();
+          });
+        }
+      }
+
+        if (filterResponse && filterResponse.length) {
+        if (this_pointer.startDate) {
+          filterResponse = _.filter(filterResponse, function(c_list) {
+            if(c_list.start_date >=(moment(this_pointer.startDate).format("YYYY-MM-DD")) &&
+             c_list.start_date <=(moment(this_pointer.endDate).format("YYYY-MM-DD")))
+            return c_list
+          });
+        }
+      }
+
+      if (filterResponse && filterResponse.length) {
+        this_pointer.activeCampaignList = _.filter(filterResponse, function(
+          c_list
+        ) {
+          return c_list.status == "active";
+        });
+      } else {
+        this_pointer.activeCampaignList = [];
+      }
+
+      if (filterResponse && filterResponse.length) {
+        this_pointer.inActiveCampaignList = _.filter(filterResponse, function(
+          c_list
+        ) {
+          return c_list.status == "paused";
+        });
+      } else {
+        this_pointer.inActiveCampaignList = [];
+      }
+    },
+
     pauseResumeCampaign(campaign_id, action) {
       this.$http
         .get(
@@ -605,7 +712,11 @@ export default {
       console.log("endDate:", this_pointer.end_date);
       this.$http({
         method: "get",
-        url: `http://adminapi.varuntandon.com/v1/campaigns?start_date=${this_pointer.startDate}&end_date=${this_pointer.endDate}&limit=100`,
+        url: `http://adminapi.varuntandon.com/v1/campaigns?start_date=${
+          this_pointer.startDate
+        }&end_date=${
+          this_pointer.endDate ? this_pointer.endDate : undefined
+        }&limit=100`,
         headers: { "content-type": "application/json" }
       })
         .then(function(response) {
@@ -614,11 +725,15 @@ export default {
             client_name: "All Client",
             id: "All"
           };
-          this_pointer.active_campaign_list = this_pointer.activeCampaignList;
-          this_pointer.in_active_campaign_list =
-            this_pointer.inActiveCampaignList;
+          // this_pointer.active_campaign_list = this_pointer.activeCampaignList;
+          // this_pointer.in_active_campaign_list =
+          //   this_pointer.inActiveCampaignList;
 
           this_pointer.campaigns_list = response.data.campaigns;
+
+          this_pointer.filterFn();
+          //_.filter()
+
           console.log(this_pointer.campaigns);
         })
         .catch(function(error) {
