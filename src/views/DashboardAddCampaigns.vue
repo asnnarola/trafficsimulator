@@ -16,7 +16,8 @@
               class="justify-end mb-base mr-3"
               type="filled"
               :to="{ path: '/dashboard/allcampaign' }"
-            >Back to Campaigns</vs-button>
+              >Back to Campaigns</vs-button
+            >
           </div>
         </div>
         <vs-divider></vs-divider>
@@ -61,7 +62,11 @@
           </div>
           <div class="vx-col sm:w-2/3 w-full">
             <template>
-              <v-select :options="type" v-model="campaign_type" :dir="$vs.rtl ? 'rtl' : 'ltr'" />
+              <v-select
+                :options="type"
+                v-model="campaign_type"
+                :dir="$vs.rtl ? 'rtl' : 'ltr'"
+              />
             </template>
           </div>
         </div>
@@ -101,7 +106,12 @@
           <div class="vx-col sm:w-1/2 w-full">
             <vs-input type="text" class="w-full" v-model="keyword_formating" />
           </div>
-          <vs-button type="border" text-color="#28C76F" @click="updateSearchKeywords">Update Keyword</vs-button>
+          <vs-button
+            type="border"
+            text-color="#28C76F"
+            @click="updateSearchKeywords"
+            >Update Keyword</vs-button
+          >
         </div>
         <div class="vx-row mb-6">
           <div class="vx-col sm:w-1/3 w-full">
@@ -111,7 +121,11 @@
           </div>
           <div class="vx-col sm:w-2/3 w-full">
             <template>
-              <v-select :options="search_method" v-model="search" :dir="$vs.rtl ? 'rtl' : 'ltr'" />
+              <v-select
+                :options="search_method"
+                v-model="search"
+                :dir="$vs.rtl ? 'rtl' : 'ltr'"
+              />
             </template>
           </div>
         </div>
@@ -143,12 +157,16 @@
             </span>
           </div>
           <div class="vx-col sm:w-2/3 w-full">
-            <vs-select class="w-full select-large" label="Traffic Volume" v-model="volume">
+            <vs-select
+              class="w-full select-large"
+              label="Traffic Volume"
+              v-model="volume"
+            >
               <vs-select-item
                 :key="index"
                 :value="item.tag_name"
                 :text="`${item.min_hit}-${item.max_hit}`"
-                v-for="(item,index) in volume_size"
+                v-for="(item, index) in volume_size"
                 class="w-full"
               />
             </vs-select>
@@ -236,32 +254,44 @@
                 class="w-full"
               />
             </vs-select>-->
-            <vs-select class="w-full select-large" label="Country" v-model="country_code">
-              <vs-select-item value text="Select Country" disabled></vs-select-item>
+            <vs-select
+              class="w-full select-large"
+              label="Country"
+              v-model="country_code"
+            >
+              <vs-select-item
+                value
+                text="Select Country"
+                disabled
+              ></vs-select-item>
               <vs-select-item
                 :key="index"
                 :value="item.iso"
                 :text="`${item.country}-${item.iso}`"
-                v-for="(item,index) in countryList"
+                v-for="(item, index) in countryList"
                 class="w-full"
               />
             </vs-select>
           </div>
         </div>
 
-        <div class="vx-row mb-6" v-if="country_code == 'US' ">
+        <div class="vx-row mb-6" v-if="country_code == 'US'">
           <div class="vx-col sm:w-1/3 w-full">
             <span>
               <strong>Location State</strong>
             </span>
           </div>
           <div class="vx-col sm:w-2/3 w-full">
-            <vs-select class="w-full select-large" label="States" v-model="stateName">
+            <vs-select
+              class="w-full select-large"
+              label="States"
+              v-model="stateName"
+            >
               <vs-select-item
                 :key="index"
                 :value="item.state"
                 :text="`${item.state}-${item.iso}`"
-                v-for="(item,index) in stateList"
+                v-for="(item, index) in stateList"
                 class="w-full"
               />
             </vs-select>
@@ -285,8 +315,15 @@
 
         <div class="vx-row">
           <div class="vx-col w-full">
-            <vs-button class="mr-3 mb-2" color="success" @click="addCampaignList">Submit</vs-button>
-            <vs-button color="warning" type="border" class="mb-2">Cancel</vs-button>
+            <vs-button
+              class="mr-3 mb-2"
+              color="success"
+              @click="addCampaignList"
+              >Submit</vs-button
+            >
+            <vs-button color="warning" type="border" class="mb-2"
+              >Cancel</vs-button
+            >
           </div>
         </div>
       </vx-card>
@@ -369,19 +406,49 @@ export default {
         });
     },
     updateSearchKeywords() {
-      if (!_.isEmpty(this.keyword_formating)) {
-        var formatData = this.keyword_formating.split("KW");
+      console.log(
+        "this.keyword_formating",
+        this.keyword_formating.length,
+        this.keyword_formating.indexOf("KW")
+      );
 
-        if (!_.isEmpty(this.keywords)) {
-          var keyWords = this.keywords.split("\n");
-          var singleLineKeyWords = "";
-          keyWords.map((data, index) => {
-            singleLineKeyWords =
-              index == 0
-                ? data + " " + formatData[1]
-                : singleLineKeyWords + "\n" + data + " " + formatData[1];
-          });
-          this.keywords = singleLineKeyWords;
+      if (!_.isEmpty(this.keyword_formating)) {
+        var mainDivideString = this.keyword_formating.indexOf("KW");
+        if (mainDivideString >= 1) {
+          var substringFirstPart = this.keyword_formating.substr(
+            0,
+            mainDivideString-1
+          );
+          var substringSecondPart = this.keyword_formating.substr(
+            mainDivideString + 3,
+            this.keyword_formating.length
+          );
+
+          if (!_.isEmpty(this.keywords)) {
+            var keyWords = this.keywords.split("\n");
+            var singleLineKeyWords = "";
+            keyWords.map((data, index) => {
+              singleLineKeyWords =
+                index == 0
+                  ? substringFirstPart+ " "+data + " " + substringSecondPart
+                  : singleLineKeyWords + "\n" + substringFirstPart+ " "+data + " " + substringSecondPart;
+            });
+            this.keywords = singleLineKeyWords;
+          }
+        } else {
+          var formatData = this.keyword_formating.split("KW");
+
+          if (!_.isEmpty(this.keywords)) {
+            var keyWords = this.keywords.split("\n");
+            var singleLineKeyWords = "";
+            keyWords.map((data, index) => {
+              singleLineKeyWords =
+                index == 0
+                  ? data  + formatData[1]
+                  : singleLineKeyWords + "\n" + data  + formatData[1];
+            });
+            this.keywords = singleLineKeyWords;
+          }
         }
       }
     },
