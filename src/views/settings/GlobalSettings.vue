@@ -126,7 +126,8 @@
             </span>
           </div>
           <div class="vx-col sm:w-1/3 w-full">
-            <vs-input class="w-full" type="number" v-model="tpc_spike_chance" />
+            <span v-if="!editSpike">{{ tpc_spike_chance }}</span>
+            <vs-input v-if="editSpike" class="w-full" type="number" v-model="tpc_spike_chance" />
           </div>
         </div>
         <div class="vx-row mb-6">
@@ -136,7 +137,8 @@
             </span>
           </div>
           <div class="vx-col sm:w-1/3 w-full">
-            <vs-input class="w-full" type="number" v-model="tpc_downturn_chance" />
+            <span v-if="!editSpike">{{tpc_downturn_chance}}</span>
+            <vs-input v-if="editSpike" class="w-full" type="number" v-model="tpc_downturn_chance" />
           </div>
         </div>
         <div class="vx-row mb-6">
@@ -146,7 +148,8 @@
             </span>
           </div>
           <div class="vx-col sm:w-1/3 w-full">
-            <vs-input class="w-full" type="number" v-model="tpc_spike_days" />
+            <span v-if="!editSpike">{{tpc_spike_days}}</span>
+            <vs-input v-if="editSpike" class="w-full" type="number" v-model="tpc_spike_days" />
           </div>
         </div>
         <div class="vx-row mb-6">
@@ -156,7 +159,8 @@
             </span>
           </div>
           <div class="vx-col sm:w-1/3 w-full">
-            <vs-input class="w-full" type="number" v-model="tpc_downturn_days" />
+            <span v-if="!editSpike">{{tpc_downturn_days}}</span>
+            <vs-input v-if="editSpike" class="w-full" type="number" v-model="tpc_downturn_days" />
           </div>
         </div>
         <div class="vx-row mb-6">
@@ -166,7 +170,8 @@
             </span>
           </div>
           <div class="vx-col sm:w-1/3 w-full">
-            <vs-input class="w-full" type="number" v-model="tpc_spike_levels" />
+            <span v-if="!editSpike">{{tpc_spike_levels}}</span>
+            <vs-input v-if="editSpike" class="w-full" type="number" v-model="tpc_spike_levels" />
           </div>
         </div>
         <div class="vx-row mb-6">
@@ -176,16 +181,17 @@
             </span>
           </div>
           <div class="vx-col sm:w-1/3 w-full">
-            <vs-input class="w-full" type="number" v-model="tpc_downturn_levels" />
+            <span v-if="!editSpike">{{tpc_downturn_levels}}</span>
+            <vs-input v-if="editSpike" class="w-full" type="number" v-model="tpc_downturn_levels" />
           </div>
         </div>
 
         <vs-button
           v-if="isAdmin"
-          @click="updateSpikeList"
+          @click="editSpike ? updateSpikeList() : editSpikeList()"
           class="mb-base mt-4"
           type="filled"
-        >Update Spike Up/ Down Config</vs-button>
+        >{{ editSpike ? 'Update' : 'Edit' }} Spike Up/ Down Config</vs-button>
       </vx-card>
     </template>
   </div>
@@ -217,6 +223,7 @@ export default {
       tpc_downturn_days: "",
       tpc_spike_levels: "",
       tpc_downturn_levels: "",
+      editSpike: false,
       spikeList: [],
       trafficVolumeTags: [],
       proxyList: [],
@@ -253,6 +260,9 @@ export default {
     this.getSpikeList();
   },
   methods: {
+    editSpikeList() {
+      this.editSpike = true;
+    },
     getTrafficVolumeTags() {
       this.$http
         .get("http://adminapi.varuntandon.com/v1/tvt")
