@@ -11,9 +11,7 @@
             </span>
           </vx-input-group>
           <div class="flex items-center" v-if="isAdmin">
-            <vs-button class="mb-base mr-3" @click="addNewCampaign"
-              >Add a new Campaign</vs-button
-            >
+            <vs-button class="mb-base mr-3" @click="addNewCampaign">Add a new Campaign</vs-button>
           </div>
         </div>
 
@@ -50,12 +48,8 @@
               placeholder="End Date"
               v-model="endDate"
               @on-change="getCampaignList"
-            /> -->
-            <datepicker
-              placeholder="End Date"
-              @input="filterFn"
-              v-model="endDate"
-            ></datepicker>
+            />-->
+            <datepicker placeholder="End Date" @input="filterFn" v-model="endDate"></datepicker>
           </div>
           <div class="vx-col sm:w-1/2 w-full mb-2">
             <label>Start Date</label>
@@ -64,12 +58,8 @@
               placeholder="Start Date"
               v-model="startDate"
               @on-change="filterFn"
-            /> -->
-            <datepicker
-              placeholder="Start Date"
-              @input="filterFn"
-              v-model="startDate"
-            ></datepicker>
+            />-->
+            <datepicker placeholder="Start Date" @input="filterFn" v-model="startDate"></datepicker>
 
             <!-- @click="getCampaignList"/> -->
           </div>
@@ -363,11 +353,7 @@
       <vs-input type="text" class="w-full" v-model="editCampaign.brand_name" />
 
       <label>End Date</label>
-      <flat-pickr
-        class="w-full"
-        placeholder="End Date"
-        v-model="editCampaign.end_date"
-      />
+      <flat-pickr class="w-full" placeholder="End Date" v-model="editCampaign.end_date" />
 
       <label>Volume Size/Daily Site Visits</label>
       <v-select
@@ -378,18 +364,9 @@
       />
 
       <label>Stay Duration in seconds(from,to)</label>
-      <vs-input
-        type="text"
-        v-model="editCampaign.stay_duration"
-        class="w-full"
-      />
+      <vs-input type="text" v-model="editCampaign.stay_duration" class="w-full" />
 
-      <vs-button
-        class="justify-bottom primary mt-4"
-        @click="updateCampaignFn"
-        type="border"
-        >Update</vs-button
-      >
+      <vs-button class="justify-bottom primary mt-4" @click="updateCampaignFn" type="border">Update</vs-button>
     </vs-popup>
 
     <!-- POPUP for DELETE FUNCTIONALITY !-->
@@ -403,20 +380,8 @@
           <strong></strong>
         </span>
         <div class="vx-col sm:w-2/3 w-full ml-auto">
-          <vs-button
-            class="mr-3 mb-2"
-            color="warning"
-            type="border"
-            @click="removeCampaignData"
-            >Yes</vs-button
-          >
-          <vs-button
-            class="mr-3 mb-2"
-            color="warning"
-            type="border"
-            @click="popupActive = false"
-            >No</vs-button
-          >
+          <vs-button class="mr-3 mb-2" color="warning" type="border" @click="removeCampaignData">Yes</vs-button>
+          <vs-button class="mr-3 mb-2" color="warning" type="border" @click="popupActive = false">No</vs-button>
         </div>
       </vs-popup>
     </div>
@@ -455,9 +420,10 @@ export default {
       endDate: moment().format("YYYY-MM-DD"),
       stay_duration: " ",
       volume_size: [],
-      main_campaigns_list: [],
       campaigns_list: [],
       active_campaign_list: [],
+      activeCampaignList: [],
+      inActiveCampaignList: [],
       in_active_campaign_list: [],
       action: null,
       campaign_type: undefined
@@ -543,7 +509,11 @@ export default {
     },
 
     filterFn() {
-      console.log("anand", this.startDate,moment(this.startDate).format('YYYY-MM-DD'));
+      console.log(
+        "anand",
+        this.startDate,
+        moment(this.startDate).format("YYYY-MM-DD")
+      );
       var this_pointer = this;
       var filterResponse = this_pointer.campaigns_list;
 
@@ -561,12 +531,16 @@ export default {
         }
       }
 
-        if (filterResponse && filterResponse.length) {
+      if (filterResponse && filterResponse.length) {
         if (this_pointer.startDate) {
           filterResponse = _.filter(filterResponse, function(c_list) {
-            if(c_list.start_date >=(moment(this_pointer.startDate).format("YYYY-MM-DD")) &&
-             c_list.start_date <=(moment(this_pointer.endDate).format("YYYY-MM-DD")))
-            return c_list
+            if (
+              c_list.start_date >=
+                moment(this_pointer.startDate).format("YYYY-MM-DD") &&
+              c_list.start_date <=
+                moment(this_pointer.endDate).format("YYYY-MM-DD")
+            )
+              return c_list;
           });
         }
       }
@@ -578,7 +552,7 @@ export default {
           return c_list.status == "active";
         });
       } else {
-        this_pointer.activeCampaignList = [];
+        this_pointer.activeCampaignList;
       }
 
       if (filterResponse && filterResponse.length) {
@@ -588,7 +562,7 @@ export default {
           return c_list.status == "paused";
         });
       } else {
-        this_pointer.inActiveCampaignList = [];
+        this_pointer.inActiveCampaignList;
       }
     },
 

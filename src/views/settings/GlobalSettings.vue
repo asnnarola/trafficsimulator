@@ -126,7 +126,7 @@
             </span>
           </div>
           <div class="vx-col sm:w-1/3 w-full">
-            <vs-input class="w-full" v-model="input1" />
+            <vs-input class="w-full" type="number" v-model="tpc_spike_chance" />
           </div>
         </div>
         <div class="vx-row mb-6">
@@ -136,7 +136,7 @@
             </span>
           </div>
           <div class="vx-col sm:w-1/3 w-full">
-            <vs-input class="w-full" type="email" v-model="input2" />
+            <vs-input class="w-full" type="number" v-model="tpc_downturn_chance" />
           </div>
         </div>
         <div class="vx-row mb-6">
@@ -146,7 +146,7 @@
             </span>
           </div>
           <div class="vx-col sm:w-1/3 w-full">
-            <v-select :options="type" v-model="spike_days" :dir="$vs.rtl ? 'rtl' : 'ltr'"></v-select>
+            <vs-input class="w-full" type="number" v-model="tpc_spike_days" />
           </div>
         </div>
         <div class="vx-row mb-6">
@@ -156,7 +156,7 @@
             </span>
           </div>
           <div class="vx-col sm:w-1/3 w-full">
-            <v-select :options="type1" v-model="downturn_days" :dir="$vs.rtl ? 'rtl' : 'ltr'"></v-select>
+            <vs-input class="w-full" type="number" v-model="tpc_downturn_days" />
           </div>
         </div>
         <div class="vx-row mb-6">
@@ -166,11 +166,26 @@
             </span>
           </div>
           <div class="vx-col sm:w-1/3 w-full">
-            <v-select :options="type3" v-model="level" :dir="$vs.rtl ? 'rtl' : 'ltr'"></v-select>
+            <vs-input class="w-full" type="number" v-model="tpc_spike_levels" />
+          </div>
+        </div>
+        <div class="vx-row mb-6">
+          <div class="vx-col sm:w-1/3 w-full">
+            <span>
+              <strong>Spike_to_how_many_Levels_Down</strong>
+            </span>
+          </div>
+          <div class="vx-col sm:w-1/3 w-full">
+            <vs-input class="w-full" type="number" v-model="tpc_downturn_levels" />
           </div>
         </div>
 
-        <vs-button v-if="isAdmin" class="mb-base mt-4" type="filled">Update Spike Up/ Down Config</vs-button>
+        <vs-button
+          v-if="isAdmin"
+          @click="updateSpikeList"
+          class="mb-base mt-4"
+          type="filled"
+        >Update Spike Up/ Down Config</vs-button>
       </vx-card>
     </template>
   </div>
@@ -196,11 +211,16 @@ export default {
           provider: "Packetstream"
         }
       ],
-      type: ["3", "4", "5", "6"],
-      type1: ["2", "3", "4", "5", "6"],
-      type3: ["3", "4"],
+      tpc_spike_chance: "",
+      tpc_downturn_chance: "",
+      tpc_spike_days: "",
+      tpc_downturn_days: "",
+      tpc_spike_levels: "",
+      tpc_downturn_levels: "",
+      spikeList: [],
       trafficVolumeTags: [],
       proxyList: [],
+      newSpikeList: {},
       tag_name: null,
       min_hit: null,
       max_hit: null,
@@ -230,6 +250,7 @@ export default {
   mounted() {
     this.getTrafficVolumeTags();
     this.getProxyList();
+    this.getSpikeList();
   },
   methods: {
     getTrafficVolumeTags() {
@@ -371,6 +392,74 @@ export default {
       this.password = data.password;
       this.active = data.active;
       this.editProxy = index;
+    },
+    getSpikeList() {
+      var this_pointer = this;
+      this.$http
+        .get("http://adminapi.varuntandon.com/v1/config/tpc")
+        .then(response => {
+          this_pointer.spikeList = response.data;
+
+          this_pointer.tpc_spike_chance = response.data.tpc_spike_chance;
+
+          this_pointer.tpc_downturn_chance = response.data.tpc_downturn_chance;
+
+          this_pointer.tpc_spike_days = response.data.tpc_spike_days;
+
+          this_pointer.tpc_downturn_days = response.data.tpc_downturn_days;
+
+          this_pointer.tpc_spike_levels = response.data.tpc_spike_levels;
+
+          this_pointer.tpc_downturn_levels = response.data.tpc_downturn_levels;
+
+          console.log("response generated", this_pointer.spikeList);
+        })
+        .catch(error => {
+          console.log(error);
+        });
+    },
+    updateSpikeList() {
+      var this_pointer = this;
+      axios
+        .put("http://adminapi.varuntandon.com/v1/config/tpc", {
+          tpc_spike_chance: parseInt(this_pointer.tpc_spike_chance),
+
+          tpc_downturn_chance: parseInt(this_pointer.tpc_downturn_chance),
+
+          tpc_spike_days: parseInt(this_pointer.tpc_spike_days),
+
+          tpc_downturn_days: parseInt(this_pointer.tpc_downturn_days),
+
+          tpc_spike_levels: parseInt(this_pointer.tpc_spike_levels),
+
+          tpc_downturn_levels: parseInt(this_pointer.tpc_downturn_levels)
+        })
+        .then(response => {
+          if (response.data.success) {
+            this_pointer.newSpikeList = response.data;
+
+            this_pointer.tpc_spike_chance =
+              response.data.newSpikeList.tpc_spike_chance;
+
+            this_pointer.tpc_downturn_chance =
+              response.data.newSpikeList.tpc_downturn_chance;
+
+            this_pointer.tpc_spike_days =
+              response.data.newSpikeList.tpc_spike_days;
+
+            this_pointer.tpc_downturn_days =
+              response.data.newSpikeList.tpc_downturn_days;
+
+            this_pointer.tpc_spike_levels =
+              response.data.newSpikeList.tpc_spike_levels;
+
+            this_pointer.tpc_downturn_levels =
+              response.data.newSpikeList.tpc_downturn_levels;
+          }
+        })
+        .catch(error => {
+          console.log(error);
+        });
     }
   }
 };
