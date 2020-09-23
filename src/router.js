@@ -47,7 +47,15 @@ const router = new Router({
           path: "/",
           redirect: "/dashboard/client"
         },
-
+        {
+          path: "/dashboard/appinfo",
+          name: "dashboard-appinfo",
+          component: () => import("./views/Dashboard.vue"),
+          meta: {
+            rule: "admin",
+            requiresAuth: true
+          }
+        },
         {
           path: "/dashboard/client",
           name: "dashboard-client",

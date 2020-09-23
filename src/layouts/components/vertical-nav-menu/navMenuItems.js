@@ -19,40 +19,14 @@
 ==========================================================================================*/
 
 export default [
-  // {
-  //   url: "/apps/email",
-  //   name: "Email",
-  //   slug: "email",
-  //   icon: "MailIcon",
-  //   i18n: "Email",
-  // },
-  // {
-  //   url: null,
-  //   name: 'Dashboard',
-  //   tag: '3',
-  //   tagColor: 'warning',
-  //   icon: 'HomeIcon',
-  //   i18n: 'Dashboard',
-  //   submenu: [{
-  //       url: '/dashboard/client',
-  //       name: 'Client',
-  //       slug: 'dashboard-client',
-  //       i18n: 'Client'
-  //     },
-  //     {
-  //       url: '/dashboard/allcampaign',
-  //       name: 'Campaign',
-  //       slug: 'dashboard-allcampaign',
-  //       i18n: 'Campaign'
-  //     },
-  //     {
-  //       url: '/dashboard/viewsstatus',
-  //       name: 'ViewStatus',
-  //       slug: 'dashboard-viewstatus',
-  //       i18n: 'ViewStatus'
-  //     }
-  //   ]
-  // },
+  localStorage.getItem("isAdmin")
+    ? {
+      url: "/dashboard/appinfo",
+      name: 'Dashboard',
+      icon: 'HomeIcon',
+      i18n: 'Dashboard'
+    }
+    : {},
   {
     header: "Clients",
     icon: "FileIcon",
@@ -105,19 +79,20 @@ export default [
   },
   localStorage.getItem("isAdmin")
     ? {
-        header: "Users",
-        icon: "FileIcon",
-        i18n: "Users",
-        items: [
-          {
-            url: "/users",
-            slug: "users",
-            name: "Users",
-            icon: "UsersIcon",
-            i18n: "Users"
-          }
-        ]
-      }
+      header: "Users",
+      icon: "FileIcon",
+      i18n: "Users",
+      items: [
+        {
+          url: "/users",
+          slug: "users",
+          name: "Users",
+          icon: "UsersIcon",
+          i18n: "Users"
+        },
+      ]
+    }
+
     : {}
   // {
   //   url: null,

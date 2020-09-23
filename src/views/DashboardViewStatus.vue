@@ -232,11 +232,9 @@ export default {
             }
           }
         )
-
         .then(response => {
           console.log("FirstResponse", response.data);
           //this.statsList = response.data.stats;
-
           this.statsList = [
             {
               campaign: 0,
@@ -306,7 +304,6 @@ export default {
       axios({
         method: "get",
         url: "http://adminapi.varuntandon.com/v1/campaigns/" + campaign_id,
-
         headers: { "content-type": "application/json" }
       })
         .then(function(response) {
@@ -425,7 +422,6 @@ export default {
           console.log(error);
         });
     },
-
     getLifetimeVisits() {
       this.$http
         // .get(
@@ -460,7 +456,6 @@ export default {
         });
     }
   },
-
   mounted() {
     if (Object.keys(this.$route.query).length) {
       this.campaignId = this.$route.query.campaignId;
@@ -471,7 +466,6 @@ export default {
     this.getStatsFor60Days();
     this.getStatsFor180Days();
     this.getLifetimeVisits();
-
     // var actual_visits = 0
     // response.data.forEach(record => actual_visits + record.hitsAchieved)
   }
@@ -480,10 +474,3 @@ export default {
 
 <style scoped>
 </style>
-
-
-
-
-
-
-
