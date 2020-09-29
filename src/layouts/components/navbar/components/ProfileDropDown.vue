@@ -60,6 +60,7 @@ export default {
     logout() {
       localStorage.removeItem("isAdmin");
       localStorage.removeItem("isEditor");
+      this.$router.push("/login");
       location.reload();
     }
   }

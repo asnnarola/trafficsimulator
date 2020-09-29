@@ -105,7 +105,7 @@ export default {
         });
         location.reload();
       } else if (
-        this.email === "user@gmail.com" &&
+        this.email === "`user@gmail.com" &&
         this.password === "123456"
       ) {
         this.$store.commit("SET_LOGIN_STATUS", true);

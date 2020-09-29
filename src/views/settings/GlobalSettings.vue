@@ -54,6 +54,7 @@
       @click="addNewTrafficRow"
       class="mb-base mt-4"
       type="filled"
+      :disabled="edit"
     >ADD: New Google Search Traffic Ranges</vs-button>
     <vs-divider></vs-divider>&nbsp;
     <h3>Proxy Providers</h3>
@@ -203,20 +204,6 @@ import axios from "axios";
 export default {
   data() {
     return {
-      info: [
-        {
-          id: 1,
-          provider: "Oxylabs"
-        },
-        {
-          id: 2,
-          provider: "Smartproxy"
-        },
-        {
-          id: 3,
-          provider: "Packetstream"
-        }
-      ],
       tpc_spike_chance: "",
       tpc_downturn_chance: "",
       tpc_spike_days: "",
@@ -335,6 +322,9 @@ export default {
             console.log("tvt already exist!");
           }
           console.log("tvt response", response);
+        })
+        .catch(error => {
+          console.log(error);
         });
     },
     removeTrafficVolumeTag(tag_id) {

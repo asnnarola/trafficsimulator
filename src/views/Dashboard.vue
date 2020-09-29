@@ -1,6 +1,6 @@
 <template >
   <div v-if="isAdmin">
-    <h1>Traffic Simulator Dashbooard</h1>&nbsp;
+    <h1>Traffic Simulator Dashboard</h1>&nbsp;
     <vx-card>
       <h2>App Info:</h2>&nbsp;
       <h3>

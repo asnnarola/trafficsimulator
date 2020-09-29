@@ -29,9 +29,9 @@
         <div class="vx-col sm:w-1/3 w-full">
           <vs-button size="large" @click="showErrorLog">Show Error Log</vs-button>
         </div>
-        <div class="vx-col sm:w-1/3 w-full" v-if="isAdmin">
+        <!-- <div class="vx-col sm:w-1/3 w-full" v-if="isAdmin">
           <vs-button size="large" @click="clearErrorLog">Clear Error Log</vs-button>
-        </div>
+        </div>-->
       </div>
 
       <div class="vx-row mb-6">
@@ -41,9 +41,9 @@
         <div class="vx-col sm:w-1/3 w-full">
           <vs-button size="large" @click="showRuntimeLog">Show Runtime Log</vs-button>
         </div>
-        <div class="vx-col sm:w-1/3 w-full" v-if="isAdmin">
+        <!-- <div class="vx-col sm:w-1/3 w-full" v-if="isAdmin">
           <vs-button size="large" @click="clearRuntimeLog">Clear Runtime Log</vs-button>
-        </div>
+        </div>-->
       </div>&nbsp;
       <vs-textarea id="logs" v-html="textarea" v-model="textarea" label="Log" height="200px" />
     </vx-card>
@@ -56,13 +56,13 @@ export default {
     return {
       active1: false,
       textarea: "",
-      appInfo: null,
+      appInfo: null
     };
   },
   computed: {
     isAdmin() {
       return this.$store.state.userRole === "admin";
-    },
+    }
   },
   mounted() {
     this.getAppInfo();
@@ -71,7 +71,7 @@ export default {
     getAppInfo() {
       this.$http
         .get("http://adminapi.varuntandon.com/v1/info")
-        .then((response) => {
+        .then(response => {
           console.log(response.data);
           this.appInfo = response.data;
         });
@@ -79,7 +79,7 @@ export default {
     showErrorLog() {
       this.$http
         .get("http://adminapi.varuntandon.com/v1/log/error")
-        .then((response) => {
+        .then(response => {
           console.log(response.data);
           this.textarea = response.data;
         });
@@ -87,7 +87,7 @@ export default {
     clearErrorLog() {
       this.$http
         .get("http://adminapi.varuntandon.com/v1/log/error/clear")
-        .then((response) => {
+        .then(response => {
           console.log("Error log cleared!");
         });
     },
@@ -95,7 +95,7 @@ export default {
     showRuntimeLog() {
       this.$http
         .get("http://adminapi.varuntandon.com/v1/log/runtime")
-        .then((response) => {
+        .then(response => {
           console.log(response.data);
           this.textarea = response.data;
         });
@@ -104,11 +104,11 @@ export default {
     clearRuntimeLog() {
       this.$http
         .get("http://adminapi.varuntandon.com/v1/log/runtime/clear")
-        .then((response) => {
+        .then(response => {
           console.log("Runtime log cleared!");
         });
-    },
-  },
+    }
+  }
 };
 </script>
 

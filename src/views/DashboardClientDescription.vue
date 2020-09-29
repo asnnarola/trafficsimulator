@@ -20,16 +20,18 @@
           </div>
         </div>
 
-        <div class="vx-row mb-6" :data="clientDes">
+        <div class="vx-row mb-6" :data="clients">
           <div class="vx-col w-full">
             <label>Client Name</label>
-            <vs-input class="w-full" :value="clientDes.client_name" />
+            <vs-input class="w-full" v-model="client_name" />
+          </div>
+
+          <div class="vx-col w-full mt-5">
+            <label>Add Description</label>
+            <vs-textarea v-model="description" />
           </div>
         </div>
-        <div class="mt-5" :data="clientDes">
-          <label>Add Description</label>
-          <vs-textarea :value="clientDes.description" />
-        </div>
+
         <div class="vx-row">
           <div class="vx-col w-full">
             <vs-button class="mr-3 mb-2" color="success" @click="addClientFn">
@@ -59,14 +61,11 @@ export default {
   data() {
     return {
       check3: "",
-      client_name: "",
-      description: "",
       edit: false,
       clientId: null,
-      clientDes: {
-        client_name: "",
-        description: ""
-      }
+      clients: [],
+      client_name: "",
+      description: ""
     };
   },
   methods: {
@@ -108,34 +107,34 @@ export default {
             position: "top-right"
           });
         });
-    },
-    getClientFn(client_id) {
-      var this_pointer = this;
-      axios({
-        method: "get",
-        url: "http://adminapi.varuntandon.com/v1/clients/",
-        headers: { "content-type": "application/json" }
-      })
-        .then(function(response) {
-          console.log("firstResponse", response);
-          this_pointer.clientDes = response.data.clients;
-          console.log(
-            "response",
-            this_pointer.clientDes,
-            response.data.clients
-          );
-        })
-        .catch(function(error) {
-          console.log(error);
-        });
     }
-  },
-  mounted() {
-    if (Object.keys(this.$route.query).length) {
-      this.clientId = this.$route.query.clientId;
-      this.edit = true;
-    }
-    this.getClientFn(this.clientId);
+    // getClientFn(client_id) {
+    //   var this_pointer = this;
+    //   axios({
+    //     method: "get",
+    //     url: "http://adminapi.varuntandon.com/v1/clients/",
+    //     headers: { "content-type": "application/json" }
+    //   })
+    //     .then(function(response) {
+    //       console.log("firstResponse", response);
+    //       this_pointer.clientDes = response.data.clients;
+    //       console.log(
+    //         "response",
+    //         this_pointer.clientDes,
+    //         response.data.clients
+    //       );
+    //     })
+    //     .catch(function(error) {
+    //       console.log(error);
+    //     });
+    // }
   }
+  // mounted() {
+  //   if (Object.keys(this.$route.query).length) {
+  //     this.clientId = this.$route.query.clientId;
+  //     this.edit = true;
+  //   }
+  //   this.getClientFn(this.clientId);
+  // }
 };
 </script>
