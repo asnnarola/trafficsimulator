@@ -12,14 +12,24 @@
           <h3>System Reboot:</h3>
         </div>
         <div class="vx-col sm:w-1/3 w-full">
-          <vs-button size="large" @click="active1=true">Reboot System Now</vs-button>
-          <vs-alert
-            :active.sync="active1"
-            closable
-            icon-pack="feather"
-            close-icon="icon-x"
-          >Do you really want reboot ?.</vs-alert>
+          <vs-button size="large" @click="systemReboot()">Reboot System Now</vs-button>
         </div>
+      </div>
+
+      <div class="demo-alignment">
+        <vs-popup
+          class="holamundo"
+          title="Are you sure you really want to reboot ?"
+          :active.sync="popupActive"
+        >
+          <span>
+            <strong></strong>
+          </span>
+          <div class="vx-col sm:w-2/3 w-full ml-auto">
+            <vs-button class="mr-3 mb-2" color="warning" type="border" @click="reboot">Yes</vs-button>
+            <vs-button class="mr-3 mb-2" color="warning" type="border" @click="popupActive=false">No</vs-button>
+          </div>
+        </vs-popup>
       </div>
 
       <div class="vx-row mb-6">
@@ -29,9 +39,9 @@
         <div class="vx-col sm:w-1/3 w-full">
           <vs-button size="large" @click="showErrorLog">Show Error Log</vs-button>
         </div>
-        <!-- <div class="vx-col sm:w-1/3 w-full" v-if="isAdmin">
+        <div class="vx-col sm:w-1/3 w-full" v-if="isAdmin">
           <vs-button size="large" @click="clearErrorLog">Clear Error Log</vs-button>
-        </div>-->
+        </div>
       </div>
 
       <div class="vx-row mb-6">
@@ -41,9 +51,9 @@
         <div class="vx-col sm:w-1/3 w-full">
           <vs-button size="large" @click="showRuntimeLog">Show Runtime Log</vs-button>
         </div>
-        <!-- <div class="vx-col sm:w-1/3 w-full" v-if="isAdmin">
+        <div class="vx-col sm:w-1/3 w-full" v-if="isAdmin">
           <vs-button size="large" @click="clearRuntimeLog">Clear Runtime Log</vs-button>
-        </div>-->
+        </div>
       </div>&nbsp;
       <vs-textarea id="logs" v-html="textarea" v-model="textarea" label="Log" height="200px" />
     </vx-card>
@@ -54,9 +64,9 @@
 export default {
   data() {
     return {
-      active1: false,
       textarea: "",
-      appInfo: null
+      appInfo: null,
+      popupActive: false
     };
   },
   computed: {
@@ -106,6 +116,16 @@ export default {
         .get("http://adminapi.varuntandon.com/v1/log/runtime/clear")
         .then(response => {
           console.log("Runtime log cleared!");
+        });
+    },
+    systemReboot() {
+      this.popupActive = true;
+    },
+    reboot() {
+      this.$http
+        .get("http://adminapi.varuntandon.com/v1/reboot")
+        .then(response => {
+          console.log("System is rebooted!");
         });
     }
   }

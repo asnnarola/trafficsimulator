@@ -215,7 +215,12 @@
           </div>
           <div class="vx-col sm:w-2/3 w-full">
             <template>
-              <vs-input type="text" class="w-full" v-model="stay_duration" />
+              <vs-input
+                type="text"
+                placeholder="Format: 70,120"
+                class="w-full"
+                v-model="stay_duration"
+              />
             </template>
           </div>
         </div>

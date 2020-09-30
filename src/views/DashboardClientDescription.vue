@@ -23,12 +23,14 @@
         <div class="vx-row mb-6" :data="clients">
           <div class="vx-col w-full">
             <label>Client Name</label>
-            <vs-input class="w-full" v-model="client_name" />
+            <vs-input class="w-full mt-1" v-model="client_name" />
           </div>
 
           <div class="vx-col w-full mt-5">
             <label>Add Description</label>
-            <vs-textarea v-model="description" />
+            <div class="mt-1">
+              <vs-textarea v-model="description" height="150px" />
+            </div>
           </div>
         </div>
 
@@ -65,7 +67,11 @@ export default {
       clientId: null,
       clients: [],
       client_name: "",
-      description: ""
+      description: "",
+      clientInfo: {
+        client_name: "",
+        description: ""
+      }
     };
   },
   methods: {
@@ -107,34 +113,32 @@ export default {
             position: "top-right"
           });
         });
+    },
+    getClientFn(client_id) {
+      var this_pointer = this;
+      axios({
+        method: "get",
+        url: "http://adminapi.varuntandon.com/v1/clients",
+        headers: { "content-type": "application/json" }
+      })
+        .then(function(response) {
+          console.log("firstResponse", response);
+          this_pointer.clientInfo = response.data;
+          console.log("response", clientInfo);
+        })
+        .catch(function(error) {
+          console.log(error);
+        });
     }
-    // getClientFn(client_id) {
-    //   var this_pointer = this;
-    //   axios({
-    //     method: "get",
-    //     url: "http://adminapi.varuntandon.com/v1/clients/",
-    //     headers: { "content-type": "application/json" }
-    //   })
-    //     .then(function(response) {
-    //       console.log("firstResponse", response);
-    //       this_pointer.clientDes = response.data.clients;
-    //       console.log(
-    //         "response",
-    //         this_pointer.clientDes,
-    //         response.data.clients
-    //       );
-    //     })
-    //     .catch(function(error) {
-    //       console.log(error);
-    //     });
-    // }
+  },
+  mounted() {
+    if (Object.keys(this.$route.query).length) {
+      this.id = this.$route.query.clientId;
+      this.client_name = this.$route.query.clientName;
+      this.description = this.$route.query.clientDescription;
+      this.edit = true;
+    }
+    this.getClientFn(this.clientId);
   }
-  // mounted() {
-  //   if (Object.keys(this.$route.query).length) {
-  //     this.clientId = this.$route.query.clientId;
-  //     this.edit = true;
-  //   }
-  //   this.getClientFn(this.clientId);
-  // }
 };
 </script>

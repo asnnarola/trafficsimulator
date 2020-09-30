@@ -106,7 +106,7 @@
 
           <vs-td v-if="isAdmin" :data="data[indextr].id">
             <vs-button
-              @click="(editProxy === indextr) ? updateProxyList(data[indextr].id):setUpdateData(data[indextr],indextr)"
+              @click="(editProxy === indextr) ? updateProxyList(data[indextr].id) : setUpdateData(data[indextr],indextr)"
               color="primary"
               type="filled"
             >{{(editProxy === indextr) ? 'Update ' : 'Edit'}}</vs-button>
@@ -247,9 +247,6 @@ export default {
     this.getSpikeList();
   },
   methods: {
-    editSpikeList() {
-      this.editSpike = true;
-    },
     getTrafficVolumeTags() {
       this.$http
         .get("http://adminapi.varuntandon.com/v1/tvt")
@@ -356,30 +353,31 @@ export default {
         });
     },
     updateProxyList(account_id) {
-      axios
+      var this_pointer = this;
+      this.$http
         .put(`http://adminapi.varuntandon.com/v1/proxy/${account_id}`, {
-          provider: this.provider,
-          username: this.username,
-          password: this.password,
-          active: this.active
+          provider: this_pointer.provider,
+          username: this_pointer.username,
+          password: this_pointer.password,
+          active: this_pointer.active
         })
         .then(function(response) {
           if (response.data.success) {
             var newProxy = {
               //id: account_id,
-              provider: this.provider,
-              username: this.username,
-              password: this.password,
-              active: this.active
+              provider: this_pointer.provider,
+              username: this_pointer.username,
+              password: this_pointer.password,
+              active: this_pointer.active
             };
 
-            this.proxyList = this.proxyList.map(acc =>
+            this_pointer.proxyList = this_pointer.proxyList.map(acc =>
               acc.id === account_id ? (acc = newProxy) : acc
             );
-            this.provider = null;
-            this.username = null;
-            this.password = null;
-            this.edit = -1;
+            this_pointer.provider = null;
+            this_pointer.username = null;
+            this_pointer.password = null;
+            this_pointer.editProxy = -1;
           }
         })
         .catch(function(error) {
@@ -393,6 +391,7 @@ export default {
       this.active = data.active;
       this.editProxy = index;
     },
+
     getSpikeList() {
       var this_pointer = this;
       this.$http
@@ -435,7 +434,11 @@ export default {
           tpc_downturn_levels: parseInt(this_pointer.tpc_downturn_levels)
         })
         .then(response => {
+          console.log(response);
+
           if (response.data.success) {
+            this_pointer.editSpike = false;
+
             this_pointer.newSpikeList = response.data;
 
             this_pointer.tpc_spike_chance =
@@ -460,6 +463,9 @@ export default {
         .catch(error => {
           console.log(error);
         });
+    },
+    editSpikeList() {
+      this.editSpike = true;
     }
   }
 };

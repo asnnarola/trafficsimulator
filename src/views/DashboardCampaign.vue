@@ -42,26 +42,16 @@
         </div>
         <div class="vx-row">
           <div class="vx-col sm:w-1/2 w-full mb-2">
-            <label>End Date</label>
-            <!-- <flat-pickr
-              class="w-full"
-              placeholder="End Date"
-              v-model="endDate"
-              @on-change="getCampaignList"
-            />-->
-            <datepicker placeholder="End Date" @input="filterFn" v-model="endDate"></datepicker>
-          </div>
-          <div class="vx-col sm:w-1/2 w-full mb-2">
             <label>Start Date</label>
-            <!-- <flat-pickr
-              class="w-full"
-              placeholder="Start Date"
-              v-model="startDate"
-              @on-change="filterFn"
-            />-->
+
             <datepicker placeholder="Start Date" @input="filterFn" v-model="startDate"></datepicker>
 
             <!-- @click="getCampaignList"/> -->
+          </div>
+          <div class="vx-col sm:w-1/2 w-full mb-2">
+            <label>End Date</label>
+
+            <datepicker placeholder="End Date" @input="filterFn" v-model="endDate"></datepicker>
           </div>
         </div>
       </vx-card>
@@ -579,13 +569,6 @@ export default {
               position: "top-right"
             });
           }
-          // else if (response.data.success === "resume") {
-          //   this.$vs.notify({
-          //     title: "Campaign Resumed",
-          //     color: "dark",
-          //     position: "top-right"
-          //   });
-          // }
           this.getCampaignList();
         })
         .catch(error => {

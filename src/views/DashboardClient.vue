@@ -22,7 +22,7 @@
       <template slot="thead">
         <vs-th sort-key="client_name">Client Name</vs-th>
         <vs-th sort-key="description">Description</vs-th>
-        <vs-th sort-key="">Date</vs-th>
+        <vs-th sort-key>Date</vs-th>
         <vs-th v-if="isAdmin" sort-key="actions">Actions</vs-th>
       </template>
       <template slot-scope="{ data }">
@@ -38,13 +38,13 @@
             data[indextr].description
             }}
           </vs-td>
-          <vs-td :data="data[indextr].date"></vs-td>
+          <vs-td :data="tr.date"></vs-td>
           <vs-td v-if="isAdmin">
             <div class="d-flex">
               <feather-icon
                 icon="EditIcon"
                 svgClasses="w-5 h-5 hover:text-primary stroke-current"
-                @click="editClient(tr)"
+                @click="editClient(data[indextr])"
               />
               <feather-icon
                 icon="TrashIcon"
@@ -141,7 +141,9 @@ export default {
       this.$router.push({
         path: "/dashboard/clientdescription",
         query: {
-          clientId: data.id
+          clientId: data.id,
+          clientName: data.client_name,
+          clientDescription: data.description
         }
       });
     },
