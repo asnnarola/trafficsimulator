@@ -497,8 +497,7 @@ export default {
           }
         })
         .catch(function(error, response) {
-          var errorResponse = Object.assign({}, error);
-
+          var errorResponse = Object.assign({}, error)
           if (
             errorResponse.response.data.detail[0] &&
             errorResponse.response.data.detail[0].loc &&

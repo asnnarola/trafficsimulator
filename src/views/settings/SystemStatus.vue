@@ -12,7 +12,7 @@
           <h3>System Reboot:</h3>
         </div>
         <div class="vx-col sm:w-1/3 w-full">
-          <vs-button size="large" @click="systemReboot()">Reboot System Now</vs-button>
+          <vs-button size="large" @click="systemReboot">Reboot System Now</vs-button>
         </div>
       </div>
 
@@ -76,6 +76,7 @@ export default {
   },
   mounted() {
     this.getAppInfo();
+    this.reboot();
   },
   methods: {
     getAppInfo() {
@@ -126,6 +127,12 @@ export default {
         .get("http://adminapi.varuntandon.com/v1/reboot")
         .then(response => {
           console.log("System is rebooted!");
+          if (response.data.success) {
+            this.popupActive = false;
+          }
+        })
+        .catch(error => {
+          console.log(error);
         });
     }
   }

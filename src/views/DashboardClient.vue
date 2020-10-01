@@ -50,7 +50,7 @@
                 icon="TrashIcon"
                 svgClasses="w-5 h-5 hover:text-danger stroke-current"
                 class="ml-2"
-                @click="deleteClientFn(tr.id)"
+                @click="deleteClientFn(data[indextr].id)"
               />
             </div>
           </vs-td>
@@ -155,15 +155,14 @@ export default {
         )
         .then(response => {
           if (response.data.success) {
-            this.$vs.notify({
-              title: "Client Deleted Successfully",
-              color: "success",
-              position: "top-right"
-            });
+            const index = this.users.findIndex(c => c.id === client_id);
+            this.users.splice(index, 1);
             this.popupActive = false;
-            this.getClientFn();
-            console.log("rrresponse", response.data.success);
+            // this.getClientFn();
           }
+        })
+        .catch(error => {
+          console.log(error);
         });
     },
     deleteClientFn(client_id) {
