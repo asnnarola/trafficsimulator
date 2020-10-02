@@ -211,16 +211,12 @@
           <div class="vx-col sm:w-1/3 w-full">
             <span>
               <strong>Length of Time Range to spend in seconds.</strong>
+              <span>(Format: 70,120)</span>
             </span>
           </div>
           <div class="vx-col sm:w-2/3 w-full">
             <template>
-              <vs-input
-                type="text"
-                placeholder="Format: 70,120"
-                class="w-full"
-                v-model="stay_duration"
-              />
+              <vs-input type="text" class="w-full" v-model="stay_duration" />
             </template>
           </div>
         </div>
@@ -497,7 +493,7 @@ export default {
           }
         })
         .catch(function(error, response) {
-          var errorResponse = Object.assign({}, error)
+          var errorResponse = Object.assign({}, error);
           if (
             errorResponse.response.data.detail[0] &&
             errorResponse.response.data.detail[0].loc &&
