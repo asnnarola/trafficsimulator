@@ -310,7 +310,7 @@ export default {
       clients: [],
       type: ["search", "direct"],
       paused: { labelState: "Active", val: false },
-      paused: "Active",
+      // paused: "Active",
       stay_duration: "",
       volume_size: [],
       campaign_name: " ",
@@ -457,7 +457,7 @@ export default {
           state: this.stateName,
           city: ["houston", "brooklyn"],
           keywords: keyWords && keyWords.length ? keyWords : undefined,
-          paused: this.paused.val,
+          paused: this_pointer.paused.val,
           city_targeting_method: "priority"
         },
         headers: {
@@ -484,12 +484,12 @@ export default {
             this_pointer.url = null;
             this_pointer.stateName = null;
             this_pointer.city = null;
-            this_pointer.paused = null;
             this_pointer.city_targeting_method = null;
             this_pointer.volume = null;
             this_pointer.keywords = null;
             this_pointer.keyword_formating = null;
             this_pointer.setDescrption = null;
+            this_pointer.search = "addressbar";
           }
         })
         .catch(function(error, response) {
