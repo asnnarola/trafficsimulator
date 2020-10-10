@@ -122,9 +122,8 @@
             </span>
           </div>
           <div class="vx-col sm:w-1/2 w-full">
-            <!-- <vs-input type="text" class="w-full"  v-model="input8" /> -->
             <vx-input-group class="mb-base">
-              <vs-input type="text" class="w-full" v-model="url" />
+              <vs-input type="text" class="w-full" v-model="url" :disabled="search=='addressbar'" />
 
               <template slot="append">
                 <div class="append-text btn-addon">

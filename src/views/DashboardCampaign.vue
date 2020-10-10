@@ -392,7 +392,7 @@ export default {
   data() {
     return {
       selected: [],
-      itemsPerPage: 5,
+      itemsPerPage: 10,
       isMounted: false,
       value1: "",
       value2: "",
