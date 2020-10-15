@@ -79,7 +79,7 @@ export default {
       var this_pointer = this;
       axios({
         method: "post",
-        url: "http://adminapi.varuntandon.com/v1/clients",
+        url: "https://adminapi.varuntandon.com/v1/clients",
         data: {
           client_name: this.client_name,
           description: this.description
@@ -118,7 +118,7 @@ export default {
       var this_pointer = this;
       axios({
         method: "get",
-        url: "http://adminapi.varuntandon.com/v1/clients",
+        url: "https://adminapi.varuntandon.com/v1/clients",
         headers: { "content-type": "application/json" }
       })
         .then(function(response) {

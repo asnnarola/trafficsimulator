@@ -34,7 +34,7 @@ export default {
   },
   methods: {
     getAppInfo() {
-      axios.get("http://adminapi.varuntandon.com/v1/info").then(response => {
+      axios.get("https://adminapi.varuntandon.com/v1/info").then(response => {
         console.log("==>", response.data);
         this.appInfo = response.data;
       });

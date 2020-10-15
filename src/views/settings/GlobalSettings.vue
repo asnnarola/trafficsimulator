@@ -249,7 +249,7 @@ export default {
   methods: {
     getTrafficVolumeTags() {
       this.$http
-        .get("http://adminapi.varuntandon.com/v1/tvt")
+        .get("https://adminapi.varuntandon.com/v1/tvt")
         .then(response => {
           this.trafficVolumeTags = response.data.tags;
           console.log(response);
@@ -258,7 +258,7 @@ export default {
     },
     updateTag(tag_id) {
       this.$http
-        .put(`http://adminapi.varuntandon.com/v1/tvt/${tag_id}`, {
+        .put(`https://adminapi.varuntandon.com/v1/tvt/${tag_id}`, {
           tag_name: this.tag_name,
           min_hit: this.min_hit,
           max_hit: this.max_hit
@@ -305,7 +305,7 @@ export default {
         max_hit: this.max_hit
       };
       this.$http
-        .post("http://adminapi.varuntandon.com/v1/tvt", newTag)
+        .post("https://adminapi.varuntandon.com/v1/tvt", newTag)
         .then(response => {
           if (response.data.success) {
             console.log("tvt added!");
@@ -320,13 +320,14 @@ export default {
           }
           console.log("tvt response", response);
         })
+
         .catch(error => {
           console.log(error);
         });
     },
     removeTrafficVolumeTag(tag_id) {
       this.$http
-        .delete(`http://adminapi.varuntandon.com/v1/tvt/${tag_id}`)
+        .delete(`https://adminapi.varuntandon.com/v1/tvt/${tag_id}`)
         .then(response => {
           if (response.data.success) {
             const index = this.trafficVolumeTags.findIndex(
@@ -340,7 +341,7 @@ export default {
     getProxyList() {
       axios({
         method: "get",
-        url: "http://adminapi.varuntandon.com/v1/proxy",
+        url: "https://adminapi.varuntandon.com/v1/proxy",
         headers: { "content-type": "application/json" }
       })
         .then(response => {
@@ -355,7 +356,7 @@ export default {
     updateProxyList(account_id) {
       var this_pointer = this;
       this.$http
-        .put(`http://adminapi.varuntandon.com/v1/proxy/${account_id}`, {
+        .put(`https://adminapi.varuntandon.com/v1/proxy/${account_id}`, {
           provider: this_pointer.provider,
           username: this_pointer.username,
           password: this_pointer.password,
@@ -395,7 +396,7 @@ export default {
     getSpikeList() {
       var this_pointer = this;
       this.$http
-        .get("http://adminapi.varuntandon.com/v1/config/tpc")
+        .get("https://adminapi.varuntandon.com/v1/config/tpc")
         .then(response => {
           this_pointer.spikeList = response.data;
 
@@ -420,7 +421,7 @@ export default {
     updateSpikeList() {
       var this_pointer = this;
       axios
-        .put("http://adminapi.varuntandon.com/v1/config/tpc", {
+        .put("https://adminapi.varuntandon.com/v1/config/tpc", {
           tpc_spike_chance: parseInt(this_pointer.tpc_spike_chance),
 
           tpc_downturn_chance: parseInt(this_pointer.tpc_downturn_chance),

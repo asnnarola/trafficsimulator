@@ -125,7 +125,7 @@ export default {
       var this_pointer = this;
       axios({
         method: "get",
-        url: "http://adminapi.varuntandon.com/v1/clients?limit=100",
+        url: "https://adminapi.varuntandon.com/v1/clients?limit=100",
         headers: { "content-type": "application/json" }
       })
         .then(function(response) {
@@ -151,7 +151,7 @@ export default {
       console.log("client_id", client_id);
       this.$http
         .delete(
-          `http://adminapi.varuntandon.com/v1/campaigns/client/${this.deleteClientId}`
+          `https://adminapi.varuntandon.com/v1/campaigns/client/${this.deleteClientId}`
         )
         .then(response => {
           if (response.data.success) {

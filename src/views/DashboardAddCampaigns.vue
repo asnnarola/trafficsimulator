@@ -353,7 +353,7 @@ export default {
       var this_pointer = this;
       axios({
         method: "get",
-        url: "http://adminapi.varuntandon.com/v1/clients?limit=100",
+        url: "https://adminapi.varuntandon.com/v1/clients?limit=100",
         headers: { "content-type": "application/json" }
       })
         .then(function(response) {
@@ -433,7 +433,7 @@ export default {
       var this_pointer = this;
       axios({
         method: "post",
-        url: "http://adminapi.varuntandon.com/v1/campaigns",
+        url: "https://adminapi.varuntandon.com/v1/campaigns",
         data: {
           client:
             this.client && this.client.client_name && this.client.client_name
@@ -523,7 +523,7 @@ export default {
       var this_pointer = this;
       axios({
         method: "get",
-        url: "http://adminapi.varuntandon.com/v1/tvt",
+        url: "https://adminapi.varuntandon.com/v1/tvt",
         headers: {
           "content-type": "application/json"
         }

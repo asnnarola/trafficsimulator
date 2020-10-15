@@ -81,7 +81,7 @@ export default {
   methods: {
     getAppInfo() {
       this.$http
-        .get("http://adminapi.varuntandon.com/v1/info")
+        .get("https://adminapi.varuntandon.com/v1/info")
         .then(response => {
           console.log(response.data);
           this.appInfo = response.data;
@@ -89,7 +89,7 @@ export default {
     },
     showErrorLog() {
       this.$http
-        .get("http://adminapi.varuntandon.com/v1/log/error")
+        .get("https://adminapi.varuntandon.com/v1/log/error")
         .then(response => {
           console.log(response.data);
           this.textarea = response.data;
@@ -97,7 +97,7 @@ export default {
     },
     clearErrorLog() {
       this.$http
-        .get("http://adminapi.varuntandon.com/v1/log/error/clear")
+        .get("https://adminapi.varuntandon.com/v1/log/error/clear")
         .then(response => {
           console.log("Error log cleared!");
         });
@@ -105,7 +105,7 @@ export default {
 
     showRuntimeLog() {
       this.$http
-        .get("http://adminapi.varuntandon.com/v1/log/runtime")
+        .get("https://adminapi.varuntandon.com/v1/log/runtime")
         .then(response => {
           console.log(response.data);
           this.textarea = response.data;
@@ -114,7 +114,7 @@ export default {
 
     clearRuntimeLog() {
       this.$http
-        .get("http://adminapi.varuntandon.com/v1/log/runtime/clear")
+        .get("https://adminapi.varuntandon.com/v1/log/runtime/clear")
         .then(response => {
           console.log("Runtime log cleared!");
         });
@@ -124,7 +124,7 @@ export default {
     },
     reboot() {
       this.$http
-        .get("http://adminapi.varuntandon.com/v1/reboot")
+        .get("https://adminapi.varuntandon.com/v1/reboot")
         .then(response => {
           console.log("System is rebooted!");
           if (response.data.success) {

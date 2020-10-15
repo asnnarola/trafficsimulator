@@ -480,7 +480,7 @@ export default {
     removeCampaignData(campaign_id) {
       this.$http
         .get(
-          `http://adminapi.varuntandon.com/v1/campaigns/${this.deleteCampaignId}/delete`
+          `https://adminapi.varuntandon.com/v1/campaigns/${this.deleteCampaignId}/delete`
         )
         .then(response => {
           if (response.data.success) {
@@ -509,7 +509,7 @@ export default {
 
       if (this_pointer.client.id && this_pointer.client.id != "All") {
         filterResponse = _.filter(filterResponse, function(c_list) {
-          return c_list.client == this_pointer.client.client_name;
+          return c_list.client === this_pointer.client.client_name;
         });
       }
 
@@ -559,7 +559,7 @@ export default {
     pauseResumeCampaign(campaign_id, action) {
       this.$http
         .get(
-          `http://adminapi.varuntandon.com/v1/campaigns/${campaign_id}/${action}`
+          `https://adminapi.varuntandon.com/v1/campaigns/${campaign_id}/${action}`
         )
         .then(response => {
           if (response.data.success) {
@@ -587,7 +587,7 @@ export default {
       var this_pointer = this;
       axios({
         method: "get",
-        url: "http://adminapi.varuntandon.com/v1/campaigns/" + campaign_id,
+        url: "https://adminapi.varuntandon.com/v1/campaigns/" + campaign_id,
 
         headers: { "content-type": "application/json" }
       })
@@ -609,7 +609,7 @@ export default {
         axios({
           method: "get",
           url:
-            "http://adminapi.varuntandon.com/v1/campaigns/client/" +
+            "https://adminapi.varuntandon.com/v1/campaigns/client/" +
             event.id +
             "?limit=100",
 
@@ -642,7 +642,7 @@ export default {
       var this_pointer = this;
       axios({
         method: "get",
-        url: "http://adminapi.varuntandon.com/v1/clients?limit=100",
+        url: "https://adminapi.varuntandon.com/v1/clients?limit=100",
         headers: { "content-type": "application/json" }
       })
         .then(function(response) {
@@ -668,7 +668,7 @@ export default {
       console.log("endDate:", this_pointer.end_date);
       this.$http({
         method: "get",
-        url: `http://adminapi.varuntandon.com/v1/campaigns?start_date=${
+        url: `https://adminapi.varuntandon.com/v1/campaigns?start_date=${
           this_pointer.startDate
         }&end_date=${
           this_pointer.endDate ? this_pointer.endDate : undefined
@@ -701,7 +701,7 @@ export default {
       axios({
         method: "put",
         url:
-          "http://adminapi.varuntandon.com/v1/campaigns/" +
+          "https://adminapi.varuntandon.com/v1/campaigns/" +
           this.editCampaign.id,
         headers: {
           "content-type": "application/json"
@@ -738,7 +738,7 @@ export default {
       var this_pointer = this;
       axios({
         method: "get",
-        url: "http://adminapi.varuntandon.com/v1/tvt",
+        url: "https://adminapi.varuntandon.com/v1/tvt",
         headers: {
           "content-type": "application/json"
         }
