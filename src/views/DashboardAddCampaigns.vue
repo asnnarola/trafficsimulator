@@ -1,233 +1,268 @@
 <template>
-  <div class="vx-row">
-    <!-- HORIZONTAL LAYOUT WITH ICON-->
-    <div class="vx-col md:w-4/3 w-full mb-base">
-      <vx-card>
-        <div class="flex flex-wrap items-center justify-between">
-          <vx-input-group class="mb-base mr-3">
-            <span>
-              <b>
-                <h3>Add New Campaign</h3>
-              </b>
-            </span>
-          </vx-input-group>
-          <div class="flex items-center">
-            <vs-button
-              class="justify-end mb-base mr-3"
-              type="filled"
-              :to="{ path: '/dashboard/allcampaign' }"
-            >Back to Campaigns</vs-button>
+  <form>
+    <div class="vx-row">
+      <!-- HORIZONTAL LAYOUT WITH ICON-->
+      <div class="vx-col md:w-4/3 w-full mb-base">
+        <vx-card>
+          <div class="flex flex-wrap items-center justify-between">
+            <vx-input-group class="mb-base mr-3">
+              <span>
+                <b>
+                  <h3>Add New Campaign</h3>
+                </b>
+              </span>
+            </vx-input-group>
+            <div class="flex items-center">
+              <vs-button
+                class="justify-end mb-base mr-3"
+                type="filled"
+                :to="{ path: '/dashboard/allcampaign' }"
+              >Back to Campaigns</vs-button>
+            </div>
           </div>
-        </div>
-        <vs-divider></vs-divider>
-        <div class="vx-row mb-6">
-          <div class="vx-col sm:w-1/3 w-full">
-            <span>
-              <strong>Client</strong>
-            </span>
+          <vs-divider></vs-divider>
+          <div class="vx-row mb-6">
+            <div class="vx-col sm:w-1/3 w-full">
+              <span>
+                <strong>Client</strong>
+              </span>
+            </div>
+            <div class="vx-col sm:w-1/3 w-full">
+              <template>
+                <v-select
+                  v-model="client"
+                  label="client_name"
+                  name="client_name"
+                  @input="setDescrptionFn"
+                  :options="clients"
+                  :dir="$vs.rtl ? 'rtl' : 'ltr'"
+                ></v-select>
+              </template>
+            </div>
+            <div class="vx-col sm:w-1/3 w-full">
+              <span>
+                <strong>{{ this.setDescrption }}</strong>
+              </span>
+            </div>
           </div>
-          <div class="vx-col sm:w-1/3 w-full">
-            <template>
-              <v-select
-                v-model="client"
-                label="client_name"
-                @input="setDescrptionFn"
-                :options="clients"
-                :dir="$vs.rtl ? 'rtl' : 'ltr'"
-              ></v-select>
-            </template>
+          <div class="vx-row mb-6">
+            <div class="vx-col sm:w-1/3 w-full">
+              <span>
+                <strong>Campaign Name</strong>
+              </span>
+            </div>
+            <div class="vx-col sm:w-2/3 w-full">
+              <vs-input
+                :danger="hasError"
+                :danger-text="errorText"
+                class="w-full"
+                v-model="campaign_name"
+                name="campaign_name"
+              />
+            </div>
           </div>
-          <div class="vx-col sm:w-1/3 w-full">
-            <span>
-              <strong>{{ this.setDescrption }}</strong>
-            </span>
+          <div class="vx-row mb-6">
+            <div class="vx-col sm:w-1/3 w-full">
+              <span>
+                <strong>Campaign Type</strong>
+              </span>
+            </div>
+            <div class="vx-col sm:w-2/3 w-full">
+              <template>
+                <v-select :options="type" v-model="campaign_type" :dir="$vs.rtl ? 'rtl' : 'ltr'" />
+              </template>
+            </div>
           </div>
-        </div>
-        <div class="vx-row mb-6">
-          <div class="vx-col sm:w-1/3 w-full">
-            <span>
-              <strong>Campaign Name</strong>
-            </span>
+          <div class="vx-row mb-6">
+            <div class="vx-col sm:w-1/3 w-full">
+              <span>
+                <strong>Brand Name</strong>
+              </span>
+            </div>
+            <div class="vx-col sm:w-2/3 w-full">
+              <vs-input
+                :danger="errorBrand"
+                :danger-text="errorTextBrand"
+                type="text"
+                name="brand_name"
+                class="w-full"
+                v-model="brand_name"
+              />
+            </div>
           </div>
-          <div class="vx-col sm:w-2/3 w-full">
-            <vs-input type="text" class="w-full" v-model="campaign_name" />
-          </div>
-        </div>
-        <div class="vx-row mb-6">
-          <div class="vx-col sm:w-1/3 w-full">
-            <span>
-              <strong>Campaign Type</strong>
-            </span>
-          </div>
-          <div class="vx-col sm:w-2/3 w-full">
-            <template>
-              <v-select :options="type" v-model="campaign_type" :dir="$vs.rtl ? 'rtl' : 'ltr'" />
-            </template>
-          </div>
-        </div>
-        <div class="vx-row mb-6">
-          <div class="vx-col sm:w-1/3 w-full">
-            <span>
-              <strong>Brand Name</strong>
-            </span>
-          </div>
-          <div class="vx-col sm:w-2/3 w-full">
-            <vs-input type="text" class="w-full" v-model="brand_name" />
-          </div>
-        </div>
-        <div class="vx-row mb-6">
-          <div class="vx-col sm:w-1/3 w-full">
-            <span>
-              <strong>Search Keywords</strong>
-            </span>
-          </div>
-          <div class="vx-col sm:w-2/3 w-full">
-            <vs-textarea v-model="keywords" height="100px" />
+          <div class="vx-row mb-6">
+            <div class="vx-col sm:w-1/3 w-full">
+              <span>
+                <strong>Search Keywords</strong>
+              </span>
+            </div>
+            <div class="vx-col sm:w-2/3 w-full">
+              <vs-textarea v-model="keywords" height="100px" />
 
-            <!-- <vs-input
+              <!-- <vs-input
               type="text"
               class="w-full"
               v-model="keywords"
               placeholder="Search.."
-            />-->
+              />-->
+            </div>
           </div>
-        </div>
-        <div class="vx-row mb-6">
-          <div class="vx-col sm:w-1/3 w-full">
-            <span>
-              <strong>Keyword Formatting</strong>
-            </span>
+          <div class="vx-row mb-6">
+            <div class="vx-col sm:w-1/3 w-full">
+              <span>
+                <strong>Keyword Formatting</strong>
+              </span>
+            </div>
+            <div class="vx-col sm:w-1/2 w-full">
+              <vs-input type="text" class="w-full" v-model="keyword_formating" />
+            </div>
+            <vs-button
+              type="border"
+              text-color="#28C76F"
+              @click="updateSearchKeywords"
+            >Update Keyword</vs-button>
           </div>
-          <div class="vx-col sm:w-1/2 w-full">
-            <vs-input type="text" class="w-full" v-model="keyword_formating" />
-          </div>
-          <vs-button type="border" text-color="#28C76F" @click="updateSearchKeywords">Update Keyword</vs-button>
-        </div>
-        <div class="vx-row mb-6">
-          <div class="vx-col sm:w-1/3 w-full">
-            <span>
-              <strong>Search Method</strong>
-            </span>
-          </div>
-          <div class="vx-col sm:w-2/3 w-full">
-            <template>
-              <v-select :options="search_method" v-model="search" :dir="$vs.rtl ? 'rtl' : 'ltr'" />
-            </template>
-          </div>
-        </div>
-        <div class="vx-row mb-6">
-          <div class="vx-col sm:w-1/3 w-full">
-            <span>
-              <strong>Search URL</strong>
-            </span>
-          </div>
-          <div class="vx-col sm:w-1/2 w-full">
-            <vx-input-group class="mb-base">
-              <vs-input type="text" class="w-full" v-model="url" :disabled="search=='addressbar'" />
-
-              <template slot="append">
-                <div class="append-text btn-addon">
-                  <vs-button color="primary">Search</vs-button>
-                </div>
+          <div class="vx-row mb-6">
+            <div class="vx-col sm:w-1/3 w-full">
+              <span>
+                <strong>Search Method</strong>
+              </span>
+            </div>
+            <div class="vx-col sm:w-2/3 w-full">
+              <template>
+                <v-select :options="search_method" v-model="search" :dir="$vs.rtl ? 'rtl' : 'ltr'" />
               </template>
-            </vx-input-group>
+            </div>
           </div>
-          <!-- <vs-button color="warning" type="filled" :to="{ path: '/dashboard/campaign' }">Object Path</vs-button> -->
-        </div>
-        <vs-divider></vs-divider>
-        <div class="vx-row mb-6">
-          <div class="vx-col sm:w-1/3 w-full">
-            <span>
-              <strong>Traffic Volume- Visitors per day</strong>
-            </span>
+          <div class="vx-row mb-6">
+            <div class="vx-col sm:w-1/3 w-full">
+              <span>
+                <strong>Search URL</strong>
+              </span>
+            </div>
+            <div class="vx-col sm:w-1/2 w-full">
+              <vx-input-group class="mb-base">
+                <vs-input
+                  type="text"
+                  class="w-full"
+                  v-model="url"
+                  :disabled="search=='addressbar'"
+                />
+
+                <template slot="append">
+                  <div class="append-text btn-addon">
+                    <vs-button color="primary">Search</vs-button>
+                  </div>
+                </template>
+              </vx-input-group>
+            </div>
+            <!-- <vs-button color="warning" type="filled" :to="{ path: '/dashboard/campaign' }">Object Path</vs-button> -->
           </div>
-          <div class="vx-col sm:w-2/3 w-full">
-            <vs-select class="w-full select-large" label="Traffic Volume" v-model="volume">
-              <vs-select-item
-                :key="index"
-                :value="item.tag_name"
-                :text="`${item.min_hit}-${item.max_hit}`"
-                v-for="(item, index) in volume_size"
+          <vs-divider></vs-divider>
+          <div class="vx-row mb-6">
+            <div class="vx-col sm:w-1/3 w-full">
+              <span>
+                <strong>Traffic Volume- Visitors per day</strong>
+              </span>
+            </div>
+            <div class="vx-col sm:w-2/3 w-full">
+              <vs-select
+                class="w-full select-large"
+                v-validate="'required'"
+                label="Traffic Volume"
+                name="volume"
+                v-model="volume"
+              >
+                <vs-select-item
+                  :key="index"
+                  :value="item.tag_name"
+                  :text="`${item.min_hit}-${item.max_hit}`"
+                  v-for="(item, index) in volume_size"
+                  class="w-full"
+                />
+              </vs-select>
+              <span
+                class="text-danger text-sm"
+                v-show="errors.has('volume')"
+              >{{ errors.first('volume') }}</span>
+            </div>
+          </div>
+
+          <div class="vx-row mb-6">
+            <div class="vx-col sm:w-1/3 w-full">
+              <span>
+                <strong>Start Date</strong>
+              </span>
+            </div>
+            <div class="vx-col sm:w-1/2 w-full">
+              <flat-pickr
                 class="w-full"
+                :config="configFromdateTimePicker"
+                v-model="start_date"
+                name="start_date"
+                placeholder="Start Date"
+                @on-change="onFromChange"
               />
-            </vs-select>
+            </div>
           </div>
-        </div>
 
-        <div class="vx-row mb-6">
-          <div class="vx-col sm:w-1/3 w-full">
-            <span>
-              <strong>Start Date</strong>
-            </span>
-          </div>
-          <div class="vx-col sm:w-1/2 w-full">
-            <flat-pickr
-              class="w-full"
-              :config="configFromdateTimePicker"
-              v-model="start_date"
-              placeholder="Start Date"
-              @on-change="onFromChange"
-            />
-          </div>
-        </div>
-
-        <div class="vx-row mb-6">
-          <div class="vx-col sm:w-1/3 w-full">
-            <span>
-              <strong>End Date</strong>
-            </span>
-          </div>
-          <div class="vx-col sm:w-1/2 w-full">
-            <flat-pickr
-              class="w-full"
-              :config="configTodateTimePicker"
-              v-model="end_date"
-              placeholder="End Date"
-              @on-change="onToChange"
-            />
-          </div>
-        </div>
-
-        <div class="vx-row mb-6">
-          <div class="vx-col sm:w-1/3 w-full">
-            <span>
-              <strong>Initial Status</strong>
-            </span>
-          </div>
-          <div class="vx-col sm:w-2/3 w-full">
-            <template>
-              <v-select
-                label="labelState"
-                v-model="paused"
-                :options="InitialStatus"
-                :dir="$vs.rtl ? 'rtl' : 'ltr'"
+          <div class="vx-row mb-6">
+            <div class="vx-col sm:w-1/3 w-full">
+              <span>
+                <strong>End Date</strong>
+              </span>
+            </div>
+            <div class="vx-col sm:w-1/2 w-full">
+              <flat-pickr
+                class="w-full"
+                :config="configTodateTimePicker"
+                v-model="end_date"
+                placeholder="End Date"
+                @on-change="onToChange"
               />
-            </template>
+            </div>
           </div>
-        </div>
 
-        <div class="vx-row mb-6">
-          <div class="vx-col sm:w-1/3 w-full">
-            <span>
-              <strong>Length of Time Range to spend in seconds.</strong>
-              <span>(Format: 70,120)</span>
-            </span>
+          <div class="vx-row mb-6">
+            <div class="vx-col sm:w-1/3 w-full">
+              <span>
+                <strong>Initial Status</strong>
+              </span>
+            </div>
+            <div class="vx-col sm:w-2/3 w-full">
+              <template>
+                <v-select
+                  label="labelState"
+                  v-model="paused"
+                  :options="InitialStatus"
+                  :dir="$vs.rtl ? 'rtl' : 'ltr'"
+                />
+              </template>
+            </div>
           </div>
-          <div class="vx-col sm:w-2/3 w-full">
-            <template>
-              <vs-input type="text" class="w-full" v-model="stay_duration" />
-            </template>
-          </div>
-        </div>
 
-        <div class="vx-row mb-6">
-          <div class="vx-col sm:w-1/3 w-full">
-            <span>
-              <strong>Location Country</strong>
-            </span>
+          <div class="vx-row mb-6">
+            <div class="vx-col sm:w-1/3 w-full">
+              <span>
+                <strong>Length of Time Range to spend in seconds.</strong>
+                <span>(Format: 70,120)</span>
+              </span>
+            </div>
+            <div class="vx-col sm:w-2/3 w-full">
+              <template>
+                <vs-input type="text" class="w-full" v-model="stay_duration" />
+              </template>
+            </div>
           </div>
-          <div class="vx-col sm:w-2/3 w-full">
-            <!-- <vs-select class="w-full select-large" label="Traffic Volume" v-model="volume">
+
+          <div class="vx-row mb-6">
+            <div class="vx-col sm:w-1/3 w-full">
+              <span>
+                <strong>Location Country</strong>
+              </span>
+            </div>
+            <div class="vx-col sm:w-2/3 w-full">
+              <!-- <vs-select class="w-full select-large" label="Traffic Volume" v-model="volume">
               <vs-select-item
                 :key="index"
                 :value="item.tag_name"
@@ -235,63 +270,74 @@
                 v-for="(item,index) in volume_size"
                 class="w-full"
               />
-            </vs-select>-->
-            <vs-select class="w-full select-large" label="Country" v-model="country_code">
-              <vs-select-item value text="Select Country" disabled></vs-select-item>
-              <vs-select-item
-                :key="index"
-                :value="item.iso"
-                :text="`${item.country}-${item.iso}`"
-                v-for="(item, index) in countryList"
-                class="w-full"
-              />
-            </vs-select>
+              </vs-select>-->
+              <vs-select class="w-full select-large" label="Country" v-model="country_code">
+                <vs-select-item value text="Select Country" disabled></vs-select-item>
+                <vs-select-item
+                  :key="index"
+                  :value="item.iso"
+                  :text="`${item.country}-${item.iso}`"
+                  v-for="(item, index) in countryList"
+                  class="w-full"
+                />
+              </vs-select>
+            </div>
           </div>
-        </div>
 
-        <div class="vx-row mb-6" v-if="country_code == 'US'">
-          <div class="vx-col sm:w-1/3 w-full">
-            <span>
-              <strong>Location State</strong>
-            </span>
+          <div class="vx-row mb-6" v-if="country_code == 'US'">
+            <div class="vx-col sm:w-1/3 w-full">
+              <span>
+                <strong>Location State</strong>
+              </span>
+            </div>
+            <div class="vx-col sm:w-2/3 w-full">
+              <vs-select
+                class="w-full select-large"
+                label="States"
+                v-validate="'required'"
+                name="state"
+                v-model="stateName"
+              >
+                <vs-select-item
+                  :key="index"
+                  :value="item.state"
+                  :text="`${item.state}-${item.iso}`"
+                  v-for="(item, index) in stateList"
+                  class="w-full"
+                />
+              </vs-select>
+              <span
+                class="text-danger text-sm"
+                v-show="errors.has('state')"
+              >{{ errors.first('state') }}</span>
+            </div>
           </div>
-          <div class="vx-col sm:w-2/3 w-full">
-            <vs-select class="w-full select-large" label="States" v-model="stateName">
-              <vs-select-item
-                :key="index"
-                :value="item.state"
-                :text="`${item.state}-${item.iso}`"
-                v-for="(item, index) in stateList"
-                class="w-full"
-              />
-            </vs-select>
-          </div>
-        </div>
 
-        <div class="vx-row mb-6">
-          <div class="vx-col sm:w-1/3 w-full">
-            <span>
-              <strong>Location Cities</strong>
-            </span>
+          <div class="vx-row mb-6">
+            <div class="vx-col sm:w-1/3 w-full">
+              <span>
+                <strong>Location Cities</strong>
+              </span>
+            </div>
+            <div class="vx-col sm:w-2/3 w-full">
+              <template>
+                <div>
+                  <vs-textarea v-model="city" />
+                </div>
+              </template>
+            </div>
           </div>
-          <div class="vx-col sm:w-2/3 w-full">
-            <template>
-              <div>
-                <vs-textarea v-model="city" />
-              </div>
-            </template>
-          </div>
-        </div>
 
-        <div class="vx-row">
-          <div class="vx-col w-full">
-            <vs-button class="mr-3 mb-2" color="success" @click="addCampaignList">Submit</vs-button>
-            <vs-button color="warning" type="border" class="mb-2">Cancel</vs-button>
+          <div class="vx-row">
+            <div class="vx-col w-full">
+              <vs-button class="mr-3 mb-2" color="success" @click="addCampaignList">Submit</vs-button>
+              <vs-button color="warning" type="border" class="mb-2">Cancel</vs-button>
+            </div>
           </div>
-        </div>
-      </vx-card>
+        </vx-card>
+      </div>
     </div>
-  </div>
+  </form>
 </template>
 
 <script>
@@ -341,6 +387,32 @@ export default {
         minDate: null
       }
     };
+  },
+  computed: {
+    hasError() {
+      return this.campaign_name.length < 4 || this.campaign_name.length > 80;
+    },
+    errorText() {
+      if (this.campaign_name.length < 4) {
+        return "Campaign Name should be at least 6 characters";
+      }
+      if (this.campaign_name.length > 80) {
+        return "Campaign Name should be at most 80 characters";
+      }
+      return "";
+    },
+    errorBrand() {
+      return this.brand_name.length < 4 || this.brand_name.length > 80;
+    },
+    errorTextBrand() {
+      if (this.brand_name.length < 4) {
+        return "Be should be at least 6 characters";
+      }
+      if (this.brand_name.length > 80) {
+        return "Invoice title should be at most 80 characters";
+      }
+      return "";
+    }
   },
   methods: {
     onFromChange(selectedDates, dateStr, instance) {
@@ -489,6 +561,7 @@ export default {
             this_pointer.keyword_formating = null;
             this_pointer.setDescrption = null;
             this_pointer.search = "addressbar";
+            this_pointer.$router.push("/dashboard/allcampaign");
           }
         })
         .catch(function(error, response) {

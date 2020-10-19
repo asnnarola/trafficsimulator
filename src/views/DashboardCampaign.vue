@@ -11,7 +11,10 @@
             </span>
           </vx-input-group>
           <div class="flex items-center" v-if="isAdmin">
-            <vs-button class="mb-base mr-3" @click="addNewCampaign">Add a new Campaign</vs-button>
+            <vs-button
+              class="mb-base mr-3"
+              :to="{ path: '/dashboard/addcampaigns' }"
+            >Add a new Campaign</vs-button>
           </div>
         </div>
 
@@ -460,7 +463,8 @@ export default {
   },
   methods: {
     addNewCampaign() {
-      this.$router.push("/dashboard/addcampaigns");
+      // this.$router.push({ path: "/dashboard/addcampaigns" });
+      alert("called");
     },
     viewStats(data) {
       // alert(campaignId + " " + keywordId);
@@ -509,7 +513,7 @@ export default {
 
       if (this_pointer.client.id && this_pointer.client.id != "All") {
         filterResponse = _.filter(filterResponse, function(c_list) {
-          return c_list.client === this_pointer.client.client_name;
+          return c_list.client == this_pointer.client.client_name;
         });
       }
 
