@@ -67,7 +67,7 @@
                 <strong>Campaign Type</strong>
               </span>
             </div>
-            <div class="vx-col sm:w-2/3 w-full">
+            <div class="vx-col sm:w-1/3 w-full">
               <template>
                 <v-select :options="type" v-model="campaign_type" :dir="$vs.rtl ? 'rtl' : 'ltr'" />
               </template>
@@ -128,7 +128,7 @@
                 <strong>Search Method</strong>
               </span>
             </div>
-            <div class="vx-col sm:w-2/3 w-full">
+            <div class="vx-col sm:w-1/3 w-full">
               <template>
                 <v-select :options="search_method" v-model="search" :dir="$vs.rtl ? 'rtl' : 'ltr'" />
               </template>
@@ -148,12 +148,6 @@
                   v-model="url"
                   :disabled="search=='addressbar'"
                 />
-
-                <template slot="append">
-                  <div class="append-text btn-addon">
-                    <vs-button color="primary">Search</vs-button>
-                  </div>
-                </template>
               </vx-input-group>
             </div>
             <!-- <vs-button color="warning" type="filled" :to="{ path: '/dashboard/campaign' }">Object Path</vs-button> -->
@@ -165,22 +159,14 @@
                 <strong>Traffic Volume- Visitors per day</strong>
               </span>
             </div>
-            <div class="vx-col sm:w-2/3 w-full">
-              <vs-select
-                class="w-full select-large"
-                v-validate="'required'"
-                label="Traffic Volume"
-                name="volume"
+            <div class="vx-col sm:w-1/3 w-full">
+              <v-select
+                :options="volume_size"
+                label="tag_name"
+                class="w-full"
+                :dir="$vs.rtl ? 'rtl' : 'ltr'"
                 v-model="volume"
-              >
-                <vs-select-item
-                  :key="index"
-                  :value="item.tag_name"
-                  :text="`${item.min_hit}-${item.max_hit}`"
-                  v-for="(item, index) in volume_size"
-                  class="w-full"
-                />
-              </vs-select>
+              />
               <span
                 class="text-danger text-sm"
                 v-show="errors.has('volume')"
@@ -197,6 +183,7 @@
             <div class="vx-col sm:w-1/2 w-full">
               <flat-pickr
                 class="w-full"
+                :format="format"
                 :config="configFromdateTimePicker"
                 v-model="start_date"
                 name="start_date"
@@ -215,6 +202,7 @@
             <div class="vx-col sm:w-1/2 w-full">
               <flat-pickr
                 class="w-full"
+                :format="format"
                 :config="configTodateTimePicker"
                 v-model="end_date"
                 placeholder="End Date"
@@ -229,7 +217,7 @@
                 <strong>Initial Status</strong>
               </span>
             </div>
-            <div class="vx-col sm:w-2/3 w-full">
+            <div class="vx-col sm:w-1/3 w-full">
               <template>
                 <v-select
                   label="labelState"
@@ -248,7 +236,7 @@
                 <span>(Format: 70,120)</span>
               </span>
             </div>
-            <div class="vx-col sm:w-2/3 w-full">
+            <div class="vx-col sm:w-1/3 w-full">
               <template>
                 <vs-input type="text" class="w-full" v-model="stay_duration" />
               </template>
@@ -261,51 +249,29 @@
                 <strong>Location Country</strong>
               </span>
             </div>
-            <div class="vx-col sm:w-2/3 w-full">
-              <!-- <vs-select class="w-full select-large" label="Traffic Volume" v-model="volume">
-              <vs-select-item
-                :key="index"
-                :value="item.tag_name"
-                :text="`${item.min_hit}-${item.max_hit}`"
-                v-for="(item,index) in volume_size"
-                class="w-full"
+            <div class="vx-col sm:w-1/3 w-full">
+              <v-select
+                :options="countryList"
+                label="countryData"
+                v-model="country_code"
+                :dir="$vs.rtl ? 'rtl' : 'ltr'"
               />
-              </vs-select>-->
-              <vs-select class="w-full select-large" label="Country" v-model="country_code">
-                <vs-select-item value text="Select Country" disabled></vs-select-item>
-                <vs-select-item
-                  :key="index"
-                  :value="item.iso"
-                  :text="`${item.country}-${item.iso}`"
-                  v-for="(item, index) in countryList"
-                  class="w-full"
-                />
-              </vs-select>
             </div>
           </div>
 
-          <div class="vx-row mb-6" v-if="country_code == 'US'">
+          <div class="vx-row mb-6" v-if="country_code.iso == 'US'">
             <div class="vx-col sm:w-1/3 w-full">
               <span>
                 <strong>Location State</strong>
               </span>
             </div>
-            <div class="vx-col sm:w-2/3 w-full">
-              <vs-select
-                class="w-full select-large"
-                label="States"
-                v-validate="'required'"
-                name="state"
+            <div class="vx-col sm:w-1/3 w-full">
+              <v-select
+                :options="stateList"
+                label="stateData"
                 v-model="stateName"
-              >
-                <vs-select-item
-                  :key="index"
-                  :value="item.state"
-                  :text="`${item.state}-${item.iso}`"
-                  v-for="(item, index) in stateList"
-                  class="w-full"
-                />
-              </vs-select>
+                :dir="$vs.rtl ? 'rtl' : 'ltr'"
+              />
               <span
                 class="text-danger text-sm"
                 v-show="errors.has('state')"
@@ -313,13 +279,13 @@
             </div>
           </div>
 
-          <div class="vx-row mb-6">
+          <div class="vx-row mb-6" v-if="country_code.iso == 'US'">
             <div class="vx-col sm:w-1/3 w-full">
               <span>
                 <strong>Location Cities</strong>
               </span>
             </div>
-            <div class="vx-col sm:w-2/3 w-full">
+            <div class="vx-col sm:w-1/3 w-full">
               <template>
                 <div>
                   <vs-textarea v-model="city" />
@@ -349,6 +315,27 @@ import "flatpickr/dist/flatpickr.css";
 import { countries } from "../assets/utils/country";
 import { states } from "../assets/utils/state";
 export default {
+  // watch: {
+  //   volume: function(v) {
+  //     console.log(v);
+  //   },
+  //   country_code: function(b) {
+  //     console.log(b);
+  //   }
+  // },
+  mounted() {
+    this.getCampaignClient();
+    //this.addCampaignName();
+    this.addVolumeTag();
+    console.log(this.countries);
+    this.countryList.map(function(a) {
+      return (a.countryData = a.country + " - " + a.iso);
+    });
+
+    this.stateList.map(function(z) {
+      return (z.stateData = z.state + " - " + z.iso);
+    });
+  },
   data() {
     return {
       client: null,
@@ -357,7 +344,7 @@ export default {
       paused: { labelState: "Active", val: false },
       // paused: "Active",
       stay_duration: "",
-      volume_size: [],
+      volume_size: [" "],
       campaign_name: " ",
       brand_name: " ",
       keywords: null,
@@ -369,6 +356,7 @@ export default {
       volume: "",
       start_date: null,
       end_date: null,
+      format: "MM-DD-YYYY",
       setDescrption: "",
       url: "",
       countryList: countries,
@@ -380,10 +368,11 @@ export default {
         { labelState: "In-Active", val: true }
       ],
       configFromdateTimePicker: {
-        minDate: new Date(),
+        inline: false,
         maxDate: null
       },
       configTodateTimePicker: {
+        inline: false,
         minDate: null
       }
     };
@@ -503,6 +492,8 @@ export default {
       }
 
       var this_pointer = this;
+      console.log("==>", this.country_code);
+
       axios({
         method: "post",
         url: "https://adminapi.varuntandon.com/v1/campaigns",
@@ -520,13 +511,13 @@ export default {
             : this.stay_duration,
           start_date: !_.isEmpty(this.start_date) ? this.start_date : undefined,
           end_date: !_.isEmpty(this.end_date) ? this.end_date : undefined,
-          country: this.country_code,
+          country: this.country_code.iso,
           search_method: this.search,
           type: this.campaign_type,
           url: this.url,
-          volume_size: this.volume,
-          state: this.stateName,
-          city: ["houston", "brooklyn"],
+          volume_size: this.volume.tag_name,
+          state: this.stateName.state,
+          city: this.city,
           keywords: keyWords && keyWords.length ? keyWords : undefined,
           paused: this_pointer.paused.val,
           city_targeting_method: "priority"
@@ -604,10 +595,12 @@ export default {
         .then(function(response) {
           console.log("firstResponse", response);
           this_pointer.volume_size = response.data.tags;
-          // response.data.tags.forEach(record => {
-          //   this_pointer.tags.push(record.tag_name);
+
+          console.log("volumeTag", this_pointer.volume_size);
+          // this_pointer.volume_size.map(function(x) {
+          //   return (x.items = x.min_hit + " - " + x.max_hit);
           // });
-          console.log(this_pointer.volume_size);
+          // console.log("itemData", items);
         })
         .catch(function(error) {
           console.log(error);
@@ -617,12 +610,6 @@ export default {
   components: {
     "v-select": vselect,
     flatPickr
-  },
-  mounted() {
-    this.getCampaignClient();
-    //this.addCampaignName();
-    this.addVolumeTag();
-    console.log(this.countries);
   }
 };
 </script>

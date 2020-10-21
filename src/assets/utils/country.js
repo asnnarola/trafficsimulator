@@ -284,10 +284,6 @@ export const countries = [
     country: "Ukraine",
   },
   {
-    iso: "UA",
-    country: "Ukraine",
-  },
-  {
     iso: "AE",
     country: "United Arab Emirates",
   },
