@@ -51,14 +51,17 @@
                 <strong>Campaign Name</strong>
               </span>
             </div>
-            <div class="vx-col sm:w-2/3 w-full">
-              <vs-input
-                :danger="hasError"
-                :danger-text="errorText"
-                class="w-full"
-                v-model="campaign_name"
-                name="campaign_name"
-              />
+            <div class="vx-col sm:w-1/3 w-full">
+              <vx-input-group>
+                <vs-input
+                  :danger="hasError"
+                  :danger-text="errorText"
+                  class="w-full"
+                  v-model="campaign_name"
+                  name="campaign_name"
+                  @input="removeSpace"
+                />
+              </vx-input-group>
             </div>
           </div>
           <div class="vx-row mb-6">
@@ -79,7 +82,7 @@
                 <strong>Brand Name</strong>
               </span>
             </div>
-            <div class="vx-col sm:w-2/3 w-full">
+            <div class="vx-col sm:w-1/3 w-full">
               <vs-input
                 :danger="errorBrand"
                 :danger-text="errorTextBrand"
@@ -87,6 +90,7 @@
                 name="brand_name"
                 class="w-full"
                 v-model="brand_name"
+                @input="removeSpace"
               />
             </div>
           </div>
@@ -180,8 +184,8 @@
                 <strong>Start Date</strong>
               </span>
             </div>
-            <div class="vx-col sm:w-1/2 w-full">
-              <flat-pickr
+            <div class="vx-col sm:w-1/3 w-full">
+              <!-- <flat-pickr
                 class="w-full"
                 :format="format"
                 :config="configFromdateTimePicker"
@@ -189,7 +193,13 @@
                 name="start_date"
                 placeholder="Start Date"
                 @on-change="onFromChange"
-              />
+              />-->
+              <datepicker
+                :format="format"
+                v-model="start_date"
+                name="start_date"
+                placeholder="Start Date"
+              ></datepicker>
             </div>
           </div>
 
@@ -199,15 +209,21 @@
                 <strong>End Date</strong>
               </span>
             </div>
-            <div class="vx-col sm:w-1/2 w-full">
-              <flat-pickr
+            <div class="vx-col sm:w-1/3 w-full">
+              <!-- <flat-pickr
                 class="w-full"
                 :format="format"
                 :config="configTodateTimePicker"
                 v-model="end_date"
                 placeholder="End Date"
                 @on-change="onToChange"
-              />
+              />-->
+              <datepicker
+                :format="format"
+                v-model="end_date"
+                name="end_date"
+                placeholder="End Date"
+              ></datepicker>
             </div>
           </div>
 
@@ -309,9 +325,8 @@
 <script>
 import axios from "axios";
 import vselect from "vue-select";
-import flatPickr from "vue-flatpickr-component";
+import Datepicker from "vuejs-datepicker";
 import _ from "underscore";
-import "flatpickr/dist/flatpickr.css";
 import { countries } from "../assets/utils/country";
 import { states } from "../assets/utils/state";
 export default {
@@ -344,7 +359,7 @@ export default {
       paused: { labelState: "Active", val: false },
       // paused: "Active",
       stay_duration: "",
-      volume_size: [" "],
+      volume_size: "",
       campaign_name: " ",
       brand_name: " ",
       keywords: null,
@@ -352,11 +367,11 @@ export default {
       search: "addressbar",
       campaign_type: "search",
       country_code: "US",
-      city: "",
+      city: null,
       volume: "",
       start_date: null,
       end_date: null,
-      format: "MM-DD-YYYY",
+      format: "MM-dd-yyyy",
       setDescrption: "",
       url: "",
       countryList: countries,
@@ -404,11 +419,9 @@ export default {
     }
   },
   methods: {
-    onFromChange(selectedDates, dateStr, instance) {
-      this.$set(this.configTodateTimePicker, "minDate", dateStr);
-    },
-    onToChange(selectedDates, dateStr, instance) {
-      this.$set(this.configFromdateTimePicker, "maxDate", dateStr);
+    removeSpace() {
+      this.campaign_name = this.campaign_name.trim(" ");
+      this.brand_name = this.brand_name.trim(" ");
     },
     getCampaignClient() {
       var this_pointer = this;
@@ -482,8 +495,20 @@ export default {
         }
       }
     },
+    formatDate(date) {
+      var d = new Date(date),
+        month = "" + (d.getMonth() + 1),
+        day = "" + d.getDate(),
+        year = d.getFullYear();
+
+      if (month.length < 2) month = "0" + month;
+      if (day.length < 2) day = "0" + day;
+
+      return [year, month, day].join("-");
+    },
     addCampaignList() {
       var keyWords = [];
+      var city = [];
       if (!_.isEmpty(this.keywords)) {
         keyWords = this.keywords.split("\n");
         keyWords.map((data, index) => {
@@ -492,8 +517,10 @@ export default {
       }
 
       var this_pointer = this;
-      console.log("==>", this.country_code);
-
+      console.log("==>", this.start_date);
+      console.log("text", this.formatDate(this.start_date));
+      let startingDate = this.formatDate(this.start_date);
+      let endingDate = this.formatDate(this.end_date);
       axios({
         method: "post",
         url: "https://adminapi.varuntandon.com/v1/campaigns",
@@ -509,15 +536,15 @@ export default {
           stay_duration: _.isEmpty(this.stay_duration)
             ? undefined
             : this.stay_duration,
-          start_date: !_.isEmpty(this.start_date) ? this.start_date : undefined,
-          end_date: !_.isEmpty(this.end_date) ? this.end_date : undefined,
+          start_date: !_.isEmpty(startingDate) ? startingDate : undefined,
+          end_date: !_.isEmpty(endingDate) ? this.endingDate : undefined,
           country: this.country_code.iso,
           search_method: this.search,
           type: this.campaign_type,
           url: this.url,
           volume_size: this.volume.tag_name,
           state: this.stateName.state,
-          city: this.city,
+          city: city && city.length ? city : undefined,
           keywords: keyWords && keyWords.length ? keyWords : undefined,
           paused: this_pointer.paused.val,
           city_targeting_method: "priority"
@@ -609,7 +636,7 @@ export default {
   },
   components: {
     "v-select": vselect,
-    flatPickr
+    Datepicker
   }
 };
 </script>
