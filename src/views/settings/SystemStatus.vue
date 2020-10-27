@@ -76,7 +76,6 @@ export default {
   },
   mounted() {
     this.getAppInfo();
-    this.reboot();
   },
   methods: {
     getAppInfo() {

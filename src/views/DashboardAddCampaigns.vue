@@ -304,7 +304,7 @@
             <div class="vx-col sm:w-1/3 w-full">
               <template>
                 <div>
-                  <vs-textarea v-model="city" />
+                  <vs-textarea v-model="cityName" />
                 </div>
               </template>
             </div>
@@ -359,7 +359,7 @@ export default {
       paused: { labelState: "Active", val: false },
       // paused: "Active",
       stay_duration: "",
-      volume_size: "",
+      volume_size: [],
       campaign_name: " ",
       brand_name: " ",
       keywords: null,
@@ -367,7 +367,7 @@ export default {
       search: "addressbar",
       campaign_type: "search",
       country_code: "US",
-      city: null,
+      cityName: [],
       volume: "",
       start_date: null,
       end_date: null,
@@ -508,7 +508,6 @@ export default {
     },
     addCampaignList() {
       var keyWords = [];
-      var city = [];
       if (!_.isEmpty(this.keywords)) {
         keyWords = this.keywords.split("\n");
         keyWords.map((data, index) => {
@@ -519,8 +518,12 @@ export default {
       var this_pointer = this;
       console.log("==>", this.start_date);
       console.log("text", this.formatDate(this.start_date));
-      let startingDate = this.formatDate(this.start_date);
-      let endingDate = this.formatDate(this.end_date);
+      console.log("FirstText", this.formatDate(this.end_date));
+      let startingDate = this_pointer.formatDate(this_pointer.start_date);
+      let endingDate = this_pointer.formatDate(this_pointer.end_date);
+      this.cityName = this.cityName.includes(",")
+        ? this.cityName.split(",")
+        : [this.cityName];
       axios({
         method: "post",
         url: "https://adminapi.varuntandon.com/v1/campaigns",
@@ -537,14 +540,14 @@ export default {
             ? undefined
             : this.stay_duration,
           start_date: !_.isEmpty(startingDate) ? startingDate : undefined,
-          end_date: !_.isEmpty(endingDate) ? this.endingDate : undefined,
+          end_date: !_.isEmpty(endingDate) ? endingDate : undefined,
           country: this.country_code.iso,
           search_method: this.search,
           type: this.campaign_type,
           url: this.url,
           volume_size: this.volume.tag_name,
           state: this.stateName.state,
-          city: city && city.length ? city : undefined,
+          city: this.cityName ? this.cityName : undefined,
           keywords: keyWords && keyWords.length ? keyWords : undefined,
           paused: this_pointer.paused.val,
           city_targeting_method: "priority"
@@ -572,7 +575,7 @@ export default {
             this_pointer.country_code = null;
             this_pointer.url = null;
             this_pointer.stateName = null;
-            this_pointer.city = null;
+            this_pointer.cityName = null;
             this_pointer.city_targeting_method = null;
             this_pointer.volume = null;
             this_pointer.keywords = null;
