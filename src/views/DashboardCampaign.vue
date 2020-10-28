@@ -100,7 +100,7 @@
               <vs-th sort-key="type">Type</vs-th>
               <vs-th sort-key="search_method">Search Method</vs-th>
               <vs-th sort-key="url">URL</vs-th>
-              <vs-th sort-key>Visits Per Day</vs-th>
+              <vs-th sort-key="volume_size">Visits Per Day</vs-th>
               <vs-th sort-key="stay_duration">Time spend</vs-th>
               <vs-th sort-key="country">Country</vs-th>
               <vs-th sort-key="state">State</vs-th>
@@ -144,7 +144,7 @@
                   </vs-td>
 
                   <vs-td>
-                    <p class="brand_type"></p>
+                    <p class="volume_size">{{tr.volume_size}}</p>
                   </vs-td>
 
                   <vs-td>
@@ -237,7 +237,7 @@
               <vs-th sort-key="type">Type</vs-th>
               <vs-th sort-key="search_method">Search Method</vs-th>
               <vs-th sort-key="url">URL</vs-th>
-              <vs-th sort-key>Visits Per Day</vs-th>
+              <vs-th sort-key="volume_size">Visits Per Day</vs-th>
               <vs-th sort-key="stay_duration">Time spend</vs-th>
               <vs-th sort-key="country">Country</vs-th>
               <vs-th sort-key="state">State</vs-th>
@@ -281,7 +281,7 @@
                   </vs-td>
 
                   <vs-td>
-                    <p class="brand_type"></p>
+                    <p class="volume_size">{{tr.volume_size}}</p>
                   </vs-td>
 
                   <vs-td>
@@ -373,7 +373,14 @@
           </span>
         </div>
         <div class="vx-col sm:w-1/3 w-full">
-          <vs-input type="text" class="w-full" :value="editCampaign.client" :options="clients"></vs-input>
+          <span>{{editCampaign.client}}</span>
+          <vs-input
+            type="text"
+            hidden
+            class="w-full"
+            :value="editCampaign.client"
+            :options="clients"
+          ></vs-input>
         </div>
       </div>
       <div class="vx-row mb-6">
@@ -383,7 +390,8 @@
           </span>
         </div>
         <div class="vx-col sm:w-1/3 w-full">
-          <vs-input type="text" class="w-full" :value="editCampaign.campaign_name"></vs-input>
+          <span>{{editCampaign.campaign_name}}</span>
+          <vs-input type="text" class="w-full" hidden :value="editCampaign.campaign_name"></vs-input>
         </div>
       </div>
       <div class="vx-row mb-6">
@@ -393,7 +401,8 @@
           </span>
         </div>
         <div class="vx-col sm:w-1/3 w-full">
-          <vs-input type="text" class="w-full" :value="editCampaign.brand_name"></vs-input>
+          <span>{{editCampaign.brand_name}}</span>
+          <vs-input type="text" hidden class="w-full" :value="editCampaign.brand_name"></vs-input>
         </div>
       </div>
       <div class="vx-row mb-6">
@@ -417,6 +426,7 @@
             @change="getKeywordStats"
             v-model="keywordId"
             label="keyword"
+            :dir="$vs.rtl ? 'rtl' : 'ltr'"
             :options="keywordList"
           />
         </div>
@@ -441,7 +451,7 @@
         </div>
         <div class="vx-col sm:w-1/3 w-full">
           <span>
-            <strong>{{this.xyz}}</strong>
+            <strong>{{this.visitsfor30Days}}</strong>
           </span>
         </div>
       </div>
@@ -453,7 +463,7 @@
         </div>
         <div class="vx-col sm:w-1/3 w-full">
           <span>
-            <strong>{{this.lastDays}}</strong>
+            <strong>{{this.visitsfor60Days}}</strong>
           </span>
         </div>
       </div>
@@ -465,7 +475,7 @@
         </div>
         <div class="vx-col sm:w-1/3 w-full">
           <span>
-            <strong>{{this.setDay}}</strong>
+            <strong>{{this.visitsfor180Days}}</strong>
           </span>
         </div>
       </div>
@@ -481,7 +491,7 @@
         </div>
         <div class="vx-col sm:w-1/3 w-full">
           <span>
-            <strong>{{keywords[keywordId]}}</strong>
+            <strong>{{keywordId && keywordId.keyword ? keywordId.keyword : ""}}</strong>
           </span>
         </div>
       </div>&nbsp;
@@ -544,7 +554,7 @@ import * as moment from "moment";
 export default {
   data() {
     return {
-      keywordList: [],
+      keywordList: [" "],
       keyword: null,
       date: moment().format("YYYY-MM-DD"),
       statsList: [],
@@ -554,14 +564,14 @@ export default {
       hitsAchieved: null,
       keywords: [],
       campaignId: null,
-      xyz: 0,
-      lastDays: 0,
-      setDay: 0,
+      visitsfor30Days: 0,
+      visitsfor60Days: 0,
+      visitsfor180Days: 0,
       setDays: 0,
       lifetime_visits: 0,
-      selected: [],
       itemsPerPage: 10,
       isMounted: false,
+      selected: [],
       value1: "",
       value2: "",
       popupActive: false,
@@ -578,14 +588,15 @@ export default {
       startDate: moment("2019-01-01").format("YYYY-MM-DD"),
       endDate: moment().format("YYYY-MM-DD"),
       stay_duration: " ",
-      volume_size: [],
+      volume_size: [" "],
       campaigns_list: [],
       active_campaign_list: [],
       activeCampaignList: [],
       inActiveCampaignList: [],
       in_active_campaign_list: [],
       action: null,
-      campaign_type: undefined
+      campaign_type: undefined,
+      keyword_formating: " "
     };
   },
   components: {
@@ -671,7 +682,7 @@ export default {
 
     filterFn() {
       console.log(
-        "anand",
+        "show startDate",
         this.startDate,
         moment(this.startDate).format("YYYY-MM-DD")
       );
@@ -946,11 +957,12 @@ export default {
         .then(response => {
           console.log(response.data);
           this.keywordList = response.data.keywords;
-          this.keywordId = response.data.keywords[0].id;
+          this.keywordId = response.data.keywords[0];
           response.data.keywords.forEach(key => {
             this.keywords[key.id] = key.keyword;
           });
           console.log(this.keywords);
+          this.getKeywordStats();
           this.getStatsFor30Days();
           this.getStatsFor60Days();
           this.getStatsFor180Days();
@@ -963,7 +975,7 @@ export default {
     getKeywordStats() {
       this.$http
         .get(
-          `https://adminapi.varuntandon.com/v1/stats/by_keyword/${this.keywordId}`,
+          `https://adminapi.varuntandon.com/v1/stats/by_keyword/${this.keywordId.id}`,
           {
             params: {
               start_date: moment().format("YYYY-MM-DD")
@@ -985,7 +997,7 @@ export default {
       let last30Days = new Date(now.setDate(now.getDate() - 30));
       this.$http
         .get(
-          `https://adminapi.varuntandon.com/v1/stats/by_keyword/${this.keywordId}`,
+          `https://adminapi.varuntandon.com/v1/stats/by_keyword/${this.keywordId.id}`,
           {
             params: {
               start_date: moment(last30Days).format("YYYY-MM-DD")
@@ -993,8 +1005,8 @@ export default {
           }
         )
         .then(response => {
-          this.statsList.forEach(record => {
-            this.xyz = this.xyz + record.hits_achieved;
+          response.data.stats.forEach(record => {
+            this.visitsfor30Days = this.visitsfor30Days + record.hits_achieved;
             console.log(record.hits_achieved);
           });
         })
@@ -1007,7 +1019,7 @@ export default {
       let last60Days = new Date(now.setDate(now.getDate() - 60));
       this.$http
         .get(
-          `https://adminapi.varuntandon.com/v1/stats/by_keyword/${this.keywordId}`,
+          `https://adminapi.varuntandon.com/v1/stats/by_keyword/${this.keywordId.id}`,
           {
             params: {
               start_date: moment(last60Days).format("YYYY-MM-DD")
@@ -1015,8 +1027,8 @@ export default {
           }
         )
         .then(response => {
-          this.statsList.forEach(record => {
-            this.lastDays = this.lastDays + record.hits_achieved;
+          response.data.stats.forEach(record => {
+            this.visitsfor60Days = this.visitsfor60Days + record.hits_achieved;
             console.log(record.hits_achieved);
           });
         })
@@ -1029,7 +1041,7 @@ export default {
       let last180Days = new Date(now.setDate(now.getDate() - 180));
       this.$http
         .get(
-          `https://adminapi.varuntandon.com/v1/stats/by_keyword/${this.keywordId}`,
+          `https://adminapi.varuntandon.com/v1/stats/by_keyword/${this.keywordId.id}`,
           {
             params: {
               start_date: moment(last180Days).format("YYYY-MM-DD")
@@ -1037,8 +1049,9 @@ export default {
           }
         )
         .then(response => {
-          this.statsList.forEach(record => {
-            this.setDay = this.setDay + record.hits_achieved;
+          response.data.stats.forEach(record => {
+            this.visitsfor180Days =
+              this.visitsfor180Days + record.hits_achieved;
             console.log(record.hits_achieved);
           });
         })
@@ -1050,7 +1063,7 @@ export default {
     getLifetimeVisits() {
       this.lifetime_visits = 0;
       console.log("list count", this.statsList);
-      this.statsList.forEach(record => {
+      response.data.stats.forEach(record => {
         {
           this.lifetime_visits = this.lifetime_visits + record.hits_achieved;
         }

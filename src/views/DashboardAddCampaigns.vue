@@ -54,8 +54,8 @@
             <div class="vx-col sm:w-1/3 w-full">
               <vx-input-group>
                 <vs-input
-                  :danger="hasError"
-                  :danger-text="errorText"
+                 :danger="hasError"
+                  :danger-text="errorText"                  
                   class="w-full"
                   v-model="campaign_name"
                   name="campaign_name"
@@ -84,8 +84,8 @@
             </div>
             <div class="vx-col sm:w-1/3 w-full">
               <vs-input
-                :danger="errorBrand"
-                :danger-text="errorTextBrand"
+               :danger="errorBrand"
+              :danger-text="errorTextBrand"
                 type="text"
                 name="brand_name"
                 class="w-full"
@@ -367,7 +367,7 @@ export default {
       search: "addressbar",
       campaign_type: "search",
       country_code: "US",
-      cityName: [],
+      cityName: "",
       volume: "",
       start_date: null,
       end_date: null,
@@ -410,10 +410,10 @@ export default {
     },
     errorTextBrand() {
       if (this.brand_name.length < 4) {
-        return "Be should be at least 6 characters";
+        return "Brand Name should be at least 6 characters";
       }
       if (this.brand_name.length > 80) {
-        return "Invoice title should be at most 80 characters";
+        return "Brand Name should be at most 80 characters";
       }
       return "";
     }
@@ -523,7 +523,7 @@ export default {
       let endingDate = this_pointer.formatDate(this_pointer.end_date);
       this.cityName = this.cityName.includes(",")
         ? this.cityName.split(",")
-        : [this.cityName];
+        : this.cityName;
       axios({
         method: "post",
         url: "https://adminapi.varuntandon.com/v1/campaigns",
@@ -572,7 +572,7 @@ export default {
             this_pointer.stay_duration = null;
             this_pointer.start_date = null;
             this_pointer.end_date = null;
-            this_pointer.country_code = null;
+            this_pointer.country_code = "";
             this_pointer.url = null;
             this_pointer.stateName = null;
             this_pointer.cityName = null;
