@@ -27,15 +27,15 @@
       </template>
       <template slot-scope="{ data }">
         <vs-tr :data="tr" :key="indextr" v-for="(tr, indextr) in data">
-          <vs-td :data="data[indextr].client_name">
+          <vs-td :data="tr.client_name">
             {{
-            data[indextr].client_name
+            tr.client_name
             }}
           </vs-td>
 
-          <vs-td :data="data[indextr].description">
+          <vs-td :data="tr.description">
             {{
-            data[indextr].description
+            tr.description
             }}
           </vs-td>
           <vs-td :data="tr.date"></vs-td>
@@ -44,7 +44,7 @@
               <feather-icon
                 icon="EditIcon"
                 svgClasses="w-5 h-5 hover:text-primary stroke-current"
-                @click="editClient(data[indextr])"
+                @click="editClient(tr)"
               />
               <feather-icon
                 icon="TrashIcon"
@@ -109,7 +109,8 @@ export default {
       AnotherDate: null,
       popupActive: false,
       setName: "",
-      removeClient: []
+      removeClient: [],
+      clientId: null
     };
   },
   computed: {
@@ -141,12 +142,13 @@ export default {
       this.$router.push({
         path: "/dashboard/clientdescription",
         query: {
-          clientId: data.id,
-          clientName: data.client_name,
-          clientDescription: data.description
+          clientId: data.id
         }
       });
     },
+    // displayClientDetails(clientInfo){
+    //   this.$router.push
+    // },
     removeClientData(client_id) {
       console.log("client_id", client_id);
       this.$http

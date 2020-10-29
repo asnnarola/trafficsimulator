@@ -435,7 +435,7 @@ export default {
           tpc_downturn_levels: parseInt(this_pointer.tpc_downturn_levels)
         })
         .then(response => {
-          console.log(response);
+          console.log("SpikeList", response);
 
           if (response.data.success) {
             this_pointer.editSpike = false;

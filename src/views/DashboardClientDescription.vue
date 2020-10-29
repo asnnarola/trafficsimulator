@@ -20,23 +20,27 @@
           </div>
         </div>
 
-        <div class="vx-row mb-6" :data="clients">
+        <div class="vx-row mb-6" :data="clientValue">
           <div class="vx-col w-full">
             <label>Client Name</label>
-            <vs-input class="w-full mt-1" v-model="client_name" />
+            <vs-input class="w-full mt-1" v-model="clientValue.client_name" />
           </div>
 
           <div class="vx-col w-full mt-5">
             <label>Add Description</label>
             <div class="mt-1">
-              <vs-textarea v-model="description" height="150px" />
+              <vs-textarea v-model="clientValue.description" height="150px" />
             </div>
           </div>
         </div>
 
         <div class="vx-row">
           <div class="vx-col w-full">
-            <vs-button class="mr-3 mb-2" color="success" @click="addClientFn">
+            <vs-button
+              class="mr-3 mb-2"
+              color="success"
+              @click="edit ? updateClient() : addClientFn()"
+            >
               {{
               edit ? "Update" : "Submit"
               }}
@@ -68,11 +72,20 @@ export default {
       clients: [],
       client_name: "",
       description: "",
-      clientInfo: {
+      clientValue: {
         client_name: "",
         description: ""
-      }
+      },
+
+      newClient: {}
     };
+  },
+  mounted() {
+    if (Object.keys(this.$route.query).length) {
+      this.clientId = this.$route.query.clientId;
+      this.edit = true;
+    }
+    this.getClientFn(this.clientId);
   },
   methods: {
     addClientFn() {
@@ -81,8 +94,8 @@ export default {
         method: "post",
         url: "https://adminapi.varuntandon.com/v1/clients",
         data: {
-          client_name: this.client_name,
-          description: this.description
+          client_name: this.clientValue.client_name,
+          description: this.clientValue.description
         },
         headers: {
           "content-type": "application/json"
@@ -96,8 +109,9 @@ export default {
               color: "success",
               position: "top-right"
             });
-            (this_pointer.client_name = null),
-              (this_pointer.description = null);
+            (this_pointer.clientValue.client_name = null),
+              (this_pointer.clientValue.description = null);
+            this_pointer.$router.push("/dashboard/client");
           } else {
             this_pointer.$vs.notify({
               title: "Client Already Exist",
@@ -114,31 +128,47 @@ export default {
           });
         });
     },
-    getClientFn(client_id) {
-      var this_pointer = this;
-      axios({
-        method: "get",
-        url: "https://adminapi.varuntandon.com/v1/clients",
-        headers: { "content-type": "application/json" }
-      })
-        .then(function(response) {
+    getClientFn(id) {
+      axios
+        .get("https://adminapi.varuntandon.com/v1/clients")
+        .then(response => {
           console.log("firstResponse", response);
-          this_pointer.clientInfo = response.data;
-          console.log("response", clientInfo);
+          this.clients = response.data.clients;
+          this.clientValue = {
+            client_name: this.clients[parseInt(this.clientId) - 1].client_name,
+            description: this.clients[parseInt(this.clientId) - 1].description
+          };
+          console.log("Clientresponse", this.clientValue);
         })
-        .catch(function(error) {
+        .catch(error => {
+          console.log(error);
+        });
+    },
+    updateClient(clientId) {
+      var this_pointer = this;
+      this.$http
+        .put(
+          `https://adminapi.varuntandon.com/v1/client/${this_pointer.clientId}`,
+          {
+            // client_name: this_pointer.clientValue.client_name,
+            description: this_pointer.clientValue.description
+          }
+        )
+        .then(response => {
+          console.log("===>", response);
+          if (response.data.success) {
+            this.$vs.notify({
+              title: "Client Updated",
+              color: "success",
+              position: "top-right"
+            });
+            this_pointer.$router.push("/dashboard/client");
+          }
+        })
+        .catch(error => {
           console.log(error);
         });
     }
-  },
-  mounted() {
-    if (Object.keys(this.$route.query).length) {
-      this.id = this.$route.query.clientId;
-      this.client_name = this.$route.query.clientName;
-      this.description = this.$route.query.clientDescription;
-      this.edit = true;
-    }
-    this.getClientFn(this.clientId);
   }
 };
 </script>
