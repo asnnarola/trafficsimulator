@@ -116,7 +116,7 @@
                   </vs-td>
 
                   <vs-td>
-                    <p class="end-date">{{ tr.end_date }}</p>
+                    <p class="end-date font-medium truncate">{{ tr.end_date }}</p>
                   </vs-td>
 
                   <vs-td>
@@ -144,7 +144,7 @@
                   </vs-td>
 
                   <vs-td>
-                    <p class="volume_size">{{tr.volume_size}}</p>
+                    <p class="volume_size font-medium truncate">{{tr.volume_size}}</p>
                   </vs-td>
 
                   <vs-td>
@@ -253,7 +253,7 @@
                   </vs-td>
 
                   <vs-td>
-                    <p class="end-date">{{ tr.end_date }}</p>
+                    <p class="end-date font-medium truncate">{{ tr.end_date }}</p>
                   </vs-td>
 
                   <vs-td>
@@ -281,7 +281,7 @@
                   </vs-td>
 
                   <vs-td>
-                    <p class="volume_size">{{tr.volume_size}}</p>
+                    <p class="volume_size font-medium truncate">{{tr.volume_size}}</p>
                   </vs-td>
 
                   <vs-td>
@@ -365,7 +365,7 @@
     </vs-popup>
 
     <!--POPUP for VIEW STATS Functionality !-->
-    <vs-popup title="View Stats" :active.sync="popupActive4">
+    <vs-popup title="View Stats" :active.sync="popupActive4" class="">
       <div class="vx-row mb-6">
         <div class="vx-col sm:w-1/3 w-full">
           <span>
@@ -586,7 +586,9 @@ export default {
       },
       type: ["Search", "Direct"],
       startDate: moment("2019-01-01").format("YYYY-MM-DD"),
-      endDate: moment().format("YYYY-MM-DD"),
+      endDate: moment()
+        .add(1, "months")
+        .format("YYYY-MM-DD"),
       stay_duration: " ",
       volume_size: [" "],
       campaigns_list: [],
@@ -684,7 +686,7 @@ export default {
       console.log(
         "show startDate",
         this.startDate,
-        moment(this.startDate).format("YYYY-MM-DD")
+        moment(this.startDate).format("MM-DD-YYYY")
       );
       var this_pointer = this;
       var filterResponse = this_pointer.campaigns_list;
@@ -708,9 +710,20 @@ export default {
           filterResponse = _.filter(filterResponse, function(c_list) {
             if (
               c_list.start_date >=
-                moment(this_pointer.startDate).format("YYYY-MM-DD") &&
-              c_list.start_date <=
-                moment(this_pointer.endDate).format("YYYY-MM-DD")
+              moment(this_pointer.startDate).format("MM-DD-YYYY")
+            )
+              return c_list;
+          });
+        }
+      }
+
+      if (filterResponse && filterResponse.length) {
+        if (this_pointer.endDate) {
+          filterResponse = _.filter(filterResponse, function(c_list) {
+            if (
+              (c_list.end_date = moment(this_pointer.endDate).format(
+                "MM-DD-YYYY"
+              ))
             )
               return c_list;
           });
@@ -867,12 +880,30 @@ export default {
           // this_pointer.in_active_campaign_list =
           //   this_pointer.inActiveCampaignList;
 
-          this_pointer.campaigns_list = response.data.campaigns;
+          this_pointer.campaigns_list = response.data.campaigns.map(
+            (element, index) => {
+              element.start_date = moment(element.start_date).format(
+                "MM-DD-YYYY"
+              );
+
+              return element;
+            }
+          );
+          this_pointer.campaigns_list = response.data.campaigns.map(
+            (a, index) => {
+              a.end_date = moment(a.end_date).format("MM-DD-YYYY");
+
+              return a;
+            }
+          );
+          // this_pointer.newStartDate = this_pointer.start_date;
+          // this_pointer.newEndDate = response.data.campaigns.end_date;
+          // console.log("newStartDte", newStartDate);
 
           this_pointer.filterFn();
           //_.filter()
 
-          console.log(this_pointer.campaigns);
+          console.log(this_pointer.campaigns_list);
         })
         .catch(function(error) {
           console.log(error);
@@ -1126,6 +1157,14 @@ export default {
     }
 
     .start-date {
+      max-width: 23rem;
+    }
+
+    .end-date {
+      max-width: 23rem;
+    }
+
+    .volume_size {
       max-width: 23rem;
     }
 

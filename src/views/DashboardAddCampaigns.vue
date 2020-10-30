@@ -54,8 +54,8 @@
             <div class="vx-col sm:w-1/3 w-full">
               <vx-input-group>
                 <vs-input
-                 :danger="hasError"
-                  :danger-text="errorText"                  
+                  :danger="hasError"
+                  :danger-text="errorText"
                   class="w-full"
                   v-model="campaign_name"
                   name="campaign_name"
@@ -84,8 +84,8 @@
             </div>
             <div class="vx-col sm:w-1/3 w-full">
               <vs-input
-               :danger="errorBrand"
-              :danger-text="errorTextBrand"
+                :danger="errorBrand"
+                :danger-text="errorTextBrand"
                 type="text"
                 name="brand_name"
                 class="w-full"
@@ -360,8 +360,8 @@ export default {
       // paused: "Active",
       stay_duration: "",
       volume_size: [],
-      campaign_name: " ",
-      brand_name: " ",
+      campaign_name: "",
+      brand_name: "",
       keywords: null,
       keyword_formating: "",
       search: "addressbar",
