@@ -50,7 +50,7 @@
                 icon="TrashIcon"
                 svgClasses="w-5 h-5 hover:text-danger stroke-current"
                 class="ml-2"
-                @click="deleteClientFn(data[indextr].id)"
+                @click="deleteClientFn(tr.id)"
               />
             </div>
           </vs-td>

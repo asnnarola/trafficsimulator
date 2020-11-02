@@ -59,7 +59,6 @@
                   class="w-full"
                   v-model="campaign_name"
                   name="campaign_name"
-                  @input="removeSpace"
                 />
               </vx-input-group>
             </div>
@@ -90,7 +89,6 @@
                 name="brand_name"
                 class="w-full"
                 v-model="brand_name"
-                @input="removeSpace"
               />
             </div>
           </div>
@@ -134,7 +132,12 @@
             </div>
             <div class="vx-col sm:w-1/3 w-full">
               <template>
-                <v-select :options="search_method" v-model="search" :dir="$vs.rtl ? 'rtl' : 'ltr'" />
+                <v-select
+                  :options="search_method"
+                  v-model="search"
+                  :dir="$vs.rtl ? 'rtl' : 'ltr'"
+                  @input="selectSearch"
+                />
               </template>
             </div>
           </div>
@@ -149,7 +152,7 @@
                 <vs-input
                   type="text"
                   class="w-full"
-                  v-model="url"
+                  v-model="searchUrl"
                   :disabled="search=='addressbar'"
                 />
               </vx-input-group>
@@ -271,11 +274,13 @@
                 label="countryData"
                 v-model="country_code"
                 :dir="$vs.rtl ? 'rtl' : 'ltr'"
+                @input="checkCountry"
+                :value="country_code"
               />
             </div>
           </div>
 
-          <div class="vx-row mb-6" v-if="country_code.iso == 'US'">
+          <div class="vx-row mb-6" v-if="isUs">
             <div class="vx-col sm:w-1/3 w-full">
               <span>
                 <strong>Location State</strong>
@@ -295,7 +300,7 @@
             </div>
           </div>
 
-          <div class="vx-row mb-6" v-if="country_code.iso == 'US'">
+          <div class="vx-row mb-6" v-if="isUs">
             <div class="vx-col sm:w-1/3 w-full">
               <span>
                 <strong>Location Cities</strong>
@@ -339,6 +344,9 @@ export default {
   //   }
   // },
   mounted() {
+    this.checkCountry();
+    this.selectSearch();
+
     this.getCampaignClient();
     //this.addCampaignName();
     this.addVolumeTag();
@@ -354,6 +362,7 @@ export default {
   data() {
     return {
       client: null,
+      isUs: false,
       clients: [],
       type: ["search", "direct"],
       paused: { labelState: "Active", val: false },
@@ -366,14 +375,14 @@ export default {
       keyword_formating: "",
       search: "addressbar",
       campaign_type: "search",
-      country_code: "US",
+      country_code: { countryData: "United States - US", iso: "US" },
       cityName: "",
       volume: "",
       start_date: null,
       end_date: null,
       format: "MM-dd-yyyy",
       setDescrption: "",
-      url: "",
+      searchUrl: "",
       countryList: countries,
       stateList: states,
       stateName: "",
@@ -419,10 +428,6 @@ export default {
     }
   },
   methods: {
-    removeSpace() {
-      this.campaign_name = this.campaign_name.trim(" ");
-      this.brand_name = this.brand_name.trim(" ");
-    },
     getCampaignClient() {
       var this_pointer = this;
       axios({
@@ -441,6 +446,21 @@ export default {
         .catch(function(error) {
           console.log(error);
         });
+    },
+    checkCountry() {
+      console.log(
+        "this.countrycode of checkcountry",
+        this.country_code,
+        this.isUs
+      );
+      if (
+        this.country_code &&
+        this.country_code.countryData == "United States - US"
+      ) {
+        this.isUs = true;
+      } else {
+        this.isUs = false;
+      }
     },
     updateSearchKeywords() {
       console.log(
@@ -506,6 +526,14 @@ export default {
 
       return [year, month, day].join("-");
     },
+
+    selectSearch() {
+      if (this.search == "addressbar") {
+        this.searchUrl = document.location.href.split("http://")[1];
+      } else {
+        this.searchUrl = "";
+      }
+    },
     addCampaignList() {
       var keyWords = [];
       if (!_.isEmpty(this.keywords)) {
@@ -524,6 +552,9 @@ export default {
       this.cityName = this.cityName.includes(",")
         ? this.cityName.split(",")
         : this.cityName;
+      console.log("url", this_pointer.url);
+      console.log("countryCode", this_pointer.country_code.iso);
+
       axios({
         method: "post",
         url: "https://adminapi.varuntandon.com/v1/campaigns",
@@ -541,10 +572,12 @@ export default {
             : this.stay_duration,
           start_date: !_.isEmpty(startingDate) ? startingDate : undefined,
           end_date: !_.isEmpty(endingDate) ? endingDate : undefined,
-          country: this.country_code.iso,
+          country: this_pointer.country_code.iso,
           search_method: this.search,
           type: this.campaign_type,
-          url: this.url,
+          url: this_pointer.searchUrl
+            ? this_pointer.searchUrl
+            : document.location.href,
           volume_size: this.volume.tag_name,
           state: this.stateName.state,
           city: this.cityName ? this.cityName : undefined,
@@ -573,7 +606,7 @@ export default {
             this_pointer.start_date = null;
             this_pointer.end_date = null;
             this_pointer.country_code = "";
-            this_pointer.url = null;
+            this_pointer.searchUrl = null;
             this_pointer.stateName = null;
             this_pointer.cityName = null;
             this_pointer.city_targeting_method = null;
