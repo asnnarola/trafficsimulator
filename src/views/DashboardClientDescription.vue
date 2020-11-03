@@ -66,8 +66,8 @@ import axios from "axios";
 export default {
   data() {
     return {
-      check3: "",
       edit: false,
+      check3: "",
       clientId: null,
       clients: [],
       client_name: "",
@@ -82,14 +82,16 @@ export default {
   },
   mounted() {
     if (Object.keys(this.$route.query).length) {
-      this.clientId = this.$route.query.clientId;
+      (this.clientId = this.$route.query.clientId),
+        (this.clientValue.client_name = this.$route.query.clientName),
+        (this.clientValue.description = this.$route.query.clientDescription);
       this.edit = true;
     }
-    this.getClientFn(this.clientId);
   },
   methods: {
     addClientFn() {
       var this_pointer = this;
+
       axios({
         method: "post",
         url: "https://adminapi.varuntandon.com/v1/clients",
@@ -128,32 +130,31 @@ export default {
           });
         });
     },
-    getClientFn(id) {
-      axios
-        .get("https://adminapi.varuntandon.com/v1/clients")
-        .then(response => {
-          console.log("firstResponse", response);
-          this.clients = response.data.clients;
-          this.clientValue = {
-            client_name: this.clients[parseInt(this.clientId) - 1].client_name,
-            description: this.clients[parseInt(this.clientId) - 1].description
-          };
-          console.log("Clientresponse", this.clientValue);
-        })
-        .catch(error => {
-          console.log(error);
-        });
-    },
+    // getClientFn(id) {
+    //   axios
+    //     .get("https://adminapi.varuntandon.com/v1/clients")
+    //     .then(response => {
+    //       console.log("firstResponse", response);
+    //       this.clients = response.data.clients;
+    //       this.clientValue = {
+    //         client_name: this.clients[parseInt(this.clientId) - 1].client_name,
+    //         description: this.clients[parseInt(this.clientId) - 1].description
+    //       };
+    //       console.log("Clientresponse", this.clientValue);
+    //     })
+    //     .catch(error => {
+    //       console.log(error);
+    //     });
+    // },
     updateClient(clientId) {
-      var this_pointer = this;
+      //var this_pointer = this;
+      // this.edit = true;
+
       this.$http
-        .put(
-          `https://adminapi.varuntandon.com/v1/client/${this_pointer.clientId}`,
-          {
-            // client_name: this_pointer.clientValue.client_name,
-            description: this_pointer.clientValue.description
-          }
-        )
+        .put(`https://adminapi.varuntandon.com/v1/client/${this.clientId}`, {
+          // client_name: this_pointer.clientValue.client_name,
+          description: this.clientValue.description
+        })
         .then(response => {
           console.log("===>", response);
           if (response.data.success) {
@@ -162,7 +163,7 @@ export default {
               color: "success",
               position: "top-right"
             });
-            this_pointer.$router.push("/dashboard/client");
+            this.$router.push("/dashboard/client");
           }
         })
         .catch(error => {

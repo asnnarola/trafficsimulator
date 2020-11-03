@@ -139,10 +139,14 @@ export default {
         });
     },
     editClient(data) {
+      console.log("i am here");
+      // localStorage.setItem("storedData", true);
       this.$router.push({
         path: "/dashboard/clientdescription",
         query: {
-          clientId: data.id
+          clientId: data.id,
+          clientDescription: data.description,
+          clientName: data.client_name
         }
       });
     },
@@ -160,7 +164,7 @@ export default {
             const index = this.users.findIndex(c => c.id === client_id);
             this.users.splice(index, 1);
             this.popupActive = false;
-            // this.getClientFn();
+            this.getClientFn();
           }
         })
         .catch(error => {

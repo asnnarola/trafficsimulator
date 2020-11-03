@@ -365,7 +365,7 @@
     </vs-popup>
 
     <!--POPUP for VIEW STATS Functionality !-->
-    <vs-popup title="View Stats" :active.sync="popupActive4" class="">
+    <vs-popup title="View Stats" :active.sync="popupActive4" class>
       <div class="vx-row mb-6">
         <div class="vx-col sm:w-1/3 w-full">
           <span>
@@ -705,6 +705,20 @@ export default {
         }
       }
 
+      //    if (filterResponse && filterResponse.length) {
+      //   if (this_pointer.startDate) {
+      //     filterResponse = _.filter(filterResponse, function(c_list) {
+      //       if (
+      //         c_list.start_date >=
+      //           moment(this_pointer.startDate).format("YYYY-MM-DD") &&
+      //         c_list.start_date <=
+      //           moment(this_pointer.endDate).format("YYYY-MM-DD")
+      //       )
+      //         return c_list;
+      //     });
+      //   }
+      // }
+
       if (filterResponse && filterResponse.length) {
         if (this_pointer.startDate) {
           filterResponse = _.filter(filterResponse, function(c_list) {
@@ -859,6 +873,7 @@ export default {
     },
     getCampaignList() {
       var this_pointer = this;
+
       console.log("startDate:", this_pointer.start_date);
       console.log("endDate:", this_pointer.end_date);
       this.$http({
@@ -879,7 +894,7 @@ export default {
           // this_pointer.active_campaign_list = this_pointer.activeCampaignList;
           // this_pointer.in_active_campaign_list =
           //   this_pointer.inActiveCampaignList;
-
+          console.log("campaignsList", response.data.campaigns);
           this_pointer.campaigns_list = response.data.campaigns.map(
             (element, index) => {
               element.start_date = moment(element.start_date).format(
