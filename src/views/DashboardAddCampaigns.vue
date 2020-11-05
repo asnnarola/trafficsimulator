@@ -188,21 +188,20 @@
               </span>
             </div>
             <div class="vx-col sm:w-1/3 w-full">
-              <!-- <flat-pickr
+              <flat-pickr
                 class="w-full"
-                :format="format"
-                :config="configFromdateTimePicker"
                 v-model="start_date"
                 name="start_date"
                 placeholder="Start Date"
-                @on-change="onFromChange"
-              />-->
-              <datepicker
+                :config="configTodateTimePicker"
+              />
+              <!-- <datepicker
                 :format="format"
                 v-model="start_date"
                 name="start_date"
                 placeholder="Start Date"
-              ></datepicker>
+                :highlighted="value"
+              ></datepicker>-->
             </div>
           </div>
 
@@ -213,20 +212,18 @@
               </span>
             </div>
             <div class="vx-col sm:w-1/3 w-full">
-              <!-- <flat-pickr
+              <flat-pickr
                 class="w-full"
-                :format="format"
-                :config="configTodateTimePicker"
                 v-model="end_date"
                 placeholder="End Date"
-                @on-change="onToChange"
-              />-->
-              <datepicker
+                :config="configTodateTimePicker"
+              />
+              <!-- <datepicker
                 :format="format"
                 v-model="end_date"
                 name="end_date"
                 placeholder="End Date"
-              ></datepicker>
+              ></datepicker>-->
             </div>
           </div>
 
@@ -328,6 +325,8 @@
 </template>
 
 <script>
+import flatPickr from "vue-flatpickr-component";
+import "flatpickr/dist/flatpickr.css";
 import axios from "axios";
 import vselect from "vue-select";
 import Datepicker from "vuejs-datepicker";
@@ -348,7 +347,7 @@ export default {
   // },
   mounted() {
     this.checkCountry();
-    this.selectSearch();
+    // this.selectSearch();
 
     this.getCampaignClient();
     //this.addCampaignName();
@@ -394,13 +393,10 @@ export default {
         { labelState: "Active", val: false },
         { labelState: "In-Active", val: true }
       ],
-      configFromdateTimePicker: {
-        inline: false,
-        maxDate: null
-      },
       configTodateTimePicker: {
-        inline: false,
-        minDate: null
+        allowInput: false,
+        dateFormat: "m-d-Y",
+        minDate: new Date()
       }
     };
   },
@@ -532,7 +528,7 @@ export default {
 
     selectSearch() {
       if (this.search == "addressbar") {
-        this.searchUrl = document.location.href.split("http://")[1];
+        this.searchUrl = document.location.href;
       } else {
         this.searchUrl = "";
       }
@@ -552,9 +548,9 @@ export default {
       console.log("FirstText", this.formatDate(this.end_date));
       let startingDate = this_pointer.formatDate(this_pointer.start_date);
       let endingDate = this_pointer.formatDate(this_pointer.end_date);
-      this.cityName = this.cityName.includes(",")
-        ? this.cityName.split(",")
-        : this.cityName;
+      this_pointer.cityName = this_pointer.cityName.includes(",")
+        ? this_pointer.cityName.split(",")
+        : [this_pointer.cityName];
       console.log("url", this_pointer.url);
       console.log("countryCode", this_pointer.country_code.iso);
 
@@ -583,7 +579,7 @@ export default {
             : document.location.href,
           volume_size: this.volume.tag_name,
           state: this.stateName.state,
-          city: this.cityName ? this.cityName : undefined,
+          city: this.cityName,
           keywords: keyWords && keyWords.length ? keyWords : undefined,
           paused: this_pointer.paused.val,
           city_targeting_method: "priority"
@@ -678,7 +674,7 @@ export default {
   },
   components: {
     "v-select": vselect,
-    Datepicker
+    flatPickr
   }
 };
 </script>
