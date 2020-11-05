@@ -41,7 +41,7 @@
             </div>
             <div class="vx-col sm:w-1/3 w-full">
               <span>
-                <strong>{{ this.setDescrption }}</strong>
+                <strong id="a">{{ this.setDescrption }}</strong>
               </span>
             </div>
           </div>
@@ -334,6 +334,9 @@ import Datepicker from "vuejs-datepicker";
 import _ from "underscore";
 import { countries } from "../assets/utils/country";
 import { states } from "../assets/utils/state";
+
+import toHtml from 'string-to-html';
+
 export default {
   // watch: {
   //   volume: function(v) {
@@ -466,12 +469,12 @@ export default {
       console.log(
         "this.keyword_formating",
         this.keyword_formating.length,
-        this.keyword_formating.indexOf("KW")
+        this.keyword_formating.toLowerCase().indexOf("kw")
       );
 
       if (!_.isEmpty(this.keyword_formating)) {
-        var mainDivideString = this.keyword_formating.indexOf("KW");
-        if (mainDivideString >= 1) {
+        var mainDivideString = this.keyword_formating.toLowerCase().indexOf("kw");
+        if (mainDivideString >= 0) {
           var substringFirstPart = this.keyword_formating.substr(
             0,
             mainDivideString - 1
@@ -499,19 +502,19 @@ export default {
             this.keywords = singleLineKeyWords;
           }
         } else {
-          var formatData = this.keyword_formating.split("KW");
+          // var formatData = this.keyword_formating.toLowerCase().indexOf("kw");
 
-          if (!_.isEmpty(this.keywords)) {
-            var keyWords = this.keywords.split("\n");
-            var singleLineKeyWords = "";
-            keyWords.map((data, index) => {
-              singleLineKeyWords =
-                index == 0
-                  ? data + formatData[1]
-                  : singleLineKeyWords + "\n" + data + formatData[1];
-            });
-            this.keywords = singleLineKeyWords;
-          }
+          // if (!_.isEmpty(this.keywords)) {
+          //   var keyWords = this.keywords.split("\n");
+          //   var singleLineKeyWords = "";
+          //   keyWords.map((data, index) => {
+          //     singleLineKeyWords =
+          //       index == 0
+          //         ? data + formatData[1]
+          //         : singleLineKeyWords + "\n" + data + formatData[1];
+          //   });
+          //   this.keywords = singleLineKeyWords;
+          // }
         }
       }
     },
@@ -644,7 +647,10 @@ export default {
     },
     setDescrptionFn(event) {
       console.log("cliemts", this.client, event);
-      this.setDescrption = event.description;
+      var a="anand soni<br/>ttt↵www.google.com"
+//a= a.replace("/\n/g","\n");
+       document.getElementById("a").innerHTML = event.description.replace(/(\r\n|\n|\r)/gm, "<br />");
+      //this.setDescrption = htmlToText(event.description);
     },
     addVolumeTag() {
       var this_pointer = this;
