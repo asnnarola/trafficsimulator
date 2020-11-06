@@ -334,7 +334,7 @@ import _ from "underscore";
 import { countries } from "../assets/utils/country";
 import { states } from "../assets/utils/state";
 
-import toHtml from 'string-to-html';
+import toHtml from "string-to-html";
 
 export default {
   // watch: {
@@ -388,8 +388,8 @@ export default {
       countryList: countries,
       stateList: states,
       stateName: "",
-      lastkeyword_formating:"",
-      updateKeywordFirstTime:false,
+      lastkeyword_formating: "",
+      updateKeywordFirstTime: false,
       search_method: ["url", "addressbar"],
       InitialStatus: [
         { labelState: "Active", val: false },
@@ -471,9 +471,9 @@ export default {
       );
 
       if (!_.isEmpty(this.keyword_formating)) {
-
-
-        var mainDivideString = this.keyword_formating.toLowerCase().indexOf("kw");
+        var mainDivideString = this.keyword_formating
+          .toLowerCase()
+          .indexOf("kw");
         if (mainDivideString >= 0) {
           var substringFirstPart = this.keyword_formating.substr(
             0,
@@ -484,30 +484,36 @@ export default {
             this.keyword_formating.length
           );
 
-          if(this.updateKeywordFirstTime){
-              var lastmainDivideString = this.lastkeyword_formating.toLowerCase().indexOf("kw");
-               if (lastmainDivideString >= 0) {
-          var lastsubstringFirstPart = this.lastkeyword_formating.substr(
-            0,
-            lastmainDivideString - 1
-          );
-          var lastsubstringSecondPart = this.lastkeyword_formating.substr(
-            lastmainDivideString + 3,
-            this.lastkeyword_formating.length
-          );
+          if (this.updateKeywordFirstTime) {
+            var lastmainDivideString = this.lastkeyword_formating
+              .toLowerCase()
+              .indexOf("kw");
+            if (lastmainDivideString >= 0) {
+              var lastsubstringFirstPart = this.lastkeyword_formating.substr(
+                0,
+                lastmainDivideString - 1
+              );
+              var lastsubstringSecondPart = this.lastkeyword_formating.substr(
+                lastmainDivideString + 3,
+                this.lastkeyword_formating.length
+              );
 
-          if(!_.isEmpty(lastsubstringFirstPart)){
- this.keywords=this.keywords.replace(new RegExp(lastsubstringFirstPart+" ","g"),"");
-          }
+              if (!_.isEmpty(lastsubstringFirstPart)) {
+                this.keywords = this.keywords.replace(
+                  new RegExp(lastsubstringFirstPart + " ", "g"),
+                  ""
+                );
+              }
 
-               if(!_.isEmpty(lastsubstringSecondPart)){
-          this.keywords=this.keywords.replace(new RegExp(" "+lastsubstringSecondPart,"g"),"");
-          }
+              if (!_.isEmpty(lastsubstringSecondPart)) {
+                this.keywords = this.keywords.replace(
+                  new RegExp(" " + lastsubstringSecondPart, "g"),
+                  ""
+                );
+              }
 
-
-            //console.log("substringFirstPart",substringFirstPart,substringSecondPart)
-               }
-
+              //console.log("substringFirstPart",substringFirstPart,substringSecondPart)
+            }
           }
 
           if (!_.isEmpty(this.keywords)) {
@@ -516,7 +522,11 @@ export default {
             keyWords.map((data, index) => {
               singleLineKeyWords =
                 index == 0
-                  ? substringFirstPart + (_.isEmpty(substringFirstPart) ? "" : " ") + data + " " + substringSecondPart
+                  ? substringFirstPart +
+                    (_.isEmpty(substringFirstPart) ? "" : " ") +
+                    data +
+                    " " +
+                    substringSecondPart
                   : singleLineKeyWords +
                     "\n" +
                     substringFirstPart +
@@ -527,12 +537,10 @@ export default {
             });
             this.keywords = singleLineKeyWords;
           }
-      this.updateKeywordFirstTime=true
-      this.lastkeyword_formating=this.keyword_formating;
-
+          this.updateKeywordFirstTime = true;
+          this.lastkeyword_formating = this.keyword_formating;
         } else {
           // var formatData = this.keyword_formating.toLowerCase().indexOf("kw");
-
           // if (!_.isEmpty(this.keywords)) {
           //   var keyWords = this.keywords.split("\n");
           //   var singleLineKeyWords = "";
@@ -609,7 +617,7 @@ export default {
           type: this.campaign_type,
           url: this_pointer.searchUrl
             ? this_pointer.searchUrl
-            : document.location.href,
+            : "https://www.google.com",
           volume_size: this.volume.tag_name,
           state: this.stateName.state,
           city: this.cityName,
@@ -677,8 +685,11 @@ export default {
     setDescrptionFn(event) {
       console.log("cliemts", this.client, event);
       //var a="anand soni<br/>ttt↵www.google.com"
-//a= a.replace("/\n/g","\n");
-       document.getElementById("a").innerHTML = event.description.replace(/(\r\n|\n|\r)/gm, "<br />");
+      //a= a.replace("/\n/g","\n");
+      document.getElementById("a").innerHTML = event.description.replace(
+        /(\r\n|\n|\r)/gm,
+        "<br />"
+      );
       //this.setDescrption = htmlToText(event.description);
     },
     addVolumeTag() {

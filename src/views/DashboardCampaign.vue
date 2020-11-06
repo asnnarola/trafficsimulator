@@ -47,14 +47,24 @@
           <div class="vx-col sm:w-1/2 w-full mb-2">
             <label>Start Date</label>
 
-            <datepicker placeholder="Start Date" @input="filterFn" v-model="startDate"></datepicker>
+            <datepicker
+              placeholder="Start Date"
+              :format="format"
+              v-model="startDate"
+              @input="getCampaignList"
+            ></datepicker>
 
             <!-- @click="getCampaignList"/> -->
           </div>
           <div class="vx-col sm:w-1/2 w-full mb-2">
             <label>End Date</label>
-
-            <datepicker placeholder="End Date" @input="filterFn" v-model="endDate"></datepicker>
+            <datepicker
+              placeholder="End Date"
+              :format="format"
+              @input="getCampaignList"
+              v-model="endDate"
+            ></datepicker>
+            <!-- <label class="text-danger">{{errorMsg}}</label> -->
           </div>
         </div>
       </vx-card>
@@ -578,17 +588,17 @@ export default {
       popupActive2: false,
       popupActive3: false,
       popupActive4: false,
+      errorMsg: "",
       editCampaign: {},
       clients: [],
       client: {
         client_name: "All CLient",
         id: "All"
       },
+      format: "MMM dd yyyy",
       type: ["Search", "Direct"],
       startDate: moment("2019-01-01").format("YYYY-MM-DD"),
-      endDate: moment()
-        .add(1, "months")
-        .format("YYYY-MM-DD"),
+      endDate: moment().format("YYYY-MM-DD"),
       stay_duration: " ",
       volume_size: [" "],
       campaigns_list: [],
@@ -598,7 +608,8 @@ export default {
       in_active_campaign_list: [],
       action: null,
       campaign_type: undefined,
-      keyword_formating: " "
+      keyword_formating: " ",
+      filterCorrct: false
     };
   },
   components: {
@@ -705,39 +716,14 @@ export default {
         }
       }
 
-      //    if (filterResponse && filterResponse.length) {
-      //   if (this_pointer.startDate) {
-      //     filterResponse = _.filter(filterResponse, function(c_list) {
-      //       if (
-      //         c_list.start_date >=
-      //           moment(this_pointer.startDate).format("YYYY-MM-DD") &&
-      //         c_list.start_date <=
-      //           moment(this_pointer.endDate).format("YYYY-MM-DD")
-      //       )
-      //         return c_list;
-      //     });
-      //   }
-      // }
-
       if (filterResponse && filterResponse.length) {
         if (this_pointer.startDate) {
           filterResponse = _.filter(filterResponse, function(c_list) {
             if (
               c_list.start_date >=
-              moment(this_pointer.startDate).format("MM-DD-YYYY")
-            )
-              return c_list;
-          });
-        }
-      }
-
-      if (filterResponse && filterResponse.length) {
-        if (this_pointer.endDate) {
-          filterResponse = _.filter(filterResponse, function(c_list) {
-            if (
-              (c_list.end_date = moment(this_pointer.endDate).format(
-                "MM-DD-YYYY"
-              ))
+                moment(this_pointer.startDate).format("MM-DD-YYYY") &&
+              c_list.end_date <=
+                moment(this_pointer.endDate).format("MM-DD-YYYY")
             )
               return c_list;
           });
@@ -872,17 +858,27 @@ export default {
         });
     },
     getCampaignList() {
-      var this_pointer = this;
+      console.log("start:", this.startDate);
+      // (this.startDate = moment("2019-01-01").format("YYYY-MM-DD")),
+      console.log("end:", this.endDate);
+      // this.endDate = moment().format("YYYY-MM-DD");
 
-      console.log("startDate:", this_pointer.start_date);
-      console.log("endDate:", this_pointer.end_date);
+      // if (this.endDate > this.startDate) {
+      //   this.filterCorrct = true;
+      //   this.errorMsg = "";
+      // } else {
+      //   this.filterCorrct = false;
+      //   this.errorMsg = "End Date Should be greater than Start Date";
+      // }
+      var this_pointer = this;
+      // if (!this.filterCorrct) {
       this.$http({
         method: "get",
-        url: `https://adminapi.varuntandon.com/v1/campaigns?start_date=${
+        url: `https://adminapi.varuntandon.com/v1/campaigns?start_date=${moment(
           this_pointer.startDate
-        }&end_date=${
-          this_pointer.endDate ? this_pointer.endDate : undefined
-        }&limit=100`,
+        ).format("YYYY-MM-DD")}&end_date=${moment(this_pointer.endDate).format(
+          "YYYY-MM-DD"
+        )}&limit=100`,
         headers: { "content-type": "application/json" }
       })
         .then(function(response) {
@@ -891,17 +887,13 @@ export default {
             client_name: "All Client",
             id: "All"
           };
-          // this_pointer.active_campaign_list = this_pointer.activeCampaignList;
-          // this_pointer.in_active_campaign_list =
-          //   this_pointer.inActiveCampaignList;
+
           console.log("campaignsList", response.data.campaigns);
           this_pointer.campaigns_list = response.data.campaigns.map(
-            (element, index) => {
-              element.start_date = moment(element.start_date).format(
-                "MM-DD-YYYY"
-              );
+            (sd, index) => {
+              sd.start_date = moment(sd.start_date).format("MM-DD-YYYY");
 
-              return element;
+              return sd;
             }
           );
           this_pointer.campaigns_list = response.data.campaigns.map(
@@ -911,9 +903,7 @@ export default {
               return a;
             }
           );
-          // this_pointer.newStartDate = this_pointer.start_date;
-          // this_pointer.newEndDate = response.data.campaigns.end_date;
-          // console.log("newStartDte", newStartDate);
+          // this_pointer.campaigns_list = response.data.campaigns;
 
           this_pointer.filterFn();
           //_.filter()
