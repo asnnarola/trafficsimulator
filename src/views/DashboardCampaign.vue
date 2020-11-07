@@ -24,7 +24,7 @@
             <v-select
               v-model="client"
               label="client_name"
-              @input="filterFn"
+              @input="getCampaignList"
               class="w-full"
               label-placeholder="client_name"
               :options="clients"
@@ -36,7 +36,7 @@
             <v-select
               class="w-full"
               v-model="campaign_type"
-              @input="filterFn"
+              @input="getCampaignList"
               label-placeholder="campaign_type"
               :options="type"
               :dir="$vs.rtl ? 'rtl' : 'ltr'"
@@ -591,10 +591,7 @@ export default {
       errorMsg: "",
       editCampaign: {},
       clients: [],
-      client: {
-        client_name: "All CLient",
-        id: "All"
-      },
+      client: { client_name: "All Client", id: "All" },
       format: "MMM dd yyyy",
       type: ["Search", "Direct"],
       startDate: moment("2019-01-01").format("YYYY-MM-DD"),
@@ -638,21 +635,6 @@ export default {
         ? this.$refs.table.queriedResults.length
         : this.products.length;
     }
-    // activeCampaignList() {
-    //   return this.campaigns_list.filter(item => {
-    //     return item.status == "active" && item.start_date > this.startDate;
-    //     return item.status == "active" && item.end_date < this.endDate;
-    //   });
-    // },
-    // inActiveCampaignList() {
-    //   return this.campaigns_list.filter(item => {
-    //     return item.status == "paused" && item.start_date > this.startDate;
-    //   });
-
-    //   return this.campaigns_list.filter(item => {
-    //     return item.status == "paused" && item.end_date < this.endDate;
-    //   });
-    // }
   },
   methods: {
     addNewCampaign() {
@@ -701,21 +683,28 @@ export default {
         this.startDate,
         moment(this.startDate).format("MM-DD-YYYY")
       );
+      // alert()
       var this_pointer = this;
       var filterResponse = this_pointer.campaigns_list;
-      console.log("filter", this_pointer.filterResponse);
+      console.log("clientID", this_pointer.client.id);
 
       if (this_pointer.client.id && this_pointer.client.id != "All") {
-        filterResponse = _.filter(filterResponse, function(c_list) {
-          return c_list.client == this_pointer.client.client_name;
-        });
+        filterResponse = filterResponse.filter(
+          campaign => campaign.client === this_pointer.client.client_name
+        );
+        // filterResponse = _.filter(filterResponse, function(c_list) {
+        //   return c_list.client == this_pointer.client.client_name;
+        // });
+        // console.log("if1", filterResponse);
+        // console.log("Rudr",filterResponse)
       }
 
-      if (filterResponse && filterResponse.length) {
+      if (filterResponse && filterResponse.length > 0) {
         if (this_pointer.campaign_type) {
           filterResponse = _.filter(filterResponse, function(c_list) {
             return c_list.type == this_pointer.campaign_type.toLowerCase();
           });
+          console.log("if2", filterResponse);
         }
       }
 
@@ -727,9 +716,11 @@ export default {
                 moment(this_pointer.startDate).format("MM-DD-YYYY") &&
               c_list.end_date <=
                 moment(this_pointer.endDate).format("MM-DD-YYYY")
-            )
+            ) {
               return c_list;
+            }
           });
+          console.log("if3", filterResponse);
         }
       }
 
@@ -737,21 +728,22 @@ export default {
         this_pointer.activeCampaignList = _.filter(filterResponse, function(
           c_list
         ) {
-          return c_list.status == "active";
+          return c_list.status === "active";
         });
       } else {
-        this_pointer.activeCampaignList;
+        this_pointer.activeCampaignList = [];
       }
 
       if (filterResponse && filterResponse.length) {
         this_pointer.inActiveCampaignList = _.filter(filterResponse, function(
           c_list
         ) {
-          return c_list.status == "paused";
+          return c_list.status === "paused";
         });
       } else {
-        this_pointer.inActiveCampaignList;
+        this_pointer.inActiveCampaignList = [];
       }
+      console.log("if4", filterResponse);
     },
 
     pauseResumeCampaign(campaign_id, action) {
@@ -767,7 +759,6 @@ export default {
               position: "top-right"
             });
           }
-          this.getCampaignList();
         })
         .catch(error => {
           console.log(error);
@@ -797,45 +788,45 @@ export default {
           console.log(error);
         });
     },
-    getCampgainByClientFn(event) {
-      console.log("cliemts", event);
+    // getCampgainByClientFn(event) {
+    //   console.log("cliemts", event);
 
-      if (event == null || event.id == "All") {
-        this.getCampaignList();
-      } else {
-        var this_pointer = this;
-        axios({
-          method: "get",
-          url:
-            "https://adminapi.varuntandon.com/v1/campaigns/client/" +
-            event.id +
-            "?limit=100",
+    //   if (event == null || event.id == "All") {
+    //     this.getCampaignList();
+    //   } else {
+    //     var this_pointer = this;
+    //     axios({
+    //       method: "get",
+    //       url:
+    //         "https://adminapi.varuntandon.com/v1/campaigns/client/" +
+    //         event.id +
+    //         "?limit=100",
 
-          headers: { "content-type": "application/json" }
-        })
-          .then(function(response) {
-            console.log("secondResponse", response);
-            console.log(this_pointer.campaigns);
+    //       headers: { "content-type": "application/json" }
+    //     })
+    //       .then(function(response) {
+    //         console.log("secondResponse", response);
+    //         console.log(this_pointer.campaigns);
 
-            this_pointer.active_campaign_list = response.data.campaigns.filter(
-              function(c_data) {
-                return c_data.status == "active";
-              }
-            );
+    //         this_pointer.active_campaign_list = response.data.campaigns.filter(
+    //           function(c_data) {
+    //             return c_data.status == "active";
+    //           }
+    //         );
 
-            this_pointer.in_active_campaign_list = response.data.campaigns.filter(
-              function(c_data) {
-                return c_data.status == "paused";
-              }
-            );
+    //         this_pointer.in_active_campaign_list = response.data.campaigns.filter(
+    //           function(c_data) {
+    //             return c_data.status == "paused";
+    //           }
+    //         );
 
-            this_pointer.campaigns_list = response.data.campaigns;
-          })
-          .catch(function(error) {
-            console.log(error);
-          });
-      }
-    },
+    //         this_pointer.campaigns_list = response.data.campaigns;
+    //       })
+    //       .catch(function(error) {
+    //         console.log(error);
+    //       });
+    //   }
+    // },
     getClientList() {
       var this_pointer = this;
       axios({
@@ -886,10 +877,10 @@ export default {
       })
         .then(function(response) {
           console.log("secondResponse", response);
-          this_pointer.client = {
-            client_name: "All Client",
-            id: "All"
-          };
+          // this_pointer.client = {
+          //   client_name: "All Client",
+          //   id: "All"
+          // };
 
           console.log("campaignsList", response.data.campaigns);
           this_pointer.campaigns_list = response.data.campaigns.map(
