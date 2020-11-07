@@ -598,7 +598,9 @@ export default {
       format: "MMM dd yyyy",
       type: ["Search", "Direct"],
       startDate: moment("2019-01-01").format("YYYY-MM-DD"),
-      endDate: moment().format("YYYY-MM-DD"),
+      endDate: moment()
+        .add(1, "months")
+        .format("YYYY-MM-DD"),
       stay_duration: " ",
       volume_size: [" "],
       campaigns_list: [],
@@ -701,6 +703,7 @@ export default {
       );
       var this_pointer = this;
       var filterResponse = this_pointer.campaigns_list;
+      console.log("filter", this_pointer.filterResponse);
 
       if (this_pointer.client.id && this_pointer.client.id != "All") {
         filterResponse = _.filter(filterResponse, function(c_list) {
