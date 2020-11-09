@@ -350,6 +350,7 @@
       <v-select
         v-model="editCampaign.client"
         label="client_name"
+        name="client_name"
         :options="clients"
         :dir="$vs.rtl ? 'rtl' : 'ltr'"
       ></v-select>
@@ -375,7 +376,14 @@
     </vs-popup>
 
     <!--POPUP for VIEW STATS Functionality !-->
-    <vs-popup title="View Stats" :active.sync="popupActive4" class>
+    <vs-popup
+      fullscreen
+      title="View Stats"
+      style="font-size: 23px"
+      :active.sync="popupActive4"
+      class
+    >
+      <vs-divider></vs-divider>
       <div class="vx-row mb-6">
         <div class="vx-col sm:w-1/3 w-full">
           <span>
@@ -422,15 +430,6 @@
           </span>
         </div>
         <div class="vx-col sm:w-1/3 w-full">
-          <!-- <vs-select class="w-full select-large" @change="getKeywordStats" v-model="keywordId">
-            <vs-select-item
-              :key="index"
-              :value="item.id"
-              :text="item.keyword"
-              v-for="(item,index) in keywordList"
-              class="w-full"
-            />
-          </vs-select>-->
           <v-select
             class="w-full select-large"
             @change="getKeywordStats"
@@ -599,7 +598,7 @@ export default {
         .add(1, "months")
         .format("YYYY-MM-DD"),
       stay_duration: " ",
-      volume_size: [" "],
+      volume_size: [""],
       campaigns_list: [],
       active_campaign_list: [],
       activeCampaignList: [],
@@ -752,6 +751,7 @@ export default {
               color: "success",
               position: "top-right"
             });
+            this.getCampaignList();
           }
         })
         .catch(error => {
@@ -776,51 +776,13 @@ export default {
       })
         .then(function(response) {
           this_pointer.editCampaign = response.data;
-          console.log("secondResponse", response);
+          console.log("secondResponse", this_pointer.editCampaign);
         })
         .catch(function(error) {
           console.log(error);
         });
     },
-    // getCampgainByClientFn(event) {
-    //   console.log("cliemts", event);
 
-    //   if (event == null || event.id == "All") {
-    //     this.getCampaignList();
-    //   } else {
-    //     var this_pointer = this;
-    //     axios({
-    //       method: "get",
-    //       url:
-    //         "https://adminapi.varuntandon.com/v1/campaigns/client/" +
-    //         event.id +
-    //         "?limit=100",
-
-    //       headers: { "content-type": "application/json" }
-    //     })
-    //       .then(function(response) {
-    //         console.log("secondResponse", response);
-    //         console.log(this_pointer.campaigns);
-
-    //         this_pointer.active_campaign_list = response.data.campaigns.filter(
-    //           function(c_data) {
-    //             return c_data.status == "active";
-    //           }
-    //         );
-
-    //         this_pointer.in_active_campaign_list = response.data.campaigns.filter(
-    //           function(c_data) {
-    //             return c_data.status == "paused";
-    //           }
-    //         );
-
-    //         this_pointer.campaigns_list = response.data.campaigns;
-    //       })
-    //       .catch(function(error) {
-    //         console.log(error);
-    //       });
-    //   }
-    // },
     getClientList() {
       var this_pointer = this;
       axios({
@@ -836,9 +798,6 @@ export default {
           });
 
           this_pointer.clients = response.data.clients;
-          // response.data.clients.forEach(record => {
-          //   this_pointer.clients.push(record.client_name);
-          // });
           console.log(this_pointer.clients);
         })
         .catch(function(error) {
@@ -871,10 +830,6 @@ export default {
       })
         .then(function(response) {
           console.log("secondResponse", response);
-          // this_pointer.client = {
-          //   client_name: "All Client",
-          //   id: "All"
-          // };
 
           console.log("campaignsList", response.data.campaigns);
           this_pointer.campaigns_list = response.data.campaigns.map(
@@ -885,16 +840,14 @@ export default {
             }
           );
           this_pointer.campaigns_list = response.data.campaigns.map(
-            (a, index) => {
-              a.end_date = moment(a.end_date).format("MM-DD-YYYY");
+            (ed, index) => {
+              ed.end_date = moment(ed.end_date).format("MM-DD-YYYY");
 
-              return a;
+              return ed;
             }
           );
-          // this_pointer.campaigns_list = response.data.campaigns;
 
           this_pointer.filterFn();
-          //_.filter()
 
           console.log(this_pointer.campaigns_list);
         })
@@ -913,11 +866,11 @@ export default {
           "content-type": "application/json"
         },
         data: {
-          client: this.editCampaign.client,
-          brand_name: this.editCampaign.brand_name,
-          end_date: this.editCampaign.end_date,
-          volume_size: this.editCampaign.volume_size,
-          stay_duration: this.editCampaign.stay_duration,
+          client: this_pointer.editCampaign.client.client_name,
+          brand_name: this_pointer.editCampaign.brand_name,
+          end_date: this_pointer.editCampaign.end_date,
+          volume_size: this_pointer.editCampaign.volume_size.tag_name,
+          stay_duration: this_pointer.editCampaign.stay_duration,
           city_targeting_method: "priority"
         }
       })
