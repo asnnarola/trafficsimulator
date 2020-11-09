@@ -617,7 +617,7 @@ export default {
           type: this.campaign_type,
           url: this_pointer.searchUrl
             ? this_pointer.searchUrl
-            : "https://www.google.com",
+            : undefined,
           volume_size: this.volume.tag_name,
           state: this.stateName.state,
           city: this.cityName,
