@@ -622,6 +622,7 @@ export default {
           state: this.stateName.state,
           city: this.cityName,
           keywords: keyWords && keyWords.length ? keyWords : undefined,
+          keyword_formating: this.keyword_formating,
           paused: this_pointer.paused.val,
           city_targeting_method: "priority"
         },
