@@ -683,7 +683,6 @@ export default {
         this.startDate,
         moment(this.startDate).format("MM-DD-YYYY")
       );
-      // alert()
       var this_pointer = this;
       var filterResponse = this_pointer.campaigns_list;
       console.log("clientID", this_pointer.client.id);
@@ -692,11 +691,6 @@ export default {
         filterResponse = filterResponse.filter(
           campaign => campaign.client === this_pointer.client.client_name
         );
-        // filterResponse = _.filter(filterResponse, function(c_list) {
-        //   return c_list.client == this_pointer.client.client_name;
-        // });
-        // console.log("if1", filterResponse);
-        // console.log("Rudr",filterResponse)
       }
 
       if (filterResponse && filterResponse.length > 0) {
